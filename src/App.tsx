@@ -164,7 +164,7 @@ export default function App() {
   };
 
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-ivory overflow-x-hidden relative font-sans text-ink">
+    <div className="max-w-md mx-auto min-h-screen bg-bg-app overflow-x-hidden relative font-sans text-ink">
       <main className="p-5 min-h-screen">
         {renderScreen()}
       </main>

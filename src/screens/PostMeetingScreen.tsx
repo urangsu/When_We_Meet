@@ -25,7 +25,7 @@ export const PostMeetingScreen = ({ onNext }: { onNext: (action: string) => void
       <div className="w-full flex flex-col gap-4">
         <button 
           onClick={() => onNext('recurring')}
-          className="w-full flex items-center justify-between p-6 bg-white border-2 border-ink-line rounded-[28px] group active:scale-95 transition-all text-left"
+          className="w-full flex items-center justify-between p-6 bg-white border border-ink-line rounded-2xl group active:scale-95 transition-all text-left"
         >
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-rose-light text-rose rounded-2xl flex items-center justify-center">
@@ -41,7 +41,7 @@ export const PostMeetingScreen = ({ onNext }: { onNext: (action: string) => void
 
         <button 
           onClick={() => onNext('new')}
-          className="w-full flex items-center justify-between p-6 bg-white border-2 border-ink-line rounded-[28px] group active:scale-95 transition-all text-left"
+          className="w-full flex items-center justify-between p-6 bg-white border border-ink-line rounded-2xl group active:scale-95 transition-all text-left"
         >
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-success-bg text-success rounded-2xl flex items-center justify-center">

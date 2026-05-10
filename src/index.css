@@ -7,18 +7,19 @@
   --font-display: "Instrument Serif", "Gowun Batang", serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-rose: #E85B73;
-  --color-rose-deep: #C73E59;
-  --color-rose-light: #FFF1F3;
-  --color-rose-halo: #FBDDE3;
+  --color-rose: #E91E63;
+  --color-rose-deep: #D81B60;
+  --color-rose-light: #FDE;
+  --color-rose-halo: rgba(233, 30, 99, 0.3);
   
-  --color-ink: #2A1A2E;
-  --color-ink-muted: #5C4A60;
-  --color-ink-hint: #9888A0;
-  --color-ink-line: rgba(42, 26, 46, 0.08);
+  --color-ink: #1A1C2E;
+  --color-ink-muted: #4B5563;
+  --color-ink-hint: #9CA3AF;
+  --color-ink-line: #E5E7EB;
 
-  --color-ivory: #FFFBF5;
-  --color-cream: #FBF1E6;
+  --color-bg-app: #F5F6F8;
+  --color-ivory: #FDFBF7;
+  --color-cream: #F1F1F1;
 
   --color-success: #1F7A4D;
   --color-success-bg: #DDF2E5;
@@ -31,12 +32,12 @@
   --color-lavender-bg: #ECE6F7;
   --color-butter-bg: #FFF6CE;
 
-  --shadow-warm: 0 14px 40px -12px rgba(232, 91, 115, 0.18), 0 2px 6px rgba(42, 26, 46, 0.04);
+  --shadow-warm: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 @layer base {
   body {
-    @apply bg-ivory text-ink font-sans antialiased;
+    @apply bg-bg-app text-ink font-sans antialiased;
   }
 }
 

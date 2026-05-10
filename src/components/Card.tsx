@@ -9,9 +9,9 @@ interface CardProps {
 
 export const Card = ({ children, className = '', variant = 'default' }: CardProps) => {
   const styles = {
-    default: "bg-white rounded-[28px] p-6 shadow-warm border border-ink-line/5",
-    ivory: "bg-ivory rounded-[28px] p-6 border border-ink-line",
-    glass: "bg-white/70 backdrop-blur-xl rounded-[28px] p-6 shadow-warm"
+    default: "bg-white rounded-2xl p-6 shadow-warm border border-ink-line",
+    ivory: "bg-ivory rounded-2xl p-6 border border-ink-line",
+    glass: "bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-warm"
   };
 
   return (

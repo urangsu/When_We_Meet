@@ -19,7 +19,7 @@ export const InvitePreviewScreen = ({ onNext, onBack, data }: { onNext: () => vo
           className="relative"
         >
           <div className={`
-            aspect-[4/5] rounded-[32px] p-8 flex flex-col justify-between shadow-warm relative overflow-hidden
+            aspect-[4/5] rounded-2xl p-8 flex flex-col justify-between shadow-warm relative overflow-hidden
             ${data.theme === 'calendar-kiss' ? 'bg-[#FFF1F3]' : ''}
             ${data.theme === 'invite-spark' ? 'bg-[#FFFBF5]' : ''}
             ${data.theme === 'brunch-letter' ? 'bg-[#FBF1E6]' : ''}

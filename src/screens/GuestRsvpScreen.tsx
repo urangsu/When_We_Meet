@@ -38,7 +38,7 @@ export const GuestRsvpScreen = ({ onNext, data }: { onNext: (response: any) => v
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             placeholder="이름이나 별명을 입력해줘"
-            className="w-full p-4 rounded-[16px] border-2 border-ink-line focus:border-rose focus:outline-none focus:shadow-warm transition-all"
+            className="w-full p-4 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-warm transition-all"
           />
         </div>
 
@@ -54,7 +54,7 @@ export const GuestRsvpScreen = ({ onNext, data }: { onNext: (response: any) => v
                 key={opt.id}
                 onClick={() => setAttendance(opt.id as any)}
                 className={`
-                  flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all
+                  flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all
                   ${attendance === opt.id ? 'border-rose bg-rose-light' : 'border-ink-line bg-white'}
                 `}
               >

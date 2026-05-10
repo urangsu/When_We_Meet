@@ -29,7 +29,7 @@ export const CategoryScreen = ({ onNext, onBack }: { onNext: (cat: string, recur
             key={cat.id}
             onClick={() => setSelected(cat.id)}
             className={`
-              flex flex-col gap-3 p-6 rounded-[28px] border-2 text-left transition-all h-32 justify-center
+              flex flex-col gap-3 p-6 rounded-2xl border text-left transition-all h-32 justify-center
               ${selected === cat.id ? 'border-rose bg-rose-light shadow-warm' : 'border-ink-line bg-white text-ink-muted'}
             `}
           >
@@ -39,7 +39,7 @@ export const CategoryScreen = ({ onNext, onBack }: { onNext: (cat: string, recur
         ))}
       </div>
 
-      <div className="flex items-center justify-between p-6 bg-white border border-ink-line rounded-[24px]">
+      <div className="flex items-center justify-between p-6 bg-white border border-ink-line rounded-2xl">
         <div className="flex flex-col gap-0.5">
           <span className="font-bold">정기모임으로 만들기</span>
           <span className="text-xs text-ink-hint">매주 또는 매달 반복되는 모임</span>

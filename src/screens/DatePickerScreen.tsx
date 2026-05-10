@@ -22,7 +22,7 @@ export const DatePickerScreen = ({ onNext, onBack }: { onNext: (dates: string[])
         <h1 className="hero-title text-2xl">언제 만날까요?</h1>
       </header>
 
-      <div className="bg-white rounded-[28px] p-6 shadow-warm border border-ink-line/5">
+      <div className="bg-white rounded-2xl p-6 shadow-warm border border-ink-line">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg">2026년 6월</h3>
           <div className="flex gap-4">

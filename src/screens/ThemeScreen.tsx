@@ -28,7 +28,7 @@ export const ThemeScreen = ({ onNext, onBack }: { onNext: (theme: string) => voi
               whileTap={{ scale: 0.95 }}
               onClick={() => setSelected(theme.id)}
               className={`
-                w-48 h-64 rounded-[32px] border-4 p-6 flex flex-col justify-end gap-2 snap-center transition-all relative
+                w-48 h-64 rounded-2xl border-4 p-6 flex flex-col justify-end gap-2 snap-center transition-all relative
                 ${selected === theme.id ? 'border-rose shadow-warm scale-105' : 'border-white bg-white shadow-sm'}
                 ${theme.id === 'calendar-kiss' ? 'bg-[#FFF1F3]' : ''}
                 ${theme.id === 'invite-spark' ? 'bg-[#FFFBF5]' : ''}

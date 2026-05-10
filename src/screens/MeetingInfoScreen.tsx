@@ -31,7 +31,7 @@ export const MeetingInfoScreen = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="예) 수민이의 생일 모임"
-            className="w-full p-4 rounded-[16px] border-2 border-ink-line focus:border-rose focus:outline-none focus:shadow-warm transition-all"
+            className="w-full p-4 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-warm transition-all"
           />
         </div>
 
@@ -42,7 +42,7 @@ export const MeetingInfoScreen = ({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="친구들에게 보낼 따뜻한 한마디"
-              className="w-full p-4 pl-12 rounded-[16px] border-2 border-ink-line focus:border-rose focus:outline-none focus:shadow-warm transition-all min-h-[100px] resize-none"
+              className="w-full p-4 pl-12 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-warm transition-all min-h-[100px] resize-none"
             />
             <AlignLeft className="absolute top-4 left-4 text-ink-hint" size={20} />
           </div>
@@ -55,7 +55,7 @@ export const MeetingInfoScreen = ({
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="예) 강남역 10번 출구, 우리 집"
-              className="w-full p-4 pl-12 rounded-[16px] border-2 border-ink-line focus:border-rose focus:outline-none focus:shadow-warm transition-all"
+              className="w-full p-4 pl-12 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-warm transition-all"
             />
             <MapPin className="absolute top-1/2 -translate-y-1/2 left-4 text-ink-hint" size={20} />
           </div>

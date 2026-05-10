@@ -23,7 +23,7 @@ export const ShareScreen = ({ onNext, showToast }: { onNext: () => void, showToa
         <p className="text-ink-muted font-medium">이제 친구들에게 링크를 공유해 주세요</p>
       </div>
 
-      <div className="w-full bg-white border-2 border-ink-line rounded-[24px] p-6 flex flex-col gap-6 mt-4">
+      <div className="w-full bg-white border border-ink-line rounded-2xl p-6 flex flex-col gap-6 mt-4">
         <div className="flex items-center justify-between p-4 bg-ivory rounded-2xl">
           <span className="text-ink-hint font-mono text-sm truncate mr-4">wwm.app/i/A4K-92F</span>
           <button onClick={handleCopy} className="text-rose font-bold flex items-center gap-2 text-sm shrink-0">
@@ -49,7 +49,7 @@ export const ShareScreen = ({ onNext, showToast }: { onNext: () => void, showToa
       </div>
 
       <div className="mt-auto w-full pb-10 flex flex-col gap-3">
-        <Button onClick={onNext} size="full" variant="outline" className="border-2">
+        <Button onClick={onNext} size="full" variant="outline" className="border">
           <LayoutDashboard size={20}/> 응답 현황 보기
         </Button>
       </div>

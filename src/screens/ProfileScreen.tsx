@@ -26,7 +26,7 @@ export const ProfileScreen = ({ onNext, onBack }: { onNext: (profile: string) =>
             key={opt.id}
             onClick={() => setSelected(opt.id)}
             className={`
-              flex items-center gap-4 p-5 rounded-[24px] border-2 transition-all
+              flex items-center gap-4 p-5 rounded-2xl border transition-all
               ${selected === opt.id ? 'border-rose bg-rose-light shadow-warm' : 'border-ink-line bg-white'}
             `}
           >

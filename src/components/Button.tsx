@@ -11,7 +11,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = ({ variant = 'primary', size = 'md', children, className = '', ...props }: ButtonProps) => {
-  const baseStyles = "rounded-full font-semibold transition-all flex items-center justify-center gap-2 active:scale-[0.98]";
+  const baseStyles = "rounded-2xl font-semibold transition-all flex items-center justify-center gap-2 active:scale-[0.98]";
   
   const variants = {
     primary: "bg-rose text-white shadow-warm active:bg-rose-deep selection:bg-white/30",
