@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@theme {
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-display: "Instrument Serif", "Gowun Batang", serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-rose: #E85B73;
+  --color-rose-deep: #C73E59;
+  --color-rose-light: #FFF1F3;
+  --color-rose-halo: #FBDDE3;
+  
+  --color-ink: #2A1A2E;
+  --color-ink-muted: #5C4A60;
+  --color-ink-hint: #9888A0;
+  --color-ink-line: rgba(42, 26, 46, 0.08);
+
+  --color-ivory: #FFFBF5;
+  --color-cream: #FBF1E6;
+
+  --color-success: #1F7A4D;
+  --color-success-bg: #DDF2E5;
+  --color-warning: #9A6A00;
+  --color-warning-bg: #FFF1C9;
+  --color-danger: #B43056;
+  --color-danger-bg: #FBE0E8;
+
+  --color-mint-bg: #E0F1E5;
+  --color-lavender-bg: #ECE6F7;
+  --color-butter-bg: #FFF6CE;
+
+  --shadow-warm: 0 14px 40px -12px rgba(232, 91, 115, 0.18), 0 2px 6px rgba(42, 26, 46, 0.04);
+}
+
+@layer base {
+  body {
+    @apply bg-ivory text-ink font-sans antialiased;
+  }
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
