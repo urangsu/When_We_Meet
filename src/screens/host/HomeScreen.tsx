@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card } from '../components/Card';
-import { Button } from '../components/Button';
-import { Plus, ChevronRight, MessageCircle, Clock } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Card } from '../../components/Card';
+import { Button } from '../../components/Button';
+import { Plus, ChevronRight, MessageCircle, Clock, CalendarCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Meeting {
   id: string;
@@ -10,25 +10,24 @@ interface Meeting {
   date: string;
   status: 'ongoing' | 'waiting';
   guests: number;
-  theme: string;
 }
 
 const mockMeetings: Meeting[] = [
-  { id: '1', title: '수민이의 생일 모임', date: '6월 21일 (토)', status: 'ongoing', guests: 8, theme: 'blush' },
-  { id: '2', title: '주말 한강 피크닉', date: '6월 15일 (일)', status: 'waiting', guests: 4, theme: 'mint' },
+  { id: '1', title: '수민이의 생일 모임', date: '6월 21일 (토)', status: 'ongoing', guests: 8 },
+  { id: '2', title: '주말 한강 피크닉', date: '6월 15일 (일)', status: 'waiting', guests: 4 },
 ];
 
-export const HomeScreen = ({ onCreateClick }: { onCreateClick: () => void }) => {
+export const HomeScreen = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex flex-col gap-8 pb-24">
+    <div className="flex flex-col gap-8 pb-24 p-5">
       <header className="flex flex-col gap-1 px-2 pt-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-rose rounded-xl flex items-center justify-center">
-            <div className="w-4 h-4 border-2 border-white rounded-md" />
-          </div>
-          <h1 className="font-display italic text-2xl font-bold tracking-tight">우리 언제 만나?</h1>
+          <CalendarCheck className="text-rose" size={28} strokeWidth={2.5} />
+          <h1 className="font-bold text-2xl tracking-tight">우리 언제 만나?</h1>
         </div>
-        <p className="text-ink-muted text-lg font-medium mt-4">안녕하세요 수민님,<br/>새로운 모임을 만들어볼까요? 💌</p>
+        <p className="text-ink-muted text-lg font-medium mt-4">안녕하세요 수민님,<br/>새로운 모임을 만들어볼까요?</p>
       </header>
 
       <section className="flex flex-col gap-4">
@@ -51,13 +50,13 @@ export const HomeScreen = ({ onCreateClick }: { onCreateClick: () => void }) => 
                   </div>
                 </div>
                 <div className="flex -space-x-2">
-                  {[1, 2, 3].map((_, i) => (
-                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-cream flex items-center justify-center text-[10px] font-bold">
-                      {['유', '지', '하'][i]}
+                  {[1, 2].map((_, i) => (
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-cream flex items-center justify-center text-[10px] font-bold text-ink-muted">
+                      {['유', '지'][i]}
                     </div>
                   ))}
-                  <div className="w-8 h-8 rounded-full border-2 border-white bg-ink-line text-ink-hint text-[10px] flex items-center justify-center">
-                    +5
+                  <div className="w-8 h-8 rounded-full border-2 border-white bg-white text-ink-hint text-[10px] flex items-center justify-center shadow-sm">
+                    +6
                   </div>
                 </div>
               </div>
@@ -65,6 +64,12 @@ export const HomeScreen = ({ onCreateClick }: { onCreateClick: () => void }) => 
                 <div className={`px-3 py-1 rounded-full text-[11px] font-bold ${meeting.status === 'ongoing' ? 'bg-success-bg text-success' : 'bg-warning-bg text-warning'}`}>
                   {meeting.status === 'ongoing' ? '✓ 확정됨' : '• 응답 대기 중'}
                 </div>
+                <button
+                  onClick={() => navigate('/app/meetings/demo/dashboard')}
+                  className="ml-auto text-sm text-rose font-bold"
+                >
+                  현황 보기
+                </button>
               </div>
             </Card>
           ))}
@@ -72,8 +77,8 @@ export const HomeScreen = ({ onCreateClick }: { onCreateClick: () => void }) => 
       </section>
 
       <Button 
-        onClick={onCreateClick}
-        className="fixed bottom-24 left-1/2 -translate-x-1/2 w-[calc(100%-40px)] z-40"
+        onClick={() => navigate('/app/create/category')}
+        className="fixed bottom-[88px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[390px] z-40 shadow-lg"
       >
         <Plus size={20}/> 새 초대장 만들기
       </Button>

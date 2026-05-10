@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button } from '../components/Button';
+import { Button } from '../../components/Button';
 import { ChevronLeft, Check, Camera, User, Hash, HelpCircle, History } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const profileOptions = [
   { id: 'my-photo', label: '내 사진', icon: Camera },
@@ -10,14 +11,15 @@ const profileOptions = [
   { id: 'recent', label: '최근 사용', icon: History },
 ];
 
-export const ProfileScreen = ({ onNext, onBack }: { onNext: (profile: string) => void, onBack: () => void }) => {
+export const ProfileScreen = () => {
   const [selected, setSelected] = useState('basic');
+  const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-8 h-full">
-      <header className="flex items-center gap-4">
-        <button onClick={onBack} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
-        <h1 className="hero-title text-2xl">프로필을 선택해 주세요</h1>
+    <div className="flex flex-col gap-8 h-full p-5 flex-1">
+      <header className="flex items-center gap-4 pt-2">
+        <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
+        <h1 className="font-bold text-2xl">프로필을 선택해 주세요</h1>
       </header>
 
       <div className="grid grid-cols-1 gap-4">
@@ -27,7 +29,7 @@ export const ProfileScreen = ({ onNext, onBack }: { onNext: (profile: string) =>
             onClick={() => setSelected(opt.id)}
             className={`
               flex items-center gap-4 p-5 rounded-2xl border transition-all
-              ${selected === opt.id ? 'border-rose bg-rose-light shadow-warm' : 'border-ink-line bg-white'}
+              ${selected === opt.id ? 'border-rose bg-rose-light shadow-warm text-rose-deep' : 'border-ink-line bg-white'}
             `}
           >
             <div className={`
@@ -41,15 +43,15 @@ export const ProfileScreen = ({ onNext, onBack }: { onNext: (profile: string) =>
             </span>
             {selected === opt.id && (
               <div className="w-6 h-6 bg-rose text-white rounded-full flex items-center justify-center">
-                <Check size={14} />
+                <Check size={14} strokeWidth={3} />
               </div>
             )}
           </button>
         ))}
       </div>
 
-      <div className="mt-auto pb-10">
-        <Button onClick={() => onNext(selected)} size="full">다음 · 날짜 고르기</Button>
+      <div className="mt-12 pb-10">
+        <Button onClick={() => navigate('/app/create/dates')} size="full">다음 · 날짜 고르기</Button>
       </div>
     </div>
   );

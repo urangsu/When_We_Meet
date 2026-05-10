@@ -34,15 +34,15 @@ export const Chip = ({ children, selected, onClick, className = '' }: ChipProps)
     <button
       onClick={onClick}
       className={`
-        px-4 py-2 rounded-full text-sm font-medium transition-all border-1.5
+        px-4 py-2 rounded-full text-sm font-semibold transition-all
         flex items-center gap-2
         ${selected 
-          ? 'bg-rose-halo border-rose text-rose-deep font-semibold' 
-          : 'bg-white border-ink-line text-ink-muted'}
+          ? 'bg-white border-rose border-[1.5px] text-rose-deep' 
+          : 'bg-white border-ink-line border-[1px] text-ink-muted'}
         ${className}
       `}
     >
-      {selected && <div className="w-1.5 h-1.5 rounded-full bg-rose shadow-[0_0_0_1.5px_white]" />}
+      {selected && <div className="w-1.5 h-1.5 rounded-full bg-rose" />}
       {children}
     </button>
   );

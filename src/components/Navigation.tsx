@@ -1,23 +1,26 @@
 import React from 'react';
-import { Home, Calendar, User, PlusCircle } from 'lucide-react';
+import { Home, Calendar, User, PlusCircle, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-export const BottomNav = ({ activeTab, onTabChange }: { activeTab: string, onTabChange: (tab: string) => void }) => {
+export const BottomNav = ({ activeTab }: { activeTab: string }) => {
+  const navigate = useNavigate();
+
   const tabs = [
-    { id: 'home', icon: Home, label: '홈' },
-    { id: 'calendar', icon: Calendar, label: '달력' },
-    { id: 'create', icon: PlusCircle, label: '만들기', primary: true },
-    { id: 'me', icon: User, label: '내 정보' },
+    { id: 'home', icon: Home, label: '홈', path: '/app' },
+    { id: 'calendar', icon: Calendar, label: '달력', path: '/app' },
+    { id: 'create', icon: PlusCircle, label: '만들기', primary: true, path: '/app/create/category' },
+    { id: 'me', icon: User, label: '내 정보', path: '/app' },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-ink-line flex justify-around items-center px-4 py-2 safe-area-bottom z-50">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-ink-line flex justify-around items-center px-4 py-3 safe-area-bottom z-50">
       {tabs.map((tab) => (
         <button
           key={tab.id}
-          onClick={() => onTabChange(tab.id)}
+          onClick={() => navigate(tab.path)}
           className={`
             flex flex-col items-center gap-1 group
-            ${tab.primary ? 'relative -top-4 bg-rose text-white p-3 rounded-full shadow-lg' : 'text-ink-hint'}
+            ${tab.primary ? 'relative -top-4 bg-rose text-white p-3 rounded-full shadow-md' : 'text-ink-hint'}
           `}
         >
           <tab.icon className={activeTab === tab.id && !tab.primary ? 'text-rose' : ''} size={tab.primary ? 28 : 24} />
@@ -28,12 +31,22 @@ export const BottomNav = ({ activeTab, onTabChange }: { activeTab: string, onTab
   );
 };
 
-export const Toast = ({ message, visible }: { message: string, visible: boolean }) => {
+export const Toast = ({ message, visible, type = 'success' }: { message: string, visible: boolean, type?: 'success' | 'warn' | 'error' | 'info' }) => {
   if (!visible) return null;
+  
+  const getIcon = () => {
+    switch (type) {
+      case 'success': return <CheckCircle2 className="text-success" size={20} />;
+      case 'warn': return <AlertCircle className="text-warning" size={20} />;
+      case 'error': return <AlertCircle className="text-danger" size={20} />;
+      default: return <Info className="text-rose" size={20} />;
+    }
+  };
+
   return (
-    <div className="fixed top-12 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4">
-      <div className="bg-ink text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl flex items-center gap-2">
-        <div className="w-1.5 h-1.5 rounded-full bg-success" />
+    <div className="fixed top-12 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4 w-[90%] max-w-sm">
+      <div className="bg-white text-ink px-5 py-3.5 rounded-2xl text-sm font-bold shadow-warm border border-ink-line flex items-center gap-3">
+        {getIcon()}
         {message}
       </div>
     </div>

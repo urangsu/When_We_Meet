@@ -1,30 +1,33 @@
 import React from 'react';
-import { Button } from '../components/Button';
+import { Button } from '../../components/Button';
 import { ChevronLeft, Check, Copy, MessageCircle, Send, MoreHorizontal, LayoutDashboard } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 
-export const ShareScreen = ({ onNext, showToast }: { onNext: () => void, showToast: (msg: string) => void }) => {
+export const ShareScreen = () => {
+  const navigate = useNavigate();
+  
   const handleCopy = () => {
-    showToast('링크가 복사되었습니다!');
+    // Show toast logic can be handled via context or component state
   };
 
   return (
-    <div className="flex flex-col gap-8 h-full items-center justify-center text-center">
+    <div className="flex flex-col gap-8 h-full items-center justify-center text-center p-5 pt-20">
       <motion.div 
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="w-20 h-20 bg-rose-light rounded-full flex items-center justify-center text-rose mb-4 shadow-warm"
+        className="w-20 h-20 bg-rose rounded-full flex items-center justify-center text-white mb-4 shadow-warm"
       >
         <Check size={40} strokeWidth={3} />
       </motion.div>
 
       <div className="flex flex-col gap-3">
-        <h1 className="hero-title text-3xl">초대장이 완성되었어요!</h1>
+        <h1 className="font-bold text-3xl">초대장이 완성되었어요!</h1>
         <p className="text-ink-muted font-medium">이제 친구들에게 링크를 공유해 주세요</p>
       </div>
 
-      <div className="w-full bg-white border border-ink-line rounded-2xl p-6 flex flex-col gap-6 mt-4">
-        <div className="flex items-center justify-between p-4 bg-ivory rounded-2xl">
+      <div className="w-full bg-white border border-ink-line rounded-2xl p-6 flex flex-col gap-6 mt-4 shadow-sm">
+        <div className="flex items-center justify-between p-4 bg-cream rounded-2xl">
           <span className="text-ink-hint font-mono text-sm truncate mr-4">wwm.app/i/A4K-92F</span>
           <button onClick={handleCopy} className="text-rose font-bold flex items-center gap-2 text-sm shrink-0">
             <Copy size={16} /> 복사
@@ -35,8 +38,8 @@ export const ShareScreen = ({ onNext, showToast }: { onNext: () => void, showToa
           {[
             { label: '카카오톡', icon: MessageCircle, color: 'bg-[#FEE500] text-black' },
             { label: 'DM', icon: Send, color: 'bg-rose text-white' },
-            { label: '문자', icon: MessageCircle, color: 'bg-ink-line text-ink' },
-            { label: '더보기', icon: MoreHorizontal, color: 'bg-ivory text-ink-hint' },
+            { label: '문자', icon: MessageCircle, color: 'bg-ink border border-ink-line text-white' },
+            { label: '더보기', icon: MoreHorizontal, color: 'bg-white border border-ink-line text-ink-hint' },
           ].map((app) => (
             <div key={app.label} className="flex flex-col items-center gap-2">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm ${app.color}`}>
@@ -48,8 +51,8 @@ export const ShareScreen = ({ onNext, showToast }: { onNext: () => void, showToa
         </div>
       </div>
 
-      <div className="mt-auto w-full pb-10 flex flex-col gap-3">
-        <Button onClick={onNext} size="full" variant="outline" className="border">
+      <div className="mt-12 w-full pb-10 flex flex-col gap-3">
+        <Button onClick={() => navigate('/app/meetings/demo/dashboard')} size="full" variant="outline">
           <LayoutDashboard size={20}/> 응답 현황 보기
         </Button>
       </div>
