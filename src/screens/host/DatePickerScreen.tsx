@@ -36,6 +36,9 @@ export const DatePickerScreen = () => {
           {['일', '월', '화', '수', '목', '금', '토'].map((day, i) => (
             <div key={day} className={`text-center text-xs font-bold ${i === 0 ? 'text-rose' : 'text-ink-hint'}`}>{day}</div>
           ))}
+          {Array.from({ length: 1 }).map((_, i) => (
+            <div key={`empty-${i}`} />
+          ))}
           {Array.from({ length: 30 }).map((_, i) => {
             const day = i + 1;
             const isSelected = selectedDates.includes(day);
@@ -63,9 +66,12 @@ export const DatePickerScreen = () => {
 
       {selectedDates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-          {selectedDates.map(date => (
-            <CandidateDateChip key={date} date={`6월 ${date}일`} onRemove={() => toggleDate(date)} />
-          ))}
+          {selectedDates.map(date => {
+            const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][date % 7];
+            return (
+              <CandidateDateChip key={date} date={`6월 ${date}일 (${dayOfWeek})`} onRemove={() => toggleDate(date)} />
+            );
+          })}
         </div>
       )}
 

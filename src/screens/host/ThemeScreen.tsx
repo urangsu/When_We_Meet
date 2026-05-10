@@ -22,26 +22,28 @@ export const ThemeScreen = () => {
         <h1 className="font-bold text-2xl">어떤 분위기가 좋은가요?</h1>
       </header>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex gap-4 overflow-x-auto pb-4 -mx-5 px-5 no-scrollbar auto-cols-max">
         {themes.map((theme) => (
           <motion.button
             key={theme.id}
-            whileTap={{ scale: 0.98 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => setSelected(theme.id)}
             className={`
-              w-full rounded-2xl border flex items-center justify-between p-4 transition-all bg-white
-              ${selected === theme.id ? 'border-rose shadow-sm' : 'border-ink-line'}
+              relative min-w-[120px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
+              ${selected === theme.id ? 'border-rose shadow-sm text-rose-deep' : 'border-ink-line text-ink hover:border-ink/30'}
             `}
           >
-            <div className="flex items-center gap-4">
-               <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-cream text-ink`}>
-                 <theme.icon size={20} />
-               </div>
-               <span className="font-bold text-ink">{theme.label}</span>
+            <div className="mb-8">
+              <theme.icon size={24} className={selected === theme.id ? 'text-rose' : 'text-ink-hint'} />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-sm leading-tight max-w-[80px]">
+                {theme.label.split(' ')[0]}<br/>{theme.label.split(' ')[1]}
+              </span>
             </div>
             {selected === theme.id && (
-              <div className="text-rose mr-2">
-                <Check size={20} strokeWidth={3} />
+              <div className="absolute top-4 right-4 text-rose">
+                <Check size={18} strokeWidth={3} />
               </div>
             )}
           </motion.button>

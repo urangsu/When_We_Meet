@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Chip } from '../../components/Card';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Check } from 'lucide-react';
+import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle } from 'lucide-react';
 
 export const GuestAttendanceScreen = () => {
   const [attendance, setAttendance] = useState<'yes' | 'maybe' | 'no' | null>(null);
@@ -10,9 +10,9 @@ export const GuestAttendanceScreen = () => {
   const navigate = useNavigate();
 
   const options = [
-    { id: 'yes', label: '갈게요', emoji: '🎉', color: 'border-rose text-rose-deep bg-rose-light' },
-    { id: 'maybe', label: '아마 가능해요', emoji: '🤔', color: 'border-warning text-warning bg-warning-bg' },
-    { id: 'no', label: '이번엔 어려워요', emoji: '🥲', color: 'border-danger text-danger bg-danger-bg' },
+    { id: 'yes', label: '갈게요', icon: CheckCircle2, color: 'border-rose text-rose-deep' },
+    { id: 'maybe', label: '아마 가능해요', icon: CircleHelp, color: 'border-warning text-warning' },
+    { id: 'no', label: '이번엔 어려워요', icon: XCircle, color: 'border-danger text-danger' },
   ];
 
   const declineMessages = [
@@ -47,10 +47,10 @@ export const GuestAttendanceScreen = () => {
             onClick={() => setAttendance(opt.id as any)}
             className={`
               flex items-center gap-4 p-5 rounded-2xl border transition-all text-left bg-white
-              ${attendance === opt.id ? `border-[1.5px] shadow-sm ${opt.color.split(' ')[0]}` : 'border-ink-line'}
+              ${attendance === opt.id ? `border-[1.5px] shadow-sm ${opt.color.split(' ')[0]}` : 'border-ink-line hover:border-ink/30'}
             `}
           >
-            <span className="text-3xl">{opt.emoji}</span>
+            <opt.icon size={28} className={attendance === opt.id ? opt.color.split(' ')[1] : 'text-ink-hint'} />
             <span className={`flex-1 font-bold text-lg ${attendance === opt.id ? opt.color.split(' ')[1] : 'text-ink'}`}>
               {opt.label}
             </span>

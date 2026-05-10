@@ -60,9 +60,16 @@ export const HomeScreen = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <div className={`px-3 py-1 rounded-full text-[11px] font-bold ${meeting.status === 'ongoing' ? 'bg-success-bg text-success' : 'bg-warning-bg text-warning'}`}>
-                  {meeting.status === 'ongoing' ? '✓ 확정됨' : '• 응답 대기 중'}
+              <div className="flex gap-2 items-center">
+                <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1.5 bg-white
+                  ${meeting.status === 'ongoing' ? 'border-success/30 text-ink' : 'border-warning/30 text-ink'}
+                `}>
+                  {meeting.status === 'ongoing' ? (
+                    <div className="w-1.5 h-1.5 rounded-full bg-success" />
+                  ) : (
+                    <div className="w-1.5 h-1.5 rounded-full bg-warning" />
+                  )}
+                  {meeting.status === 'ongoing' ? '확정됨' : '응답 대기 중'}
                 </div>
                 <button
                   onClick={() => navigate('/app/meetings/demo/dashboard')}

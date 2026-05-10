@@ -1,31 +1,22 @@
-export type Screen = 
-  | 'home'
-  | 'create-category'
-  | 'meeting-info'
-  | 'theme-selection'
-  | 'profile-picker'
-  | 'date-picker'
-  | 'invite-preview'
-  | 'link-share'
-  | 'guest-rsvp'
-  | 'response-complete'
-  | 'host-dashboard'
-  | 'post-meeting';
+export type MeetingCategory = 'meal' | 'drink' | 'coffee' | 'study' | 'sports' | 'custom';
+export type ThemeId = 'calendar-kiss' | 'invite-spark' | 'brunch-letter' | 'office-escape';
+export type AttendanceStatus = 'yes' | 'maybe' | 'no';
 
 export interface MeetingData {
-  category: string;
+  category: MeetingCategory | string;
   isRecurring: boolean;
   name: string;
   message: string;
   location?: string;
-  theme: string;
+  theme: ThemeId;
   hostProfile: string;
   candidateDates: string[];
 }
 
 export interface GuestResponse {
   nickname: string;
-  attendance: 'go' | 'maybe' | 'no';
+  attendance: AttendanceStatus;
   message?: string;
   selectedDates: string[];
 }
+
