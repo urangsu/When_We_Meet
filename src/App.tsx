@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 // Layouts
 import { HostAppLayout } from './layouts/HostAppLayout';
@@ -27,7 +27,7 @@ import { GuestCompleteScreen } from './screens/guest/GuestCompleteScreen';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         {/* Default redirect to Host App Home */}
         <Route path="/" element={<Navigate to="/app" replace />} />
@@ -56,7 +56,7 @@ export default function App() {
           <Route path="demo/complete" element={<GuestCompleteScreen />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
