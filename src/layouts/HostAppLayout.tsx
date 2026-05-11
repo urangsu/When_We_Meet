@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { BottomNav } from '../components/Navigation';
 import { RouteDebug } from '../components/debug/RouteDebug';
 import { DebugNavigator } from '../components/debug/DebugNavigator';
