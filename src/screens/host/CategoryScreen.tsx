@@ -24,7 +24,7 @@ export const CategoryScreen = () => {
             key={cat.id}
             onClick={() => setSelected(cat.id)}
             className={`
-              flex flex-col gap-3 p-5 rounded-2xl border text-left transition-all h-28 justify-center
+              flex flex-col gap-3 p-4 rounded-2xl border text-left transition-all h-24 justify-center
               ${selected === cat.id ? 'border-transparent bg-white ring-2 ring-inset ring-rose text-rose shadow-warm' : 'border-ink-line bg-white text-ink-muted'}
             `}
           >

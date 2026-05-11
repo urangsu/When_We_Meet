@@ -26,7 +26,7 @@ export const ThemeScreen = () => {
             whileTap={{ scale: 0.96 }}
             onClick={() => setSelected(theme.id)}
             className={`
-              relative min-w-[96px] h-[104px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
+              relative min-w-[88px] h-[104px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
               ${selected === theme.id ? 'border-rose shadow-sm text-rose-deep' : 'border-ink-line text-ink hover:border-ink/30'}
             `}
           >

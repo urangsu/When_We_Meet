@@ -14,8 +14,8 @@ export const ScreenShell: React.FC<ScreenShellProps> = ({
   hasBottomCTA = false,
 }) => {
   // calculate pb depending on layout
-  let pbClass = 'pb-safe-bottom';
-  
+  let pbClass = 'pb-8'; // fallback padding
+
   if (withBottomNav && hasBottomCTA) {
     pbClass = 'pb-[160px]'; // approximated height for CTA + Nav
   } else if (withBottomNav) {
@@ -32,6 +32,7 @@ export const ScreenShell: React.FC<ScreenShellProps> = ({
         ${className}
       `}
     >
+      <div className="absolute top-0 right-0 p-1 text-[8px] bg-black text-white z-50 rounded-bl-md opacity-50 pointer-events-none">layout-v2</div>
       {children}
     </div>
   );
