@@ -3,12 +3,14 @@ import { Button } from '../../components/Button';
 import { ChevronLeft, PartyPopper, Calendar, Repeat, UserPlus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const PostMeetingScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-10 h-full items-center justify-center text-center p-5 pt-20">
+    <ScreenShell hasBottomCTA className="gap-10 items-center justify-center text-center p-5 pt-20">
       <motion.div 
         animate={{ 
           y: [0, -10, 0],
@@ -59,9 +61,9 @@ export const PostMeetingScreen = () => {
         </button>
       </div>
 
-      <div className="mt-12 w-full pb-10">
-        <Button variant="ghost" onClick={() => navigate('/app')}>나중에 하기</Button>
-      </div>
-    </div>
+      <BottomCTA>
+        <Button variant="ghost" onClick={() => navigate('/app')} size="full">나중에 하기</Button>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

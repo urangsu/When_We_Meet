@@ -9,8 +9,8 @@ export const HostAppLayout = () => {
     : location.pathname === '/app' ? 'home' : '';
 
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-bg-app overflow-x-hidden relative font-sans text-ink">
-      <main className="pb-24">
+    <div className="max-w-md mx-auto min-h-dvh bg-bg-app overflow-x-hidden relative font-sans text-ink">
+      <main className="flex flex-col min-h-dvh">
         <Outlet />
       </main>
       <BottomNav activeTab={activeTab} />

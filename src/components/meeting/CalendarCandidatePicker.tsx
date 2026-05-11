@@ -8,6 +8,7 @@ import { CalendarProviderStatusRow } from './CalendarProviderStatusRow';
 import { useDateCandidatePicker } from '../../hooks/useDateCandidatePicker';
 import { getMonthDays, getMonthStartOffset } from '../../utils/calendar';
 import type { CalendarProvider, BusyDay } from '../../types/calendar';
+import { BottomCTA } from '../layout/BottomCTA';
 
 interface CalendarCandidatePickerProps {
   year: number;
@@ -81,7 +82,7 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
         </div>
       )}
 
-      <div className="mt-auto pt-8 pb-10 flex flex-col gap-3">
+      <BottomCTA>
         <Button 
           disabled={selectedDates.length === 0} 
           onClick={() => onSubmit(selectedDates)} 
@@ -89,7 +90,7 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
         >
           {selectedDates.length > 0 ? `${selectedDates.length}개의 날짜로 초대장 만들기` : '날짜를 선택해 주세요'}
         </Button>
-      </div>
+      </BottomCTA>
     </>
   );
 };

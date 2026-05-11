@@ -3,12 +3,13 @@ import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { Check, CalendarHeart } from 'lucide-react';
 import { motion } from 'motion/react';
+import { ScreenShell } from '../../components/layout/ScreenShell';
 
 export const GuestCompleteScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-8 h-full items-center justify-center text-center p-5 pt-20">
+    <ScreenShell className="items-center justify-center text-center p-5 pt-20">
       <motion.div 
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -22,7 +23,7 @@ export const GuestCompleteScreen = () => {
         <p className="text-ink-muted font-medium px-4">호스트가 일정을 확정하면 다시 알려드릴게요.</p>
       </div>
 
-      <div className="w-full bg-cream border border-ink-line rounded-2xl p-6 flex flex-col items-center gap-4 mt-8 shadow-sm">
+      <div className="w-full bg-cream border border-ink-line rounded-2xl p-6 flex flex-col items-center gap-4 mt-8 shadow-sm justify-self-end mt-auto">
         <CalendarHeart size={32} className="text-rose" />
         <p className="font-bold text-ink text-center">
           나도 친구들과의 약속을<br/>쉽게 잡고 싶다면?
@@ -31,6 +32,6 @@ export const GuestCompleteScreen = () => {
           우리 언제 만나 시작하기
         </Button>
       </div>
-    </div>
+    </ScreenShell>
   );
 };

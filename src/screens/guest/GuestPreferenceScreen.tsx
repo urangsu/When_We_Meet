@@ -2,12 +2,14 @@ import React from 'react';
 import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const GuestPreferenceScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-8 h-full p-5">
+    <ScreenShell hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
       </header>
@@ -24,14 +26,14 @@ export const GuestPreferenceScreen = () => {
         />
       </div>
 
-      <div className="mt-auto pt-12 pb-10">
+      <BottomCTA>
         <Button 
           onClick={() => navigate('/invite/demo/complete')} 
           size="full"
         >
           응답 완료하기
         </Button>
-      </div>
-    </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

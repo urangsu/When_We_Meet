@@ -3,11 +3,13 @@ import { Button } from '../../components/Button';
 import { ChevronLeft, Share2, MapPin, Calendar, User } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col gap-6 h-full p-5 flex-1">
+    <ScreenShell hasBottomCTA className="gap-6">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">초대장 미리보기</h1>
@@ -60,12 +62,14 @@ export const InvitePreviewScreen = () => {
         </motion.div>
       </div>
 
-      <div className="pb-10 flex flex-col gap-4">
-        <p className="text-center text-xs text-ink-hint">초대장을 보내기 전 마지막으로 확인해 주세요</p>
-        <Button onClick={() => navigate('/app/create/share')} size="full">
-          <Share2 size={20}/> 링크 공유하기
-        </Button>
-      </div>
-    </div>
+      <BottomCTA>
+        <div className="flex flex-col gap-3 w-full">
+          <p className="text-center text-xs text-ink-hint">초대장을 보내기 전 마지막으로 확인해 주세요</p>
+          <Button onClick={() => navigate('/app/create/share')} size="full">
+            <Share2 size={20}/> 링크 공유하기
+          </Button>
+        </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

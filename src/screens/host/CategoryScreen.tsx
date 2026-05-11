@@ -3,6 +3,8 @@ import { Button } from '../../components/Button';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions } from '../../config/categoryOptions';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const CategoryScreen = () => {
   const [selected, setSelected] = useState('eat');
@@ -10,7 +12,7 @@ export const CategoryScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-8 h-full p-5 flex-1">
+    <ScreenShell hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">어떤 모임을 만들까요?</h1>
@@ -45,9 +47,9 @@ export const CategoryScreen = () => {
         </button>
       </div>
 
-      <div className="mt-12 pb-10">
+      <BottomCTA>
         <Button onClick={() => navigate('/app/create/info')} size="full">시작하기</Button>
-      </div>
-    </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

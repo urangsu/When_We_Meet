@@ -3,6 +3,8 @@ import { Button } from '../../components/Button';
 import { Chip } from '../../components/Card';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle } from 'lucide-react';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const GuestAttendanceScreen = () => {
   const [attendance, setAttendance] = useState<'yes' | 'maybe' | 'no' | null>(null);
@@ -49,7 +51,7 @@ export const GuestAttendanceScreen = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8 h-full p-5">
+    <ScreenShell hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
       </header>
@@ -94,7 +96,7 @@ export const GuestAttendanceScreen = () => {
         </div>
       )}
 
-      <div className="mt-auto pt-12 pb-10">
+      <BottomCTA>
         <Button 
           disabled={!attendance} 
           onClick={handleNext} 
@@ -102,7 +104,7 @@ export const GuestAttendanceScreen = () => {
         >
           {attendance === 'no' ? '응답 완료하기' : '다음 · 날짜 고르기'}
         </Button>
-      </div>
-    </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

@@ -1,9 +1,11 @@
 import React from 'react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
-import { ChevronLeft, MoreVertical, ThumbsUp, HelpCircle, XCircle, UserPlus, Star } from 'lucide-react';
+import { ChevronLeft, MoreVertical, Star } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const DashboardScreen = () => {
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ export const DashboardScreen = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-8 h-full p-5 flex-1">
+    <ScreenShell hasBottomCTA className="gap-8">
       <header className="flex items-center justify-between pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
@@ -77,9 +79,9 @@ export const DashboardScreen = () => {
         <p className="text-sm text-ink-muted font-medium">가장 많은 친구들이 참석 가능해요! ✨</p>
       </Card>
 
-      <div className="mt-auto pb-10">
+      <BottomCTA>
         <Button onClick={() => navigate('/app/meetings/demo/post-meeting')} size="full">이 날짜로 확정하기</Button>
-      </div>
-    </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

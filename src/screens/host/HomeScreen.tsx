@@ -4,12 +4,14 @@ import { Button } from '../../components/Button';
 import { Plus, ChevronRight, MessageCircle, Clock, CalendarCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { mockMeetings } from '../../data/mockMeetings';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const HomeScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-8 pb-24 p-5">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
       <header className="flex flex-col gap-1 px-2 pt-4">
         <div className="flex items-center gap-2">
           <CalendarCheck className="text-rose" size={28} strokeWidth={2.5} />
@@ -71,12 +73,14 @@ export const HomeScreen = () => {
         </div>
       </section>
 
-      <Button 
-        onClick={() => navigate('/app/create/category')}
-        className="fixed bottom-[88px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[390px] z-40 shadow-lg"
-      >
-        <Plus size={20}/> 새 초대장 만들기
-      </Button>
-    </div>
+      <BottomCTA withBottomNav>
+        <Button 
+          onClick={() => navigate('/app/create/category')}
+          size="full"
+        >
+          <Plus size={20}/> 새 초대장 만들기
+        </Button>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

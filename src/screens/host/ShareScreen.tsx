@@ -3,6 +3,8 @@ import { Button } from '../../components/Button';
 import { ChevronLeft, Check, Copy, MessageCircle, Send, MoreHorizontal, LayoutDashboard } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const ShareScreen = () => {
   const navigate = useNavigate();
@@ -12,7 +14,7 @@ export const ShareScreen = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8 h-full items-center justify-center text-center p-5 pt-20">
+    <ScreenShell hasBottomCTA className="gap-8 items-center justify-center text-center p-5 pt-20">
       <motion.div 
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -51,11 +53,11 @@ export const ShareScreen = () => {
         </div>
       </div>
 
-      <div className="mt-12 w-full pb-10 flex flex-col gap-3">
+      <BottomCTA>
         <Button onClick={() => navigate('/app/meetings/demo/dashboard')} size="full" variant="outline">
           <LayoutDashboard size={20}/> 응답 현황 보기
         </Button>
-      </div>
-    </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Check } from 'lucide-react';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const GuestDateVoteScreen = () => {
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
@@ -14,7 +16,7 @@ export const GuestDateVoteScreen = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8 h-full p-5">
+    <ScreenShell hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
       </header>
@@ -46,7 +48,7 @@ export const GuestDateVoteScreen = () => {
         ))}
       </div>
 
-      <div className="mt-auto pt-12 pb-10">
+      <BottomCTA>
         <Button 
           disabled={selectedDates.length === 0} 
           onClick={() => navigate('/invite/demo/preferences')} 
@@ -54,7 +56,7 @@ export const GuestDateVoteScreen = () => {
         >
           다음으로
         </Button>
-      </div>
-    </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

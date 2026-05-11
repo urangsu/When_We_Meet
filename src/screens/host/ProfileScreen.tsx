@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, Check, Camera, User, Hash, HelpCircle, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 const profileOptions = [
   { id: 'my-photo', label: '내 사진', icon: Camera },
@@ -16,7 +18,7 @@ export const ProfileScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-8 h-full p-5 flex-1">
+    <ScreenShell hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">프로필을 선택해 주세요</h1>
@@ -50,9 +52,9 @@ export const ProfileScreen = () => {
         ))}
       </div>
 
-      <div className="mt-12 pb-10">
+      <BottomCTA>
         <Button onClick={() => navigate('/app/create/dates')} size="full">다음 · 날짜 고르기</Button>
-      </div>
-    </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };

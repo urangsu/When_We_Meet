@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, MapPin, AlignLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ScreenShell } from '../../components/layout/ScreenShell';
+import { BottomCTA } from '../../components/layout/BottomCTA';
 
 export const MeetingInfoScreen = () => {
   const [name, setName] = useState('');
@@ -12,7 +14,7 @@ export const MeetingInfoScreen = () => {
   const isValid = name.length > 0 && message.length > 0;
 
   return (
-    <div className="flex flex-col gap-8 h-full p-5 flex-1">
+    <ScreenShell hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">모임 정보를 알려주세요</h1>
@@ -56,7 +58,7 @@ export const MeetingInfoScreen = () => {
         </div>
       </div>
 
-      <div className="mt-12 pb-10">
+      <BottomCTA>
         <Button 
           disabled={!isValid} 
           onClick={() => navigate('/app/create/theme')} 
@@ -64,7 +66,7 @@ export const MeetingInfoScreen = () => {
         >
           다음 · 테마 고르기
         </Button>
-      </div>
-    </div>
+      </BottomCTA>
+    </ScreenShell>
   );
 };
