@@ -10,9 +10,27 @@ export const GuestAttendanceScreen = () => {
   const navigate = useNavigate();
 
   const options = [
-    { id: 'yes', label: '갈게요', icon: CheckCircle2, color: 'border-rose text-rose-deep' },
-    { id: 'maybe', label: '아마 가능해요', icon: CircleHelp, color: 'border-warning text-warning' },
-    { id: 'no', label: '이번엔 어려워요', icon: XCircle, color: 'border-danger text-danger' },
+    { 
+      id: 'yes', 
+      label: '갈게요', 
+      icon: CheckCircle2, 
+      borderClass: 'border-rose', 
+      textClass: 'text-rose-deep' 
+    },
+    { 
+      id: 'maybe', 
+      label: '아마 가능해요', 
+      icon: CircleHelp, 
+      borderClass: 'border-warning', 
+      textClass: 'text-warning' 
+    },
+    { 
+      id: 'no', 
+      label: '이번엔 어려워요', 
+      icon: XCircle, 
+      borderClass: 'border-danger', 
+      textClass: 'text-danger' 
+    },
   ];
 
   const declineMessages = [
@@ -47,14 +65,14 @@ export const GuestAttendanceScreen = () => {
             onClick={() => setAttendance(opt.id as any)}
             className={`
               flex items-center gap-4 p-5 rounded-2xl border transition-all text-left bg-white
-              ${attendance === opt.id ? `border-[1.5px] shadow-sm ${opt.color.split(' ')[0]}` : 'border-ink-line hover:border-ink/30'}
+              ${attendance === opt.id ? `border-[1.5px] shadow-sm ${opt.borderClass}` : 'border-ink-line hover:border-ink/30'}
             `}
           >
-            <opt.icon size={28} className={attendance === opt.id ? opt.color.split(' ')[1] : 'text-ink-hint'} />
-            <span className={`flex-1 font-bold text-lg ${attendance === opt.id ? opt.color.split(' ')[1] : 'text-ink'}`}>
+            <opt.icon size={28} className={attendance === opt.id ? opt.textClass : 'text-ink-hint'} />
+            <span className={`flex-1 font-bold text-lg ${attendance === opt.id ? opt.textClass : 'text-ink'}`}>
               {opt.label}
             </span>
-            {attendance === opt.id && <Check size={24} className={opt.color.split(' ')[1]} strokeWidth={3} />}
+            {attendance === opt.id && <Check size={24} className={opt.textClass} strokeWidth={3} />}
           </button>
         ))}
       </div>

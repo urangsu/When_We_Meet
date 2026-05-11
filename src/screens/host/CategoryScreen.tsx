@@ -3,8 +3,13 @@ import { Card, Chip } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { ChevronLeft, Utensils, Coffee, Luggage, Cake, UsersRound, Pencil } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import type { MeetingCategory } from '../../types';
 
-const categories = [
+const categories: Array<{
+  id: MeetingCategory;
+  label: string;
+  icon: React.ComponentType<any>;
+}> = [
   { id: 'eat', label: '식사', icon: Utensils },
   { id: 'cafe', label: '카페', icon: Coffee },
   { id: 'travel', label: '여행', icon: Luggage },

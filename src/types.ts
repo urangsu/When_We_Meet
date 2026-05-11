@@ -1,4 +1,11 @@
-export type MeetingCategory = 'meal' | 'drink' | 'coffee' | 'study' | 'sports' | 'custom';
+export type MeetingCategory = 
+  | 'eat'
+  | 'cafe'
+  | 'travel'
+  | 'birthday'
+  | 'info'
+  | 'self';
+
 export type ThemeId = 'calendar-kiss' | 'invite-spark' | 'brunch-letter' | 'office-escape';
 export type AttendanceStatus = 'yes' | 'maybe' | 'no';
 

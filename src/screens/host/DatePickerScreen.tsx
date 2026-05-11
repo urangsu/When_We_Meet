@@ -8,6 +8,19 @@ import { CandidateDateChip } from '../../components/meeting/CandidateDateChip';
 import { CalendarProviderStatusRow } from '../../components/meeting/CalendarProviderStatusRow';
 import { busyDays } from '../../data/mockCalendar';
 
+// Prototype-only fixed month.
+// Replace with dynamic calendar month state when real calendar integration starts.
+const visibleYear = 2026;
+const visibleMonth = 6;
+
+const toDateKey = (day: number) =>
+  `${visibleYear}-${String(visibleMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+const getKoreanDayOfWeek = (day: number) => {
+  const date = new Date(visibleYear, visibleMonth - 1, day);
+  return ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
+};
+
 export const DatePickerScreen = () => {
   const [selectedDates, setSelectedDates] = useState<number[]>([]);
   const navigate = useNavigate();
@@ -25,7 +38,7 @@ export const DatePickerScreen = () => {
 
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="font-bold text-lg">2026년 6월</h3>
+          <h3 className="font-bold text-lg">{visibleYear}년 {visibleMonth}월</h3>
           <div className="flex gap-4">
             <button className="text-ink-hint hover:text-ink"><ChevronLeft size={20}/></button>
             <button className="text-ink-hint hover:text-ink"><ChevronRight size={20}/></button>
@@ -42,14 +55,15 @@ export const DatePickerScreen = () => {
           {Array.from({ length: 30 }).map((_, i) => {
             const day = i + 1;
             const isSelected = selectedDates.includes(day);
-            const isBusy = busyDays.includes(day);
+            const busyInfo = busyDays.find(item => item.dateKey === toDateKey(day));
+            const busyCount = busyInfo ? busyInfo.busyCount : 0;
 
             return (
               <CalendarDayCell 
                 key={day} 
                 day={day} 
                 isSelected={isSelected} 
-                isBusy={isBusy} 
+                busyCount={busyCount} 
                 onClick={() => toggleDate(day)} 
               />
             );
@@ -67,9 +81,9 @@ export const DatePickerScreen = () => {
       {selectedDates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
           {selectedDates.map(date => {
-            const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][date % 7];
+            const dayOfWeek = getKoreanDayOfWeek(date);
             return (
-              <CandidateDateChip key={date} date={`6월 ${date}일 (${dayOfWeek})`} onRemove={() => toggleDate(date)} />
+              <CandidateDateChip key={date} date={`${visibleMonth}월 ${date}일 (${dayOfWeek})`} onRemove={() => toggleDate(date)} />
             );
           })}
         </div>

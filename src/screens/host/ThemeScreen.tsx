@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft, Check, CalendarHeart, Sparkles, MailOpen, Briefcase } from 'lucide-react';
+import { ChevronLeft, Check, CalendarCheck, Sparkles, MailOpen, Briefcase } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import type { ThemeId } from '../../types';
 
-const themes = [
-  { id: 'calendar-kiss', label: 'Calendar Kiss', icon: CalendarHeart },
+const themes: Array<{
+  id: ThemeId;
+  label: string;
+  icon: React.ComponentType<any>;
+}> = [
+  { id: 'calendar-kiss', label: 'Calendar Kiss', icon: CalendarCheck },
   { id: 'invite-spark', label: 'Invite Spark', icon: Sparkles },
   { id: 'brunch-letter', label: 'Brunch Letter', icon: MailOpen },
   { id: 'office-escape', label: 'Office Escape', icon: Briefcase },
 ];
 
 export const ThemeScreen = () => {
-  const [selected, setSelected] = useState('calendar-kiss');
+  const [selected, setSelected] = useState<ThemeId>('calendar-kiss');
   const navigate = useNavigate();
 
   return (
@@ -22,28 +27,28 @@ export const ThemeScreen = () => {
         <h1 className="font-bold text-2xl">어떤 분위기가 좋은가요?</h1>
       </header>
 
-      <div className="flex gap-4 overflow-x-auto pb-4 -mx-5 px-5 no-scrollbar auto-cols-max">
+      <div className="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 no-scrollbar auto-cols-max">
         {themes.map((theme) => (
           <motion.button
             key={theme.id}
             whileTap={{ scale: 0.96 }}
             onClick={() => setSelected(theme.id)}
             className={`
-              relative min-w-[120px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
+              relative min-w-[100px] h-[112px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
               ${selected === theme.id ? 'border-rose shadow-sm text-rose-deep' : 'border-ink-line text-ink hover:border-ink/30'}
             `}
           >
-            <div className="mb-8">
-              <theme.icon size={24} className={selected === theme.id ? 'text-rose' : 'text-ink-hint'} />
+            <div className="mb-4">
+              <theme.icon size={22} className={selected === theme.id ? 'text-rose' : 'text-ink-hint'} />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-sm leading-tight max-w-[80px]">
+              <span className="font-bold text-[13px] leading-tight">
                 {theme.label.split(' ')[0]}<br/>{theme.label.split(' ')[1]}
               </span>
             </div>
             {selected === theme.id && (
               <div className="absolute top-4 right-4 text-rose">
-                <Check size={18} strokeWidth={3} />
+                <Check size={16} strokeWidth={3} />
               </div>
             )}
           </motion.button>
