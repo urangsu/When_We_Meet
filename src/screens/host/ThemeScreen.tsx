@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft, Check, CalendarCheck, Sparkles, MailOpen, Briefcase } from 'lucide-react';
+import { ChevronLeft, Check } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import type { ThemeId } from '../../types';
-
-const themes: Array<{
-  id: ThemeId;
-  label: string;
-  icon: React.ComponentType<any>;
-}> = [
-  { id: 'calendar-kiss', label: 'Calendar Kiss', icon: CalendarCheck },
-  { id: 'invite-spark', label: 'Invite Spark', icon: Sparkles },
-  { id: 'brunch-letter', label: 'Brunch Letter', icon: MailOpen },
-  { id: 'office-escape', label: 'Office Escape', icon: Briefcase },
-];
+import { themes } from '../../data/mockThemes';
 
 export const ThemeScreen = () => {
   const [selected, setSelected] = useState<ThemeId>('calendar-kiss');

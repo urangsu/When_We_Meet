@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import { Chip } from '../../components/Card';
@@ -6,28 +6,21 @@ import { useNavigate } from 'react-router-dom';
 import { CalendarDayCell } from '../../components/meeting/CalendarDayCell';
 import { CandidateDateChip } from '../../components/meeting/CandidateDateChip';
 import { CalendarProviderStatusRow } from '../../components/meeting/CalendarProviderStatusRow';
-import { busyDays } from '../../data/mockCalendar';
+import { calendarProviders } from '../../data/mockCalendar';
+import { useDateCandidatePicker } from '../../hooks/useDateCandidatePicker';
+import { getMonthDays, getMonthStartOffset } from '../../utils/calendar';
 
 // Prototype-only fixed month.
 // Replace with dynamic calendar month state when real calendar integration starts.
 const visibleYear = 2026;
 const visibleMonth = 6;
 
-const toDateKey = (day: number) =>
-  `${visibleYear}-${String(visibleMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-const getKoreanDayOfWeek = (day: number) => {
-  const date = new Date(visibleYear, visibleMonth - 1, day);
-  return ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
-};
-
 export const DatePickerScreen = () => {
-  const [selectedDates, setSelectedDates] = useState<number[]>([]);
+  const { selectedDates, toggleDate, selectedDateLabels, getBusyCount } = useDateCandidatePicker(visibleYear, visibleMonth);
   const navigate = useNavigate();
 
-  const toggleDate = (day: number) => {
-    setSelectedDates(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day].sort((a,b)=>a-b));
-  };
+  const daysInMonth = getMonthDays(visibleYear, visibleMonth);
+  const startOffset = getMonthStartOffset(visibleYear, visibleMonth);
 
   return (
     <div className="flex flex-col gap-6 h-full p-5 flex-1">
@@ -49,14 +42,13 @@ export const DatePickerScreen = () => {
           {['일', '월', '화', '수', '목', '금', '토'].map((day, i) => (
             <div key={day} className={`text-center text-xs font-bold ${i === 0 ? 'text-rose' : 'text-ink-hint'}`}>{day}</div>
           ))}
-          {Array.from({ length: 1 }).map((_, i) => (
+          {Array.from({ length: startOffset }).map((_, i) => (
             <div key={`empty-${i}`} />
           ))}
-          {Array.from({ length: 30 }).map((_, i) => {
+          {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
             const isSelected = selectedDates.includes(day);
-            const busyInfo = busyDays.find(item => item.dateKey === toDateKey(day));
-            const busyCount = busyInfo ? busyInfo.busyCount : 0;
+            const busyCount = getBusyCount(day);
 
             return (
               <CalendarDayCell 
@@ -70,7 +62,7 @@ export const DatePickerScreen = () => {
           })}
         </div>
         
-        <CalendarProviderStatusRow />
+        <CalendarProviderStatusRow providers={calendarProviders} />
       </div>
 
       <div className="flex gap-2">
@@ -78,12 +70,11 @@ export const DatePickerScreen = () => {
         <Chip onClick={() => {}}>겹치는 일정 적은 순</Chip>
       </div>
 
-      {selectedDates.length > 0 && (
+      {selectedDateLabels.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-          {selectedDates.map(date => {
-            const dayOfWeek = getKoreanDayOfWeek(date);
+          {selectedDateLabels.map(({ day, label }) => {
             return (
-              <CandidateDateChip key={date} date={`${visibleMonth}월 ${date}일 (${dayOfWeek})`} onRemove={() => toggleDate(date)} />
+              <CandidateDateChip key={day} date={label} onRemove={() => toggleDate(day)} />
             );
           })}
         </div>

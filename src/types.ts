@@ -10,7 +10,7 @@ export type ThemeId = 'calendar-kiss' | 'invite-spark' | 'brunch-letter' | 'offi
 export type AttendanceStatus = 'yes' | 'maybe' | 'no';
 
 export interface MeetingData {
-  category: MeetingCategory | string;
+  category: MeetingCategory;
   isRecurring: boolean;
   name: string;
   message: string;
