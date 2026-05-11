@@ -6,9 +6,13 @@ import { DebugNavigator } from '../components/debug/DebugNavigator';
 
 export const HostAppLayout = () => {
   const location = useLocation();
-  const activeTab = location.pathname.startsWith('/app/create') 
-    ? 'create' 
-    : location.pathname === '/app' ? 'home' : '';
+  const activeTab = location.pathname === '/app' 
+    ? 'home' 
+    : location.pathname.includes('calendar')
+      ? 'calendar'
+      : location.pathname.includes('me')
+        ? 'me'
+        : '';
 
   const enableDebugOverlay = false;
 

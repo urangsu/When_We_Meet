@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Calendar, User, PlusCircle, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { Home, Calendar, User, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const BottomNav = ({ activeTab }: { activeTab: string }) => {
@@ -8,7 +8,6 @@ export const BottomNav = ({ activeTab }: { activeTab: string }) => {
   const tabs = [
     { id: 'home', icon: Home, label: '홈', path: '/app' },
     { id: 'calendar', icon: Calendar, label: '달력', path: '/app' },
-    { id: 'create', icon: PlusCircle, label: '만들기', primary: true, path: '/app/create/category' },
     { id: 'me', icon: User, label: '내 정보', path: '/app' },
   ];
 
@@ -18,13 +17,10 @@ export const BottomNav = ({ activeTab }: { activeTab: string }) => {
         <button
           key={tab.id}
           onClick={() => navigate(tab.path)}
-          className={`
-            flex flex-col items-center gap-1 group
-            ${tab.primary ? 'relative -top-4 bg-rose text-white p-3 rounded-full shadow-md' : 'text-ink-hint'}
-          `}
+          className="flex flex-col items-center gap-1 group text-ink-hint"
         >
-          <tab.icon className={activeTab === tab.id && !tab.primary ? 'text-rose' : ''} size={tab.primary ? 28 : 24} />
-          {!tab.primary && <span className={`text-[10px] ${activeTab === tab.id ? 'text-rose font-semibold' : ''}`}>{tab.label}</span>}
+          <tab.icon className={activeTab === tab.id ? 'text-rose' : ''} size={24} />
+          <span className={`text-[10px] ${activeTab === tab.id ? 'text-rose font-semibold' : ''}`}>{tab.label}</span>
         </button>
       ))}
     </nav>
