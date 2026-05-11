@@ -33,6 +33,10 @@ export const Button = ({ variant = 'primary', size = 'md', children, className =
       whileTap={props.disabled ? undefined : { scale: 0.98 }}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className} ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       {...props}
+      onClick={(e) => {
+        console.log('[Button click]', children);
+        props.onClick?.(e);
+      }}
     >
       {children}
     </motion.button>
