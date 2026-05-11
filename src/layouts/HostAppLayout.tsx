@@ -10,10 +10,12 @@ export const HostAppLayout = () => {
     ? 'create' 
     : location.pathname === '/app' ? 'home' : '';
 
+  const enableDebugOverlay = false;
+
   return (
     <div className="max-w-md mx-auto min-h-dvh bg-bg-app overflow-x-hidden relative font-sans text-ink">
-      <RouteDebug />
-      <DebugNavigator />
+      {enableDebugOverlay && <RouteDebug />}
+      {enableDebugOverlay && <DebugNavigator />}
       <main className="flex flex-col min-h-dvh">
         <Outlet />
       </main>

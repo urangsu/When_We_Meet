@@ -7,6 +7,8 @@ import { mockMeetings } from '../../data/mockMeetings';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 
+import { profileColorOptions } from '../../config/profileColorOptions';
+
 export const HomeScreen = () => {
   const navigate = useNavigate();
 
@@ -40,14 +42,26 @@ export const HomeScreen = () => {
                   </div>
                 </div>
                 <div className="flex -space-x-2">
-                  {[1, 2].map((_, i) => (
-                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-cream flex items-center justify-center text-[10px] font-bold text-ink-muted">
-                      {['유', '지'][i]}
+                  {meeting.participants.map((participant) => {
+                    const color = profileColorOptions.find(c => c.id === participant.colorId) || profileColorOptions[6]; // default gray
+                    return (
+                      <div 
+                        key={participant.id} 
+                        className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold shadow-sm"
+                        style={{
+                          backgroundColor: color.bg,
+                          color: color.text,
+                        }}
+                      >
+                        {participant.name.charAt(0)}
+                      </div>
+                    );
+                  })}
+                  {meeting.guests > meeting.participants.length && (
+                    <div className="w-8 h-8 rounded-full border-2 border-white bg-white text-ink-hint text-[10px] font-bold flex items-center justify-center shadow-sm">
+                      +{meeting.guests - meeting.participants.length}
                     </div>
-                  ))}
-                  <div className="w-8 h-8 rounded-full border-2 border-white bg-white text-ink-hint text-[10px] flex items-center justify-center shadow-sm">
-                    +6
-                  </div>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2 items-center">
