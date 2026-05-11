@@ -12,7 +12,7 @@ export const CategoryScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <ScreenShell hasBottomCTA className="gap-8">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">어떤 모임을 만들까요?</h1>
@@ -47,7 +47,7 @@ export const CategoryScreen = () => {
         </button>
       </div>
 
-      <BottomCTA>
+      <BottomCTA withBottomNav>
         <Button onClick={() => navigate('/app/create/info')} size="full">시작하기</Button>
       </BottomCTA>
     </ScreenShell>

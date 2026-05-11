@@ -14,7 +14,7 @@ export const DatePickerScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <ScreenShell hasBottomCTA className="gap-6">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-6">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">언제 만날까요?</h1>
@@ -26,6 +26,7 @@ export const DatePickerScreen = () => {
         providers={calendarProviders}
         busyDays={busyDays}
         onSubmit={() => navigate('/app/create/preview')}
+        withBottomNav
       />
     </ScreenShell>
   );

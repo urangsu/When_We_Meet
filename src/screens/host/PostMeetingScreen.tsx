@@ -10,7 +10,7 @@ export const PostMeetingScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <ScreenShell hasBottomCTA className="gap-10 items-center justify-center text-center p-5 pt-20">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-10 items-center justify-center text-center p-5 pt-20">
       <motion.div 
         animate={{ 
           y: [0, -10, 0],
@@ -61,7 +61,7 @@ export const PostMeetingScreen = () => {
         </button>
       </div>
 
-      <BottomCTA>
+      <BottomCTA withBottomNav>
         <Button variant="ghost" onClick={() => navigate('/app')} size="full">나중에 하기</Button>
       </BottomCTA>
     </ScreenShell>

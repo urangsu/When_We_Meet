@@ -14,7 +14,7 @@ export const MeetingInfoScreen = () => {
   const isValid = name.length > 0 && message.length > 0;
 
   return (
-    <ScreenShell hasBottomCTA className="gap-8">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">모임 정보를 알려주세요</h1>
@@ -58,7 +58,7 @@ export const MeetingInfoScreen = () => {
         </div>
       </div>
 
-      <BottomCTA>
+      <BottomCTA withBottomNav>
         <Button 
           disabled={!isValid} 
           onClick={() => navigate('/app/create/theme')} 

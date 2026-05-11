@@ -16,6 +16,7 @@ interface CalendarCandidatePickerProps {
   providers: CalendarProvider[];
   busyDays: BusyDay[];
   onSubmit: (selectedDates: number[]) => void;
+  withBottomNav?: boolean;
 }
 
 export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = ({
@@ -23,7 +24,8 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
   month,
   providers,
   busyDays,
-  onSubmit
+  onSubmit,
+  withBottomNav = false,
 }) => {
   const { selectedDates, toggleDate, selectedDateLabels, getBusyCount } = useDateCandidatePicker(year, month, busyDays);
   const daysInMonth = getMonthDays(year, month);
@@ -82,7 +84,7 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
         </div>
       )}
 
-      <BottomCTA>
+      <BottomCTA withBottomNav={withBottomNav}>
         <Button 
           disabled={selectedDates.length === 0} 
           onClick={() => onSubmit(selectedDates)} 

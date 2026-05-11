@@ -23,7 +23,7 @@ export const DashboardScreen = () => {
   ];
 
   return (
-    <ScreenShell hasBottomCTA className="gap-8">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
       <header className="flex items-center justify-between pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
@@ -79,7 +79,7 @@ export const DashboardScreen = () => {
         <p className="text-sm text-ink-muted font-medium">가장 많은 친구들이 참석 가능해요! ✨</p>
       </Card>
 
-      <BottomCTA>
+      <BottomCTA withBottomNav>
         <Button onClick={() => navigate('/app/meetings/demo/post-meeting')} size="full">이 날짜로 확정하기</Button>
       </BottomCTA>
     </ScreenShell>

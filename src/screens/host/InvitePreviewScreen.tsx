@@ -9,7 +9,7 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
   return (
-    <ScreenShell hasBottomCTA className="gap-6">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-6">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">초대장 미리보기</h1>
@@ -62,7 +62,7 @@ export const InvitePreviewScreen = () => {
         </motion.div>
       </div>
 
-      <BottomCTA>
+      <BottomCTA withBottomNav>
         <div className="flex flex-col gap-3 w-full">
           <p className="text-center text-xs text-ink-hint">초대장을 보내기 전 마지막으로 확인해 주세요</p>
           <Button onClick={() => navigate('/app/create/share')} size="full">

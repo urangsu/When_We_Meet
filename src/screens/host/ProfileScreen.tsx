@@ -18,7 +18,7 @@ export const ProfileScreen = () => {
   const navigate = useNavigate();
 
   return (
-    <ScreenShell hasBottomCTA className="gap-8">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">프로필을 선택해 주세요</h1>
@@ -52,7 +52,7 @@ export const ProfileScreen = () => {
         ))}
       </div>
 
-      <BottomCTA>
+      <BottomCTA withBottomNav>
         <Button onClick={() => navigate('/app/create/dates')} size="full">다음 · 날짜 고르기</Button>
       </BottomCTA>
     </ScreenShell>
