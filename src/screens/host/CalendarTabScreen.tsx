@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { Calendar } from 'lucide-react';
+import { mockMeetings } from '../../data/mockMeetings';
 
 export const CalendarTabScreen = () => {
   return (
@@ -20,27 +21,27 @@ export const CalendarTabScreen = () => {
 
         <h2 className="font-semibold text-lg mt-4 mb-2 pl-1">이번 달 모임</h2>
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-ink-line/50 flex flex-col gap-4">
-          <div className="flex gap-4 items-center">
-            <div className="flex flex-col items-center justify-center bg-bg-app rounded-xl w-14 h-14">
-              <span className="text-xs text-rose font-bold">6월</span>
-              <span className="text-xl font-bold text-ink">15</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="font-bold text-ink">주말 한강 피크닉</span>
-              <span className="text-xs text-ink-hint">오후 2:00</span>
-            </div>
-          </div>
-          <div className="border-t border-ink-line/50"></div>
-          <div className="flex gap-4 items-center">
-            <div className="flex flex-col items-center justify-center bg-bg-app rounded-xl w-14 h-14">
-              <span className="text-xs text-rose font-bold">6월</span>
-              <span className="text-xl font-bold text-ink">21</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="font-bold text-ink">수민이의 생일 모임</span>
-              <span className="text-xs text-ink-hint">오후 6:30</span>
-            </div>
-          </div>
+          {mockMeetings.map((meeting, index) => {
+            // Rough parsing of date "6월 15일 (일)"
+            const match = meeting.date.match(/(\d+)월\s*(\d+)일/);
+            const month = match ? `${match[1]}월` : '월';
+            const day = match ? match[2] : '일';
+            return (
+              <React.Fragment key={meeting.id}>
+                {index > 0 && <div className="border-t border-ink-line/50"></div>}
+                <div className="flex gap-4 items-center">
+                  <div className="flex flex-col items-center justify-center bg-bg-app rounded-xl w-14 h-14">
+                    <span className="text-xs text-rose font-bold">{month}</span>
+                    <span className="text-xl font-bold text-ink">{day}</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-bold text-ink">{meeting.title}</span>
+                    <span className="text-xs text-ink-hint">시간 미정</span>
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
     </ScreenShell>

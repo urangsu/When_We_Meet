@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { mockMeetings } from '../../data/mockMeetings';
-import { Clock, MessageCircle } from 'lucide-react';
-import { profileColorOptions } from '../../config/profileColorOptions';
+import { MeetingSummaryCard } from '../../components/meeting/MeetingSummaryCard';
+import { useNavigate } from 'react-router-dom';
+
+type MeetingFilter = 'all' | 'ongoing' | 'waiting' | 'past';
 
 export const MeetingsScreen = () => {
+  const [filter, setFilter] = useState<MeetingFilter>('all');
+  const navigate = useNavigate();
+
+  const filteredMeetings = mockMeetings.filter((meeting) => {
+    if (filter === 'all') return true;
+    if (filter === 'past') return false; // mockMeetings does not have past status yet
+    return meeting.status === filter;
+  });
+
   return (
     <ScreenShell withBottomNav className="bg-bg-app">
       <header className="px-5 pt-8 pb-4">
@@ -17,53 +28,48 @@ export const MeetingsScreen = () => {
       <div className="px-5 pb-4">
         {/* Chips */}
         <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-1">
-          <button className="px-4 py-2 bg-ink text-white rounded-full text-sm font-semibold whitespace-nowrap">전체</button>
-          <button className="px-4 py-2 bg-white border border-ink-line text-ink-hint rounded-full text-sm font-medium whitespace-nowrap">진행 중</button>
-          <button className="px-4 py-2 bg-white border border-ink-line text-ink-hint rounded-full text-sm font-medium whitespace-nowrap">응답 대기</button>
-          <button className="px-4 py-2 bg-white border border-ink-line text-ink-hint rounded-full text-sm font-medium whitespace-nowrap">지난 모임</button>
+          <button 
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${filter === 'all' ? 'bg-ink text-white' : 'bg-white border border-ink-line text-ink-hint'}`}
+          >
+            전체
+          </button>
+          <button 
+            onClick={() => setFilter('ongoing')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${filter === 'ongoing' ? 'bg-ink text-white' : 'bg-white border border-ink-line text-ink-hint'}`}
+          >
+            진행 중
+          </button>
+          <button 
+            onClick={() => setFilter('waiting')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${filter === 'waiting' ? 'bg-ink text-white' : 'bg-white border border-ink-line text-ink-hint'}`}
+          >
+            응답 대기
+          </button>
+          <button 
+            onClick={() => setFilter('past')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${filter === 'past' ? 'bg-ink text-white' : 'bg-white border border-ink-line text-ink-hint'}`}
+          >
+            지난 모임
+          </button>
         </div>
 
         <div className="flex flex-col gap-4">
-          {mockMeetings.map((meeting) => (
-            <div key={meeting.id} className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line/50">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex flex-col gap-1.5">
-                  <h3 className="font-bold text-lg">{meeting.title}</h3>
-                  <div className="flex items-center gap-3 text-sm text-ink-muted">
-                    <span className="flex items-center gap-1"><Clock size={14}/> {meeting.date}</span>
-                    <span className="flex items-center gap-1"><MessageCircle size={14}/> {meeting.guests}명 응답</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex -space-x-2">
-                  {meeting.participants.map((participant) => {
-                    const color = profileColorOptions.find(c => c.id === participant.colorId) || profileColorOptions[6];
-                    return (
-                      <div 
-                        key={participant.id} 
-                        className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold shadow-sm"
-                        style={{
-                          backgroundColor: color.bg,
-                          color: color.text,
-                        }}
-                      >
-                        {participant.name.charAt(0)}
-                      </div>
-                    );
-                  })}
-                  {meeting.guests > meeting.participants.length && (
-                    <div className="w-8 h-8 rounded-full border-2 border-white bg-white text-ink-hint text-[10px] font-bold flex items-center justify-center shadow-sm">
-                      +{meeting.guests - meeting.participants.length}
-                    </div>
-                  )}
-                </div>
-                <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${meeting.status === 'ongoing' ? 'bg-rose-light border-rose text-rose-deep' : 'bg-bg-app border-ink-line text-ink-hint'}`}>
-                  {meeting.status === 'ongoing' ? '일정 조율 중' : '응답 대기'}
-                </div>
-              </div>
-            </div>
-          ))}
+          {filter === 'past' || filteredMeetings.length === 0 ? (
+             <div className="flex flex-col items-center justify-center py-12 text-center text-ink-hint">
+               <p className="font-medium text-ink-muted mb-1">아직 모임이 없어요.</p>
+               <p className="text-sm">모임이 끝나면 여기에서 다시 볼 수 있어요.</p>
+             </div>
+          ) : (
+            filteredMeetings.map((meeting) => (
+              <MeetingSummaryCard 
+                key={meeting.id} 
+                meeting={meeting} 
+                variant="list"
+                onOpen={() => navigate('/app/meetings/demo/dashboard')} 
+              />
+            ))
+          )}
         </div>
       </div>
     </ScreenShell>
