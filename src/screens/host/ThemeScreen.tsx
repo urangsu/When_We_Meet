@@ -26,7 +26,7 @@ export const ThemeScreen = () => {
             whileTap={{ scale: 0.96 }}
             onClick={() => setSelected(theme.id)}
             className={`
-              relative min-w-[100px] h-[112px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
+              relative min-w-[96px] h-[104px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
               ${selected === theme.id ? 'border-rose shadow-sm text-rose-deep' : 'border-ink-line text-ink hover:border-ink/30'}
             `}
           >
@@ -39,7 +39,7 @@ export const ThemeScreen = () => {
               </span>
             </div>
             {selected === theme.id && (
-              <div className="absolute top-4 right-4 text-rose">
+              <div className="absolute top-3 right-3 text-rose">
                 <Check size={16} strokeWidth={3} />
               </div>
             )}

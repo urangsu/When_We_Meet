@@ -66,7 +66,7 @@ export const GuestAttendanceScreen = () => {
             key={opt.id}
             onClick={() => setAttendance(opt.id as any)}
             className={`
-              flex items-center gap-4 p-5 rounded-2xl border transition-all text-left bg-white
+              flex items-center gap-4 p-4 rounded-2xl border transition-all text-left bg-white
               ${attendance === opt.id ? `border-[1.5px] shadow-sm ${opt.borderClass}` : 'border-ink-line hover:border-ink/30'}
             `}
           >

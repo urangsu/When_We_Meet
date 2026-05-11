@@ -42,7 +42,7 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
           </div>
         </div>
 
-        <div className="grid grid-cols-7 gap-y-4 gap-x-1 mb-6">
+        <div className="grid grid-cols-7 gap-y-3 gap-x-1 mb-6">
           {['일', '월', '화', '수', '목', '금', '토'].map((day, i) => (
             <div key={day} className={`text-center text-xs font-bold ${i === 0 ? 'text-rose' : 'text-ink-hint'}`}>{day}</div>
           ))}

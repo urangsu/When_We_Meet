@@ -16,7 +16,7 @@ export const CalendarDayCell: React.FC<{
       onClick={onClick}
       className={`
         relative aspect-square rounded-xl flex flex-col items-center justify-center text-sm font-bold transition-all
-        ${isSelected ? 'bg-rose text-white shadow-md scale-110 z-10' : 'bg-transparent text-ink hover:bg-ivory'}
+        ${isSelected ? 'bg-rose text-white shadow-md scale-105 z-10' : 'bg-transparent text-ink hover:bg-ivory'}
       `}
     >
       {day}

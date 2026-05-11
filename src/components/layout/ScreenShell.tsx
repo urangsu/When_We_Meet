@@ -7,9 +7,6 @@ interface ScreenShellProps {
   hasBottomCTA?: boolean;
 }
 
-const BOTTOM_NAV_HEIGHT = 88;
-const BOTTOM_CTA_HEIGHT = 88; // Ensure we reserve enough height if CTA is fixed, although BottomCTA will take space in document or overlay. If fixed, we need padding.
-
 export const ScreenShell: React.FC<ScreenShellProps> = ({
   children,
   className = '',
@@ -20,7 +17,7 @@ export const ScreenShell: React.FC<ScreenShellProps> = ({
   let pbClass = 'pb-safe-bottom';
   
   if (withBottomNav && hasBottomCTA) {
-    pbClass = 'pb-[180px]'; // approximated height for CTA + Nav
+    pbClass = 'pb-[160px]'; // approximated height for CTA + Nav
   } else if (withBottomNav) {
     pbClass = 'pb-[88px]'; // BOTTOM_NAV_HEIGHT
   } else if (hasBottomCTA) {
