@@ -4,11 +4,9 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   variant?: 'default' | 'ivory' | 'glass';
-  key?: string | number;
-  onClick?: () => void;
 }
 
-export const Card = ({ children, className = '', variant = 'default', onClick }: CardProps) => {
+export const Card: React.FC<CardProps> = ({ children, className = '', variant = 'default' }) => {
   const styles = {
     default: "bg-white rounded-2xl p-6 shadow-warm border border-ink-line",
     ivory: "bg-ivory rounded-2xl p-6 border border-ink-line",
@@ -16,7 +14,7 @@ export const Card = ({ children, className = '', variant = 'default', onClick }:
   };
 
   return (
-    <div onClick={onClick} className={`${styles[variant]} ${className}`}>
+    <div className={`${styles[variant]} ${className}`}>
       {children}
     </div>
   );
@@ -27,10 +25,9 @@ interface ChipProps {
   selected?: boolean;
   onClick?: () => void;
   className?: string;
-  key?: string | number;
 }
 
-export const Chip = ({ children, selected, onClick, className = '' }: ChipProps) => {
+export const Chip: React.FC<ChipProps> = ({ children, selected, onClick, className = '' }) => {
   return (
     <button
       onClick={onClick}

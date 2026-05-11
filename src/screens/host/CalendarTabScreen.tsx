@@ -22,10 +22,24 @@ export const CalendarTabScreen = () => {
         <h2 className="font-semibold text-lg mt-4 mb-2 pl-1">이번 달 모임</h2>
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-ink-line/50 flex flex-col gap-4">
           {mockMeetings.map((meeting, index) => {
-            // Rough parsing of date "6월 15일 (일)"
-            const match = meeting.date.match(/(\d+)월\s*(\d+)일/);
-            const month = match ? `${match[1]}월` : '월';
-            const day = match ? match[2] : '일';
+            let month = '월';
+            let day = '일';
+
+            if (meeting.dateKey) {
+              const parts = meeting.dateKey.split('-');
+              if (parts.length === 3) {
+                month = `${parseInt(parts[1], 10)}월`;
+                day = `${parseInt(parts[2], 10)}`;
+              }
+            } else {
+              // Rough parsing of date "6월 15일 (일)"
+              const match = meeting.date.match(/(\d+)월\s*(\d+)일/);
+              month = match ? `${match[1]}월` : '월';
+              day = match ? match[2] : '일';
+            }
+
+            const timeLabel = meeting.timeLabel || '시간 미정';
+
             return (
               <React.Fragment key={meeting.id}>
                 {index > 0 && <div className="border-t border-ink-line/50"></div>}
@@ -36,7 +50,7 @@ export const CalendarTabScreen = () => {
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="font-bold text-ink">{meeting.title}</span>
-                    <span className="text-xs text-ink-hint">시간 미정</span>
+                    <span className="text-xs text-ink-hint">{timeLabel}</span>
                   </div>
                 </div>
               </React.Fragment>

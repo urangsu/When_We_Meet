@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Participant } from '../../data/mockMeetings';
+import type { Participant } from '../../types/meeting';
 import { InitialAvatar } from './InitialAvatar';
 
 interface InitialAvatarGroupProps {

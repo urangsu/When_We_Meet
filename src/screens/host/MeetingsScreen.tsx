@@ -12,7 +12,6 @@ export const MeetingsScreen = () => {
 
   const filteredMeetings = mockMeetings.filter((meeting) => {
     if (filter === 'all') return true;
-    if (filter === 'past') return false; // mockMeetings does not have past status yet
     return meeting.status === filter;
   });
 
@@ -55,7 +54,7 @@ export const MeetingsScreen = () => {
         </div>
 
         <div className="flex flex-col gap-4">
-          {filter === 'past' || filteredMeetings.length === 0 ? (
+          {filteredMeetings.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-12 text-center text-ink-hint">
                <p className="font-medium text-ink-muted mb-1">아직 모임이 없어요.</p>
                <p className="text-sm">모임이 끝나면 여기에서 다시 볼 수 있어요.</p>
