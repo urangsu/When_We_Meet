@@ -8,6 +8,8 @@ export type MeetingCategory =
 
 export type ThemeId = 'calendar-kiss' | 'invite-spark' | 'brunch-letter' | 'office-escape';
 export type AttendanceStatus = 'yes' | 'maybe' | 'no';
+export type ProfileColorId = 'white' | 'black' | 'pink' | 'skyblue' | 'beige' | 'red' | 'gray';
+
 
 export type {
   CalendarProviderId,
