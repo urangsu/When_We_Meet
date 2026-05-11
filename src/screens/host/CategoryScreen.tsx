@@ -3,7 +3,7 @@ import { Card, Chip } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { categories } from '../../data/mockCategories';
+import { categoryOptions } from '../../config/categoryOptions';
 
 export const CategoryScreen = () => {
   const [selected, setSelected] = useState('eat');
@@ -18,7 +18,7 @@ export const CategoryScreen = () => {
       </header>
 
       <div className="grid grid-cols-2 gap-4">
-        {categories.map((cat) => (
+        {categoryOptions.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setSelected(cat.id)}

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { getKoreanDayOfWeek, toDateKey } from '../utils/calendar';
-import { busyDays } from '../data/mockCalendar';
+import type { BusyDayMock } from '../data/mockCalendar';
 
-export const useDateCandidatePicker = (year: number, month: number) => {
+export const useDateCandidatePicker = (year: number, month: number, busyDays: BusyDayMock[]) => {
   const [selectedDates, setSelectedDates] = useState<number[]>([]);
 
   const toggleDate = (day: number) => {

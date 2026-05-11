@@ -4,7 +4,7 @@ import { ChevronLeft, Check } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import type { ThemeId } from '../../types';
-import { themes } from '../../data/mockThemes';
+import { themeOptions } from '../../config/themeOptions';
 
 export const ThemeScreen = () => {
   const [selected, setSelected] = useState<ThemeId>('calendar-kiss');
@@ -18,7 +18,7 @@ export const ThemeScreen = () => {
       </header>
 
       <div className="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 no-scrollbar auto-cols-max">
-        {themes.map((theme) => (
+        {themeOptions.map((theme) => (
           <motion.button
             key={theme.id}
             whileTap={{ scale: 0.96 }}

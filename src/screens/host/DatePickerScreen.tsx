@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { CalendarDayCell } from '../../components/meeting/CalendarDayCell';
 import { CandidateDateChip } from '../../components/meeting/CandidateDateChip';
 import { CalendarProviderStatusRow } from '../../components/meeting/CalendarProviderStatusRow';
-import { calendarProviders } from '../../data/mockCalendar';
+import { calendarProviders, busyDays } from '../../data/mockCalendar';
 import { useDateCandidatePicker } from '../../hooks/useDateCandidatePicker';
 import { getMonthDays, getMonthStartOffset } from '../../utils/calendar';
 
@@ -16,7 +16,7 @@ const visibleYear = 2026;
 const visibleMonth = 6;
 
 export const DatePickerScreen = () => {
-  const { selectedDates, toggleDate, selectedDateLabels, getBusyCount } = useDateCandidatePicker(visibleYear, visibleMonth);
+  const { selectedDates, toggleDate, selectedDateLabels, getBusyCount } = useDateCandidatePicker(visibleYear, visibleMonth, busyDays);
   const navigate = useNavigate();
 
   const daysInMonth = getMonthDays(visibleYear, visibleMonth);

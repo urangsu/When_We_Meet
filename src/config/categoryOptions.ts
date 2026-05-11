@@ -1,12 +1,14 @@
+import React from 'react';
 import { Utensils, Coffee, Luggage, Cake, UsersRound, Pencil } from 'lucide-react';
 import type { MeetingCategory } from '../types';
-import React from 'react';
 
-export const categories: Array<{
+export interface CategoryOption {
   id: MeetingCategory;
   label: string;
   icon: React.ComponentType<any>;
-}> = [
+}
+
+export const categoryOptions: CategoryOption[] = [
   { id: 'eat', label: '식사', icon: Utensils },
   { id: 'cafe', label: '카페', icon: Coffee },
   { id: 'travel', label: '여행', icon: Luggage },
