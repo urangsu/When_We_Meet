@@ -4,15 +4,17 @@ import { BottomNav } from '../components/Navigation';
 import { RouteDebug } from '../components/debug/RouteDebug';
 import { DebugNavigator } from '../components/debug/DebugNavigator';
 
+const getActiveTab = (pathname: string) => {
+  if (pathname === '/app') return 'home';
+  if (pathname.startsWith('/app/meetings')) return 'meetings';
+  if (pathname.startsWith('/app/calendar')) return 'calendar';
+  if (pathname.startsWith('/app/me')) return 'me';
+  return '';
+};
+
 export const HostAppLayout = () => {
   const location = useLocation();
-  const activeTab = location.pathname === '/app' 
-    ? 'home' 
-    : location.pathname.includes('calendar')
-      ? 'calendar'
-      : location.pathname.includes('me')
-        ? 'me'
-        : '';
+  const activeTab = getActiveTab(location.pathname);
 
   const enableDebugOverlay = false;
 

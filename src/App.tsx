@@ -16,6 +16,9 @@ import { InvitePreviewScreen } from './screens/host/InvitePreviewScreen';
 import { ShareScreen } from './screens/host/ShareScreen';
 import { DashboardScreen } from './screens/host/DashboardScreen';
 import { PostMeetingScreen } from './screens/host/PostMeetingScreen';
+import { MeetingsScreen } from './screens/host/MeetingsScreen';
+import { CalendarTabScreen } from './screens/host/CalendarTabScreen';
+import { MyPageScreen } from './screens/host/MyPageScreen';
 
 // Guest Screens
 import { InviteLandingScreen } from './screens/guest/InviteLandingScreen';
@@ -35,6 +38,9 @@ export default function App() {
         {/* Host App Flow */}
         <Route path="/app" element={<HostAppLayout />}>
           <Route index element={<HomeScreen />} />
+          <Route path="meetings" element={<MeetingsScreen />} />
+          <Route path="calendar" element={<CalendarTabScreen />} />
+          <Route path="me" element={<MyPageScreen />} />
           <Route path="create/category" element={<CategoryScreen />} />
           <Route path="create/info" element={<MeetingInfoScreen />} />
           <Route path="create/theme" element={<ThemeScreen />} />

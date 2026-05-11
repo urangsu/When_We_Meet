@@ -27,7 +27,12 @@ export const HomeScreen = () => {
           <h2 className="font-semibold text-lg flex items-center gap-2">
             진행 중인 모임 <span className="text-rose text-sm">2</span>
           </h2>
-          <button className="text-ink-hint text-sm flex items-center">전체보기 <ChevronRight size={16}/></button>
+          <button 
+            onClick={() => navigate('/app/meetings')}
+            className="text-ink-hint text-sm flex items-center"
+          >
+            전체보기 <ChevronRight size={16}/>
+          </button>
         </div>
         
         <div className="flex flex-col gap-4">

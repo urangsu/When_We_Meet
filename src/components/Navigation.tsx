@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Calendar, User, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { Home, Calendar, User, UsersRound, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const BottomNav = ({ activeTab }: { activeTab: string }) => {
@@ -7,8 +7,9 @@ export const BottomNav = ({ activeTab }: { activeTab: string }) => {
 
   const tabs = [
     { id: 'home', icon: Home, label: '홈', path: '/app' },
-    { id: 'calendar', icon: Calendar, label: '달력', path: '/app' },
-    { id: 'me', icon: User, label: '내 정보', path: '/app' },
+    { id: 'meetings', icon: UsersRound, label: '모임', path: '/app/meetings' },
+    { id: 'calendar', icon: Calendar, label: '달력', path: '/app/calendar' },
+    { id: 'me', icon: User, label: '내 정보', path: '/app/me' },
   ];
 
   return (
