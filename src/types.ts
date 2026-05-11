@@ -9,6 +9,12 @@ export type MeetingCategory =
 export type ThemeId = 'calendar-kiss' | 'invite-spark' | 'brunch-letter' | 'office-escape';
 export type AttendanceStatus = 'yes' | 'maybe' | 'no';
 
+export type {
+  CalendarProviderId,
+  CalendarProvider,
+  BusyDay,
+} from './types/calendar';
+
 export interface MeetingData {
   category: MeetingCategory;
   isRecurring: boolean;

@@ -1,13 +1,8 @@
 import React from 'react';
 import { CheckCircle2, PlusCircle } from 'lucide-react';
+import type { CalendarProvider } from '../../types';
 
-export interface CalendarProviderInfo {
-  id: string;
-  label: string;
-  connected: boolean;
-}
-
-export const CalendarProviderStatusRow: React.FC<{ providers: CalendarProviderInfo[] }> = ({ providers }) => {
+export const CalendarProviderStatusRow: React.FC<{ providers: CalendarProvider[] }> = ({ providers }) => {
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {providers.map(provider => (

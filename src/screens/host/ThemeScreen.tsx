@@ -33,7 +33,7 @@ export const ThemeScreen = () => {
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-[13px] leading-tight">
-                {theme.label.split(' ')[0]}<br/>{theme.label.split(' ')[1]}
+                {theme.lines[0]}<br/>{theme.lines[1]}
               </span>
             </div>
             {selected === theme.id && (

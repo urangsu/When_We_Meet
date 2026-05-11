@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Card, Chip } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
