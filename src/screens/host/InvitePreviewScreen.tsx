@@ -8,10 +8,12 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { categoryOptions } from '../../config/categoryOptions';
 import { getActivityDisplayItems } from '../../utils/activity';
+import { getDateMessageContext } from '../../utils/dateContext';
+import { getDateAwareHostMessageSuggestions } from '../../config/hostMessageSuggestions';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
-  const { draft } = useCreateMeetingDraft();
+  const { draft, updateDraft } = useCreateMeetingDraft();
   
   const selectedCategory = categoryOptions.find(c => c.id === draft.category);
   const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
@@ -19,6 +21,9 @@ export const InvitePreviewScreen = () => {
   const activityItems = draft.activityIds.length > 0 
     ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
     : [];
+
+  const messageContext = getDateMessageContext(draft.dateLabels, draft.timeLabels, draft.activityIds);
+  const smartSuggestions = getDateAwareHostMessageSuggestions(messageContext);
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
@@ -27,7 +32,22 @@ export const InvitePreviewScreen = () => {
         <h1 className="font-bold text-2xl">초대장 미리보기</h1>
       </header>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-10">
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-10 gap-6 flex flex-col">
+        <section className="rounded-2xl border border-line bg-surface-warm p-4">
+          <p className="text-xs font-bold text-ink-hint mb-3">초대 문구 추천</p>
+          <div className="flex flex-wrap gap-2">
+            {smartSuggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                onClick={() => updateDraft({ hostMessage: suggestion })}
+                className="px-3 py-1.5 bg-surface text-ink text-xs font-semibold rounded-full border border-line shadow-soft"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        </section>
+        
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

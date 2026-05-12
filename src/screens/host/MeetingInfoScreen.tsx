@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { baseHostMessageSuggestions } from '../../config/hostMessageSuggestions';
 
 export const MeetingInfoScreen = () => {
   const { draft, updateDraft } = useCreateMeetingDraft();
@@ -12,15 +13,17 @@ export const MeetingInfoScreen = () => {
   const [message, setMessage] = useState(draft.hostMessage);
   const navigate = useNavigate();
 
-  const isValid = name.length > 0 && message.length > 0;
+  const isValid = name.trim().length > 0;
 
   const handleNext = () => {
     updateDraft({
-      title: name,
-      hostMessage: message,
+      title: name.trim(),
+      hostMessage: message.trim(),
     });
     navigate('/app/create/place');
   };
+
+  const [isCustomMessage, setIsCustomMessage] = useState(false);
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
@@ -50,6 +53,18 @@ export const MeetingInfoScreen = () => {
               className="w-full p-4 pl-12 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all min-h-[100px] resize-none"
             />
             <AlignLeft className="absolute top-4 left-4 text-ink-hint" size={20} />
+          </div>
+          <p className="text-xs font-bold text-ink-muted mt-2 ml-1">문구가 고민되면 골라보세요</p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {baseHostMessageSuggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                onClick={() => setMessage(suggestion)}
+                className="px-3 py-1.5 bg-surface text-ink text-xs font-semibold rounded-full border border-line shadow-soft"
+              >
+                {suggestion}
+              </button>
+            ))}
           </div>
         </div>
 
