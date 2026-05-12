@@ -27,9 +27,9 @@ When We Meet은 단순 날짜 투표 앱이 아니라,
 ### Known Limitations
 - 실제 DB 저장 없음
 - 실제 캘린더 연동 없음
-- 장소 설정 플로우 미구현
-- 시간 후보 선택 미구현
-- 확정 카드 공유 플로우 미구현
+- 장소/시간/활동 선택은 프론트엔드 메모리 기반 프로토타입
+- 장소 후보/시간 후보의 실제 집계 미구현
+- 확정 카드 공유는 placeholder alert
 - 홈/모임 콘텐츠 피드 미구현
 - 지도/GPS/자동완성 없음
 - i18n 미구현
@@ -91,6 +91,11 @@ Prototype Note:
 - [x] Map activity IDs to labels in confirmation screens
 - [x] Remove remaining loose any types
 - [x] Add guest complete summary
+
+### Phase B Final QA
+- [x] Add host activity selection step
+- [x] Connect confirm edit buttons to edit routes
+- [x] Fix B-stage draft integrity issues
 
 ## 4. Phase C — Guest Experience
 

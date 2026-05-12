@@ -7,6 +7,7 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { categoryOptions } from '../../config/categoryOptions';
+import { getActivityLabels } from '../../utils/activity';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
@@ -14,6 +15,10 @@ export const InvitePreviewScreen = () => {
   
   const selectedCategory = categoryOptions.find(c => c.id === draft.category);
   const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
+  
+  const activityDisplay = draft.activityIds.length > 0 
+    ? getActivityLabels(draft.activityIds).join(' · ')
+    : '';
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
@@ -79,6 +84,12 @@ export const InvitePreviewScreen = () => {
                         ? draft.timeLabels[0]
                         : '시간 후보 투표 예정'}
                     </span>
+                  </div>
+                )}
+                {activityDisplay && (
+                  <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">
+                    <span className="text-rose">할 것:</span>
+                    <span>{activityDisplay}</span>
                   </div>
                 )}
               </div>

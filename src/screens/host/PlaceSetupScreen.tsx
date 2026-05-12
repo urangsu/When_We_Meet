@@ -11,17 +11,18 @@ import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 export const PlaceSetupScreen = () => {
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
-  const [selectedMode, setSelectedMode] = useState<LocationMode | null>(
-    draft.locationMode !== 'undecided' ? draft.locationMode : null
-  );
+  const [selectedMode, setSelectedMode] = useState<LocationMode>(draft.locationMode);
   const [fixedPlace, setFixedPlace] = useState(draft.fixedPlaceName || '');
 
-  const isValid = selectedMode !== null && (selectedMode !== 'fixed' || fixedPlace.trim().length > 0);
+  const isValid =
+    selectedMode === 'undecided' ||
+    selectedMode === 'candidate_vote' ||
+    (selectedMode === 'fixed' && fixedPlace.trim().length > 0);
 
   const handleNext = () => {
     updateDraft({
-      locationMode: selectedMode ?? 'undecided',
-      fixedPlaceName: selectedMode === 'fixed' ? fixedPlace : undefined,
+      locationMode: selectedMode,
+      fixedPlaceName: selectedMode === 'fixed' ? fixedPlace : '',
     });
     navigate('/app/create/dates');
   };

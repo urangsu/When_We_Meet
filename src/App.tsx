@@ -28,6 +28,7 @@ import { MyPageScreen } from './screens/host/MyPageScreen';
 import { PlaceSetupScreen } from './screens/host/PlaceSetupScreen';
 import { ConfirmPlanScreen } from './screens/host/ConfirmPlanScreen';
 import { ConfirmedShareScreen } from './screens/host/ConfirmedShareScreen';
+import { ActivitySetupScreen } from './screens/host/ActivitySetupScreen';
 
 // Guest Screens
 import { InviteLandingScreen } from './screens/guest/InviteLandingScreen';
@@ -58,6 +59,7 @@ export default function App() {
               <Route path="create/place" element={<PlaceSetupScreen />} />
               <Route path="create/dates" element={<DatePickerScreen />} />
               <Route path="create/time" element={<TimeSetupScreen />} />
+              <Route path="create/activity" element={<ActivitySetupScreen />} />
               <Route path="create/theme" element={<ThemeScreen />} />
               <Route path="create/profile" element={<ProfileScreen />} />
               <Route path="create/preview" element={<InvitePreviewScreen />} />

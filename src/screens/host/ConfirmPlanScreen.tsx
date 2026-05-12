@@ -53,7 +53,7 @@ export const ConfirmPlanScreen = () => {
               <span className="text-sm font-bold text-ink-hint">날짜</span>
               <span className="font-semibold text-lg text-ink">{dateDisplay}</span>
             </div>
-            <button className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
+            <button onClick={() => navigate('/app/create/dates')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
           
           <div className="h-px bg-ink-line/50 w-full" />
@@ -63,7 +63,7 @@ export const ConfirmPlanScreen = () => {
               <span className="text-sm font-bold text-ink-hint">시간</span>
               <span className="font-semibold text-lg text-ink">{timeDisplay}</span>
             </div>
-            <button className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
+            <button onClick={() => navigate('/app/create/time')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
 
           <div className="h-px bg-ink-line/50 w-full" />
@@ -73,7 +73,7 @@ export const ConfirmPlanScreen = () => {
               <span className="text-sm font-bold text-ink-hint">장소</span>
               <span className="font-semibold text-lg text-ink">{placeDisplay}</span>
             </div>
-            <button className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
+            <button onClick={() => navigate('/app/create/place')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
 
           <div className="h-px bg-ink-line/50 w-full" />
@@ -83,7 +83,7 @@ export const ConfirmPlanScreen = () => {
               <span className="text-sm font-bold text-ink-hint">하고 싶은 것</span>
               <span className="font-semibold text-lg text-ink">{activityDisplay}</span>
             </div>
-            <button className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
+            <button onClick={() => navigate('/app/create/activity')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
 
         </Card>

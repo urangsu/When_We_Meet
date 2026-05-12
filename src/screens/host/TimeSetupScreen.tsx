@@ -12,9 +12,7 @@ import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 export const TimeSetupScreen = () => {
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
-  const [selectedMode, setSelectedMode] = useState<TimeMode | null>(
-    draft.timeMode !== 'undecided' ? draft.timeMode : null
-  );
+  const [selectedMode, setSelectedMode] = useState<TimeMode>(draft.timeMode);
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>(draft.timeLabels || []);
 
   const toggleCandidate = (time: string) => {
@@ -27,17 +25,16 @@ export const TimeSetupScreen = () => {
     }
   };
 
-  const isValid = selectedMode !== null && (
+  const isValid = 
     selectedMode === 'undecided' || 
-    selectedCandidates.length > 0
-  );
+    selectedCandidates.length > 0;
 
   const handleNext = () => {
     updateDraft({
-      timeMode: selectedMode ?? 'undecided',
-      timeLabels: selectedCandidates,
+      timeMode: selectedMode,
+      timeLabels: selectedMode === 'undecided' ? [] : selectedCandidates,
     });
-    navigate('/app/create/theme');
+    navigate('/app/create/activity');
   };
 
   return (
@@ -112,7 +109,7 @@ export const TimeSetupScreen = () => {
           onClick={handleNext} 
           size="full"
         >
-          다음 · 테마 고르기
+          다음 · 할 것 고르기
         </Button>
       </BottomCTA>
     </ScreenShell>
