@@ -13,10 +13,10 @@ export const GuestPlacePreferenceScreen = () => {
   const navigate = useNavigate();
   const { draft, updateResponseDraft } = useGuestResponseDraft();
   const [candidates, setCandidates] = useState(draft?.placeCandidate || '');
-  const [selectedActivities, setSelectedActivities] = useState<string[]>(draft?.activityIds || []);
+  const [selectedActivities, setSelectedActivities] = useState<ActivityOptionId[]>(draft?.activityIds || []);
   const [customActivity, setCustomActivity] = useState(draft?.customActivity || '');
 
-  const toggleActivity = (id: string) => {
+  const toggleActivity = (id: ActivityOptionId) => {
     setSelectedActivities((prev) => 
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
@@ -29,7 +29,7 @@ export const GuestPlacePreferenceScreen = () => {
   const handleNext = () => {
     updateResponseDraft({
       placeCandidate: candidates,
-      activityIds: selectedActivities as ActivityOptionId[],
+      activityIds: selectedActivities,
       customActivity,
     });
     navigate('/invite/demo/preferences');

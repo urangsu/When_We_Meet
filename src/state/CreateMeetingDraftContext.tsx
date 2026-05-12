@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import type { CreateMeetingDraft, LocationMode, TimeMode } from '../types/meeting';
-import type { ProfileColorId } from '../types';
+import type { CreateMeetingDraft } from '../types/meeting';
 
 interface CreateMeetingDraftContextState {
   draft: CreateMeetingDraft;
@@ -9,7 +8,8 @@ interface CreateMeetingDraftContextState {
 }
 
 const defaultDraft: CreateMeetingDraft = {
-  category: '',
+  category: 'eat',
+  isRecurring: false,
   title: '',
   hostMessage: '',
   locationMode: 'undecided',
@@ -18,9 +18,10 @@ const defaultDraft: CreateMeetingDraft = {
   dateLabels: [],
   timeMode: 'undecided',
   timeLabels: [],
+  activityIds: [],
   themeId: 'calendar-kiss',
   hostName: '',
-  hostColorId: '1',
+  hostColorId: 'black',
 };
 
 const CreateMeetingDraftContext = createContext<CreateMeetingDraftContextState | undefined>(undefined);

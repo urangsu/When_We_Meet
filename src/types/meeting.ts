@@ -1,4 +1,4 @@
-import type { ProfileColorId } from '../types';
+import type { ProfileColorId, MeetingCategory, ThemeId } from '../types';
 
 export type MeetingStatus = 'ongoing' | 'waiting' | 'confirmed' | 'past';
 
@@ -75,7 +75,8 @@ export interface Meeting {
 }
 
 export interface CreateMeetingDraft {
-  category: string;
+  category: MeetingCategory;
+  isRecurring: boolean;
   title: string;
   hostMessage: string;
   locationMode: LocationMode;
@@ -84,7 +85,8 @@ export interface CreateMeetingDraft {
   dateLabels: string[];
   timeMode: TimeMode;
   timeLabels: string[];
-  themeId: string;
+  activityIds: ActivityOptionId[];
+  themeId: ThemeId;
   hostName: string;
   hostColorId: ProfileColorId;
 }

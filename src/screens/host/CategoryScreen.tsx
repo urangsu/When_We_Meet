@@ -5,11 +5,22 @@ import { useNavigate } from 'react-router-dom';
 import { categoryOptions } from '../../config/categoryOptions';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import type { MeetingCategory } from '../../types';
 
 export const CategoryScreen = () => {
-  const [selected, setSelected] = useState('eat');
-  const [isRecurring, setIsRecurring] = useState(false);
+  const { draft, updateDraft } = useCreateMeetingDraft();
+  const [selected, setSelected] = useState<MeetingCategory>(draft.category);
+  const [isRecurring, setIsRecurring] = useState(draft.isRecurring);
   const navigate = useNavigate();
+
+  const handleNext = () => {
+    updateDraft({
+      category: selected,
+      isRecurring,
+    });
+    navigate('/app/create/info');
+  };
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
@@ -22,7 +33,7 @@ export const CategoryScreen = () => {
         {categoryOptions.map((cat) => (
           <button
             key={cat.id}
-            onClick={() => setSelected(cat.id)}
+            onClick={() => setSelected(cat.id as MeetingCategory)}
             className={`
               flex flex-col gap-3 p-4 rounded-2xl border text-left transition-all h-24 justify-center
               ${selected === cat.id ? 'border-transparent bg-white ring-2 ring-inset ring-rose text-rose shadow-warm' : 'border-ink-line bg-white text-ink-muted'}
@@ -48,7 +59,7 @@ export const CategoryScreen = () => {
       </div>
 
       <BottomCTA withBottomNav>
-        <Button onClick={() => navigate('/app/create/info')} size="full">시작하기</Button>
+        <Button onClick={handleNext} size="full">시작하기</Button>
       </BottomCTA>
     </ScreenShell>
   );

@@ -1,15 +1,19 @@
 import React from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft, Share2, MapPin, Calendar, User, Clock } from 'lucide-react';
+import { ChevronLeft, Share2, MapPin, Calendar, User, Clock, Bookmark } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { categoryOptions } from '../../config/categoryOptions';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
   const { draft } = useCreateMeetingDraft();
+  
+  const selectedCategory = categoryOptions.find(c => c.id === draft.category);
+  const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
@@ -30,7 +34,10 @@ export const InvitePreviewScreen = () => {
             
             <div className="z-10 flex flex-col gap-4">
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-bold tracking-[0.2em] text-ink-muted uppercase">Invitation · 2026</span>
+                <span className="text-xs font-bold tracking-[0.2em] text-ink-muted uppercase flex items-center gap-2">
+                  <Bookmark size={12} className="text-rose"/> 
+                  {categoryLabel} {draft.isRecurring ? '· 정기모임' : ''}
+                </span>
                 <h2 className="font-bold text-3xl leading-tight text-rose-deep">
                   {draft.title || '수민이의 생일 모임'}
                 </h2>

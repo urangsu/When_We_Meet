@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Chip } from '../../components/Card';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle } from 'lucide-react';
+import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle, LucideIcon } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { responseMessagePresets } from '../../config/responseMessagePresets';
@@ -18,7 +18,7 @@ export const GuestAttendanceScreen = () => {
   const options: Array<{
     id: AttendanceStatus;
     label: string;
-    icon: any;
+    icon: LucideIcon;
     borderClass: string;
     textClass: string;
   }> = [

@@ -6,6 +6,7 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Card } from '../../components/Card';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { getActivityLabels } from '../../utils/activity';
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export const ConfirmPlanScreen = () => {
   }
 
   const activityDisplay = draft.activityIds.length > 0 
-    ? draft.activityIds.join(' · ') // in real app we'd map ID to label
+    ? getActivityLabels(draft.activityIds).join(' · ')
     : '맛있는 거 먹기 · 카페 가기';
 
   return (

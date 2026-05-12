@@ -8,6 +8,7 @@ import { Card } from '../../components/Card';
 import { InitialAvatarGroup } from '../../components/profile/InitialAvatarGroup';
 import { mockMeetings } from '../../data/mockMeetings';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { getActivityLabels } from '../../utils/activity';
 
 export const ConfirmedShareScreen = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ export const ConfirmedShareScreen = () => {
   }
 
   const activityDisplay = draft.activityIds.length > 0 
-    ? draft.activityIds.join(' · ')
+    ? getActivityLabels(draft.activityIds).join(' · ')
     : '맛있는 거 먹기 · 카페 가기';
 
   return (

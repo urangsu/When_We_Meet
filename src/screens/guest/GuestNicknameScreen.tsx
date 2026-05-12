@@ -4,10 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 
 export const GuestNicknameScreen = () => {
-  const [nickname, setNickname] = useState('');
+  const { draft, updateResponseDraft } = useGuestResponseDraft();
+  const [nickname, setNickname] = useState(draft.nickname);
   const navigate = useNavigate();
+
+  const handleNext = () => {
+    updateResponseDraft({ nickname: nickname.trim() });
+    navigate('/invite/demo/attendance');
+  };
 
   return (
     <ScreenShell hasBottomCTA className="gap-8">
@@ -32,7 +39,7 @@ export const GuestNicknameScreen = () => {
       <BottomCTA>
         <Button 
           disabled={!nickname.trim()} 
-          onClick={() => navigate('/invite/demo/attendance')} 
+          onClick={handleNext} 
           size="full"
         >
           다음으로

@@ -84,6 +84,14 @@ Prototype Note:
 
 ---
 
+### Phase B 2nd QA — Draft Integrity
+- [x] Connect category / recurring to CreateMeetingDraft
+- [x] Connect guest nickname to GuestResponseDraft
+- [x] Fix invalid hostColorId default
+- [x] Map activity IDs to labels in confirmation screens
+- [x] Remove remaining loose any types
+- [x] Add guest complete summary
+
 ## 4. Phase C — Guest Experience
 
 Goal:
