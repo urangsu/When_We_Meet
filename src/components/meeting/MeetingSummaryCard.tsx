@@ -10,28 +10,27 @@ interface MeetingSummaryCardProps {
   onOpen?: () => void;
 }
 
-export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting, variant = 'home', onOpen }) => {
-  let statusText = '';
-  let statusClass = '';
+const statusMeta = {
+  ongoing: {
+    label: '일정 조율 중',
+    className: 'bg-rose-light text-rose-deep border-rose',
+  },
+  waiting: {
+    label: '응답 대기',
+    className: 'bg-bg-app border-ink-line text-ink-hint',
+  },
+  confirmed: {
+    label: '확정됨',
+    className: 'bg-rose text-white border-rose',
+  },
+  past: {
+    label: '지난 모임',
+    className: 'bg-ink-line text-ink-muted border-ink-hint',
+  },
+};
 
-  switch (meeting.status) {
-    case 'ongoing':
-      statusText = '일정 조율 중';
-      statusClass = 'bg-rose-light text-rose-deep border-rose';
-      break;
-    case 'waiting':
-      statusText = '응답 대기';
-      statusClass = 'bg-bg-app border-ink-line text-ink-hint';
-      break;
-    case 'confirmed':
-      statusText = '확정됨';
-      statusClass = 'bg-rose text-white border-rose';
-      break;
-    case 'past':
-      statusText = '지난 모임';
-      statusClass = 'bg-ink-line text-ink-muted border-ink-hint';
-      break;
-  }
+export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting, variant = 'home', onOpen }) => {
+  const meta = statusMeta[meeting.status] || statusMeta.ongoing;
 
   return (
     <Card 
@@ -46,7 +45,7 @@ export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting,
           </div>
         </div>
         {variant === 'home' && (
-          <InitialAvatarGroup participants={meeting.participants} totalCount={meeting.guests} />
+           <InitialAvatarGroup participants={meeting.participants} totalCount={meeting.guests} />
         )}
       </div>
       
@@ -54,8 +53,8 @@ export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting,
         {variant === 'list' && (
           <InitialAvatarGroup participants={meeting.participants} totalCount={meeting.guests} />
         )}
-        <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1.5 ${statusClass}`}>
-          {statusText}
+        <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1.5 ${meta.className}`}>
+          {meta.label}
         </div>
         <button
           onClick={onOpen}

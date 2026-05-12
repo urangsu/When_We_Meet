@@ -25,7 +25,7 @@ export const DatePickerScreen = () => {
         month={visibleMonth}
         providers={calendarProviders}
         busyDays={busyDays}
-        onSubmit={() => navigate('/app/create/preview')}
+        onSubmit={() => navigate('/app/create/theme')}
         withBottomNav
       />
     </ScreenShell>

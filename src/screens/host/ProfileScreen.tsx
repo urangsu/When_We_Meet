@@ -103,7 +103,7 @@ export const ProfileScreen = () => {
       </div>
 
       <BottomCTA withBottomNav>
-        <Button onClick={() => navigate('/app/create/dates')} size="full">다음 · 날짜 고르기</Button>
+        <Button onClick={() => navigate('/app/create/preview')} size="full">다음 · 초대장 확인하기</Button>
       </BottomCTA>
     </ScreenShell>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft, MapPin, AlignLeft } from 'lucide-react';
+import { ChevronLeft, AlignLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
@@ -8,7 +8,6 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 export const MeetingInfoScreen = () => {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
-  const [location, setLocation] = useState('');
   const navigate = useNavigate();
 
   const isValid = name.length > 0 && message.length > 0;
@@ -45,15 +44,9 @@ export const MeetingInfoScreen = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold text-ink ml-1">장소 (선택)</label>
-          <div className="relative">
-            <input 
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="예) 강남역 10번 출구, 우리 집"
-              className="w-full p-4 pl-12 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all"
-            />
-            <MapPin className="absolute top-1/2 -translate-y-1/2 left-4 text-ink-hint" size={20} />
+          <label className="text-sm font-bold text-ink ml-1">장소</label>
+          <div className="w-full p-4 rounded-2xl border border-ink-line bg-bg-app text-ink-hint">
+            장소는 다음 단계에서 정할게요.
           </div>
         </div>
       </div>
@@ -61,10 +54,10 @@ export const MeetingInfoScreen = () => {
       <BottomCTA withBottomNav>
         <Button 
           disabled={!isValid} 
-          onClick={() => navigate('/app/create/theme')} 
+          onClick={() => navigate('/app/create/place')} 
           size="full"
         >
-          다음 · 테마 고르기
+          다음 · 장소 정하기
         </Button>
       </BottomCTA>
     </ScreenShell>

@@ -80,7 +80,7 @@ export const DashboardScreen = () => {
       </Card>
 
       <BottomCTA withBottomNav>
-        <Button onClick={() => navigate('/app/meetings/demo/post-meeting')} size="full">이 날짜로 확정하기</Button>
+        <Button onClick={() => navigate('/app/meetings/demo/confirm')} size="full">이 날짜로 확정하기</Button>
       </BottomCTA>
     </ScreenShell>
   );

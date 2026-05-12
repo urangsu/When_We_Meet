@@ -51,7 +51,7 @@ export const GuestDateVoteScreen = () => {
       <BottomCTA>
         <Button 
           disabled={selectedDates.length === 0} 
-          onClick={() => navigate('/invite/demo/preferences')} 
+          onClick={() => navigate('/invite/demo/place')} 
           size="full"
         >
           다음으로

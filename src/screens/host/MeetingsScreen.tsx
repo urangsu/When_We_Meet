@@ -56,8 +56,12 @@ export const MeetingsScreen = () => {
         <div className="flex flex-col gap-4">
           {filteredMeetings.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-12 text-center text-ink-hint">
-               <p className="font-medium text-ink-muted mb-1">아직 모임이 없어요.</p>
-               <p className="text-sm">모임이 끝나면 여기에서 다시 볼 수 있어요.</p>
+               <p className="font-medium text-ink-muted mb-1">
+                 {filter === 'past' ? '지난 모임이 없어요.' : '아직 해당하는 모임이 없어요.'}
+               </p>
+               <p className="text-sm">
+                 {filter === 'past' ? '모임이 끝나면 여기에서 다시 볼 수 있어요.' : '새로운 모임을 만들어 친구들을 초대해 보세요.'}
+               </p>
              </div>
           ) : (
             filteredMeetings.map((meeting) => (

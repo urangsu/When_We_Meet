@@ -90,7 +90,7 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
           onClick={() => onSubmit(selectedDates)} 
           size="full"
         >
-          {selectedDates.length > 0 ? `${selectedDates.length}개의 날짜로 초대장 만들기` : '날짜를 선택해 주세요'}
+          {selectedDates.length > 0 ? `${selectedDates.length}개의 날짜 선택 완료` : '날짜를 선택해 주세요'}
         </Button>
       </BottomCTA>
     </>
