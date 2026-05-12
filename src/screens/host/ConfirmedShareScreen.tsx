@@ -77,7 +77,7 @@ export const ConfirmedShareScreen = () => {
 
           <div className="flex flex-col items-center w-full gap-3 mt-2">
             <div className="flex w-full bg-bg-app rounded-xl p-3 items-center justify-between gap-4">
-              <span className="text-xs font-bold text-ink-hint whitespace-nowrap">만날 곳</span>
+              <span className="text-xs font-bold text-ink-hint whitespace-nowrap">만나는 곳</span>
               <span className="text-sm font-bold text-ink text-right">{placeDisplay}</span>
             </div>
             {activityItems.length > 0 && (

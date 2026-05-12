@@ -70,7 +70,7 @@ export const ConfirmPlanScreen = () => {
 
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
-              <span className="text-sm font-bold text-ink-hint">만날 곳</span>
+              <span className="text-sm font-bold text-ink-hint">만나는 곳</span>
               <span className="font-semibold text-lg text-ink">{placeDisplay}</span>
             </div>
             <button onClick={() => navigate('/app/create/place')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>

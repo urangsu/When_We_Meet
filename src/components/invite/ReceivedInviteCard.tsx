@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { MinusCircle, CalendarCheck } from 'lucide-react';
+import { CalendarCheck, Minus } from 'lucide-react';
 import type { ReceivedInvite } from '../../data/mockReceivedInvites';
 
 interface ReceivedInviteCardProps {
@@ -31,9 +31,11 @@ export const ReceivedInviteCard = ({
           animate={{ opacity: 1, scale: 1, x: 0 }}
           exit={{ opacity: 0, scale: 0.8, x: -10 }}
           onClick={() => onDelete(invite.id)}
-          className="absolute left-0 z-10 p-2 text-rose"
+          className="absolute left-0 z-10 p-2"
         >
-          <MinusCircle size={24} fill="currentColor" className="text-white" />
+          <div className="h-8 w-8 rounded-full bg-rose flex items-center justify-center shadow-sm">
+            <Minus size={18} className="text-white" />
+          </div>
         </motion.button>
       )}
 
@@ -44,22 +46,26 @@ export const ReceivedInviteCard = ({
         whileTap={!isManaging ? { scale: 0.985 } : {}}
       >
         {isUnopened ? (
-          <div className="relative h-[104px] rounded-2xl border border-rose/20 bg-gradient-to-br from-[#FFF7F2] to-[#FFE9EE] p-5 shadow-sm overflow-hidden">
-            <div className="absolute right-4 top-4 rounded-full bg-white/70 px-2 py-1 text-[10px] font-bold text-rose-deep">
+          <div className="relative h-[104px] rounded-2xl border border-rose/20 bg-gradient-to-br from-[#FFF7F2] to-[#FFE9EE] p-4 shadow-sm overflow-hidden">
+            <div className="absolute right-4 top-4 rounded-full bg-white/75 px-2 py-1 text-[10px] font-bold text-rose-deep">
               NEW
             </div>
 
-            <div className="absolute left-1/2 top-1/2 h-11 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-sm border border-rose/20 flex items-center justify-center">
-              <CalendarCheck size={20} className="text-rose" />
-            </div>
+            <div className="flex h-full items-center gap-4 pr-12">
+              <div className="h-11 w-11 shrink-0 rounded-full bg-white shadow-sm border border-rose/20 flex items-center justify-center">
+                <CalendarCheck size={20} className="text-rose" />
+              </div>
 
-            <div className="relative z-10 flex h-full flex-col justify-between pointer-events-none">
-              <p className="text-xs font-bold text-rose-deep">
-                {invite.fromName}님이 초대장을 보냈어요
-              </p>
-              <div>
-                <p className="text-sm font-bold text-ink">아직 열지 않은 초대장</p>
-                <p className="text-xs text-ink-hint mt-0.5">눌러서 확인하기</p>
+              <div className="flex min-w-0 flex-col gap-1">
+                <p className="text-xs font-bold text-rose-deep truncate">
+                  {invite.fromName}님이 초대장을 보냈어요
+                </p>
+                <p className="text-sm font-bold text-ink truncate">
+                  아직 열지 않은 초대장
+                </p>
+                <p className="text-xs text-ink-hint truncate">
+                  눌러서 확인하기
+                </p>
               </div>
             </div>
           </div>

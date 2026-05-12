@@ -23,7 +23,7 @@ export const HomeScreen = () => {
     // Prototype only: real read/unread status will be persisted after DB integration.
     setTimeout(() => {
       navigate('/invite/demo');
-    }, 300);
+    }, 200);
   };
 
   return (

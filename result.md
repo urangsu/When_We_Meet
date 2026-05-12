@@ -153,8 +153,12 @@
 -
 ```
 
-고정 보고 규칙
-“완료”라고 적은 항목은 실제 파일 기준으로 확인 가능해야 한다.
-기능이 Mock이면 Mock, Prototype, Placeholder 중 하나를 붙인다.
-새 기능이 아닌 정리 작업이면 Polish, QA, Refactor로 구분한다.
-결과 보고 후에는 다음 작업 전 result.md와 task.md를 같이 확인한다.
+---
+
+# 고정 보고 규칙
+
+- “완료”라고 적은 항목은 실제 파일 기준으로 확인 가능해야 한다.
+- 기능이 Mock이면 `Mock`, `Prototype`, `Placeholder` 중 하나를 붙인다.
+- 새 기능이 아닌 정리 작업이면 `Polish`, `QA`, `Refactor`로 구분한다.
+- 결과 보고 후에는 다음 작업 전 `result.md`와 `task.md`를 같이 확인한다.
+

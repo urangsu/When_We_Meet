@@ -24,13 +24,13 @@ export const GuestPlacePreferenceScreen = () => {
 
   const isCustomSelected = selectedActivities.includes('custom');
   
-  const isValid = true; 
+  const isValid = !isCustomSelected || customActivity.trim().length > 0;
 
   const handleNext = () => {
     updateResponseDraft({
-      placeCandidate: candidates,
+      placeCandidate: candidates.trim(),
       activityIds: selectedActivities,
-      customActivity,
+      customActivity: isCustomSelected ? customActivity.trim() : '',
     });
     navigate('/invite/demo/preferences');
   };
@@ -40,16 +40,16 @@ export const GuestPlacePreferenceScreen = () => {
       <header className="flex flex-col gap-2 pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
-          <h1 className="font-bold text-2xl">어디가 좋을까요?</h1>
+          <h1 className="font-bold text-2xl">여기 어때요?</h1>
         </div>
         <p className="text-ink-muted text-sm px-1">
-          가고 싶은 곳이나 하고 싶은 걸 가볍게 골라주세요.
+          가고 싶은 곳이나 하고 싶은 걸 가볍게 남겨주세요.
         </p>
       </header>
 
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold text-ink ml-1">만날 곳 후보 입력</label>
+          <label className="text-sm font-bold text-ink ml-1">만날 곳 후보</label>
           <div className="relative">
             <textarea 
               value={candidates}
