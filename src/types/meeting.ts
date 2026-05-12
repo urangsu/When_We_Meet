@@ -103,3 +103,54 @@ export interface GuestResponseDraft {
   customActivity: string;
   requestNote: string;
 }
+
+export interface MeetingResponse {
+  id: string;
+  meetingId: string;
+  nickname: string;
+  attendance: AttendanceStatus;
+  attendanceMessage?: string;
+
+  dateLabels: string[];
+  suggestedDateLabels: string[];
+
+  timeLabels: string[];
+
+  placeCandidate?: string;
+
+  activityIds: ActivityOptionId[];
+  customActivity?: string;
+
+  requestNote?: string;
+
+  source: 'guest_web' | 'app';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VoteSummaryItem {
+  label: string;
+  count: number;
+  maybeCount?: number;
+  score: number;
+}
+
+export interface MeetingAggregationSummary {
+  totalResponses: number;
+  yesCount: number;
+  maybeCount: number;
+  noCount: number;
+
+  dateRanking: VoteSummaryItem[];
+  timeRanking: VoteSummaryItem[];
+  placeRanking: VoteSummaryItem[];
+  activityRanking: VoteSummaryItem[];
+
+  recommendedPlan: {
+    dateLabel?: string;
+    timeLabel?: string;
+    placeName?: string;
+    activityLabels: string[];
+    reason: string;
+  };
+}

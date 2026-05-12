@@ -23,13 +23,14 @@ When We Meet은 단순 날짜 투표 앱이 아니라,
 - Guest RSVP 기본 플로우
 - Date candidate picker mock
 - Debug overlay 기본 숨김
+- Response aggregation logic
+- Host dashboard ranking summaries
 
 ### Known Limitations
 - 실제 DB 저장 없음
 - 실제 캘린더 연동 없음
 - 장소/시간/활동 선택은 프론트엔드 메모리 기반 프로토타입
-- 장소 후보/시간 후보의 실제 집계 미구현
-- 확정 카드 공유는 placeholder alert
+- 실제 확정 plan 저장은 추후 구현
 - 홈/모임 콘텐츠 피드 미구현
 - 지도/GPS/자동완성 없음
 - i18n 미구현
@@ -81,6 +82,86 @@ Tasks:
 
 Prototype Note:
 현재 CreateMeetingDraft와 GuestResponseDraft는 프론트엔드 메모리 상태만 사용한다. 새로고침 시 초기화되며, 실제 DB 저장 기능은 추후 연동 시 반영한다.
+
+---
+
+## 4. Phase C — Guest Experience
+
+Goal:
+게스트가 앱 설치 없이 초대장을 받고, 쉽고 재미있게 응답하게 만든다.
+
+Tasks:
+- [x] Improve invite landing animation placeholder
+- [x] Add acceptance message presets
+- [x] Add decline message presets
+- [x] Add place candidate suggestion
+- [x] Add activity preference vote
+- [x] Add response completion card
+- [x] Add app-save/create-own-meeting CTA
+- [x] Add unopened received invite letter UX
+- [x] Add simple sealed-invite tap feedback
+- [x] Add received invite delete/manage mode
+
+---
+
+## 5. Phase D — Host Decision Dashboard
+
+Goal:
+호스트가 받은 응답을 집계하고 약속을 실제 확정할 수 있는 대시보드를 만든다.
+
+Tasks:
+- [x] Define MeetingResponse data model
+- [x] Add mock response dataset
+- [x] Add response aggregation utility
+- [x] Improve Host Dashboard with ranking summaries
+- [x] Add recommended plan card
+- [ ] Persist responses in DB
+- [ ] Connect real invite link responses
+- [ ] Save confirmed plan to DB
+
+---
+
+## Meeting Response Data Model
+
+MeetingResponse는 Guest Web 또는 App에서 들어온 응답을 저장하기 위한 기본 단위다.
+
+Fields:
+- attendance
+- attendanceMessage
+- dateLabels
+- suggestedDateLabels
+- timeLabels
+- placeCandidate
+- activityIds
+- customActivity
+- requestNote
+- source
+- createdAt / updatedAt
+
+Prototype:
+현재는 mockResponses 기반이다.
+실제 DB 저장은 추후 Supabase/Firebase 연동 단계에서 구현한다.
+
+## Aggregation Strategy
+
+Principle:
+- yes 응답은 1점
+- maybe 응답은 0.5점
+- no 응답은 날짜/시간/장소/활동 집계에서 제외
+- suggestedDateLabels도 날짜 후보로 포함한다
+- 최종 추천안은 score가 가장 높은 날짜/시간/장소/활동 조합으로 만든다
+
+Future:
+- 인원 가중치
+- 호스트 우선순위
+- 일정 충돌
+- 캘린더 busy 상태
+- 장소 거리
+- 날씨
+- 광고/추천 가능성
+
+---
+... (The rest of the document remains unchanged, keeping 10-11 for historical reference)
 
 ---
 
