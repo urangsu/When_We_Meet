@@ -65,9 +65,13 @@ export default function App() {
               <Route path="create/preview" element={<InvitePreviewScreen />} />
               <Route path="create/share" element={<ShareScreen />} />
               <Route path="meetings/demo/dashboard" element={<DashboardScreen />} />
+              <Route path="meetings/:meetingId/dashboard" element={<DashboardScreen />} />
               <Route path="meetings/demo/confirm" element={<ConfirmPlanScreen />} />
+              <Route path="meetings/:meetingId/confirm" element={<ConfirmPlanScreen />} />
               <Route path="meetings/demo/confirmed-share" element={<ConfirmedShareScreen />} />
+              <Route path="meetings/:meetingId/confirmed-share" element={<ConfirmedShareScreen />} />
               <Route path="meetings/demo/post-meeting" element={<PostMeetingScreen />} />
+              <Route path="meetings/:meetingId/post-meeting" element={<PostMeetingScreen />} />
             </Route>
 
             {/* Guest Web Flow */}
@@ -79,6 +83,14 @@ export default function App() {
               <Route path="demo/place" element={<GuestPlacePreferenceScreen />} />
               <Route path="demo/preferences" element={<GuestPreferenceScreen />} />
               <Route path="demo/complete" element={<GuestCompleteScreen />} />
+
+              <Route path=":meetingId/:token" element={<InviteLandingScreen />} />
+              <Route path=":meetingId/:token/nickname" element={<GuestNicknameScreen />} />
+              <Route path=":meetingId/:token/attendance" element={<GuestAttendanceScreen />} />
+              <Route path=":meetingId/:token/dates" element={<GuestDateVoteScreen />} />
+              <Route path=":meetingId/:token/place" element={<GuestPlacePreferenceScreen />} />
+              <Route path=":meetingId/:token/preferences" element={<GuestPreferenceScreen />} />
+              <Route path=":meetingId/:token/complete" element={<GuestCompleteScreen />} />
             </Route>
           </Routes>
         </HashRouter>

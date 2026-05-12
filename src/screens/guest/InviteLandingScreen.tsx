@@ -1,13 +1,15 @@
 import React from 'react';
 import { Button } from '../../components/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { CalendarCheck, ChevronLeft } from 'lucide-react';
 import { motion } from 'motion/react';
+import { getInviteRoute } from '../../utils/inviteRoutes';
 
 export const InviteLandingScreen = () => {
   const navigate = useNavigate();
+  const { meetingId, token } = useParams();
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -78,7 +80,7 @@ export const InviteLandingScreen = () => {
            transition={{ duration: 0.28, delay: 0.2 }}
            className="w-full"
         >
-          <Button onClick={() => navigate('/invite/demo/attendance')} size="full">
+          <Button onClick={() => navigate(getInviteRoute({ meetingId, token }, 'attendance'))} size="full">
             초대장 열어보기
           </Button>
         </motion.div>

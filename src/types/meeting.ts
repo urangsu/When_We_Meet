@@ -1,5 +1,11 @@
 import type { ProfileColorId, MeetingCategory, ThemeId } from '../types';
 
+export type MeetingId = string;
+export type InviteToken = string;
+export type ResponseId = string;
+export type ConfirmedPlanId = string;
+export type UserId = string;
+
 export type MeetingStatus = 'ongoing' | 'waiting' | 'confirmed' | 'past';
 
 export interface Participant {
@@ -34,6 +40,74 @@ export type ActivityOptionId =
 export interface ActivityOption {
   id: ActivityOptionId;
   label: string;
+}
+
+export interface InviteLink {
+  id: string;
+  meetingId: MeetingId;
+  token: InviteToken;
+  slug?: string;
+
+  accessMode: 'link_anyone' | 'approval_required';
+
+  maxResponses?: number;
+  expiresAt?: string;
+  isClosed: boolean;
+
+  duplicateGuardMode: 'nickname' | 'browser' | 'device' | 'none';
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type MeetingLifecycleStatus =
+  | 'draft'
+  | 'collecting'
+  | 'confirming'
+  | 'confirmed'
+  | 'closed';
+
+export interface MeetingRecord extends CreateMeetingDraft {
+  id: MeetingId;
+  hostUserId?: UserId;
+  status: MeetingLifecycleStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ConfirmedPlan {
+  id: ConfirmedPlanId;
+  meetingId: MeetingId;
+
+  dateLabel?: string;
+  timeLabel?: string;
+  placeName?: string;
+  activityLabels: string[];
+
+  confirmedBy?: UserId;
+  confirmSource: 'recommended' | 'manual';
+  reason?: string;
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InviteLink {
+  id: string;
+  meetingId: MeetingId;
+  token: InviteToken;
+  slug?: string;
+
+  accessMode: 'link_anyone' | 'approval_required';
+
+  maxResponses?: number;
+  expiresAt?: string;
+  isClosed: boolean;
+
+  duplicateGuardMode: 'nickname' | 'browser' | 'device' | 'none';
+
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type TimeMode =
@@ -105,8 +179,8 @@ export interface GuestResponseDraft {
 }
 
 export interface MeetingResponse {
-  id: string;
-  meetingId: string;
+  id: ResponseId;
+  meetingId: MeetingId;
   nickname: string;
   attendance: AttendanceStatus;
   attendanceMessage?: string;

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ChevronLeft, MoreVertical, ChevronDown, ChevronUp } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Button } from '../../components/Button';
@@ -12,6 +12,8 @@ import type { MeetingRecommendedPlan } from '../../types/meeting';
 
 export const DashboardScreen = () => {
   const navigate = useNavigate();
+  const { meetingId } = useParams();
+  const resolvedMeetingId = meetingId || 'demo';
   const aggregation = aggregateMeetingResponses(mockResponses);
 
   const [isManualOpen, setIsManualOpen] = useState(false);
