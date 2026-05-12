@@ -6,6 +6,7 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { profileColorOptions } from '../../config/profileColorOptions';
 import type { ProfileColorId } from '../../types';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 const profileOptions = [
   { id: 'my-photo', label: '내 사진', icon: Camera },
@@ -16,11 +17,18 @@ const profileOptions = [
 ];
 
 export const ProfileScreen = () => {
-  const [selected, setSelected] = useState('initial');
-  const [selectedColorId, setSelectedColorId] = useState<ProfileColorId>('black');
   const navigate = useNavigate();
+  const { draft, updateDraft } = useCreateMeetingDraft();
+  
+  const [selected, setSelected] = useState('initial');
+  const [selectedColorId, setSelectedColorId] = useState<ProfileColorId>(draft.hostColorId || 'black');
 
   const selectedColor = profileColorOptions.find(c => c.id === selectedColorId) || profileColorOptions[1];
+
+  const handleNext = () => {
+    updateDraft({ hostColorId: selectedColorId });
+    navigate('/app/create/preview');
+  };
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
@@ -39,7 +47,7 @@ export const ProfileScreen = () => {
             borderColor: selectedColor.border ?? 'transparent',
           }}
         >
-          수
+          {draft.hostName ? draft.hostName.charAt(0) : '수'}
         </div>
 
         {/* Color Picker */}
@@ -49,7 +57,7 @@ export const ProfileScreen = () => {
             {profileColorOptions.map((color) => (
               <button
                 key={color.id}
-                onClick={() => setSelectedColorId(color.id)}
+                onClick={() => setSelectedColorId(color.id as ProfileColorId)}
                 className={`
                   relative h-11 w-11 rounded-full border transition-all
                   ${selectedColorId === color.id ? 'ring-2 ring-rose ring-offset-2' : 'border-ink-line hover:scale-105'}
@@ -103,7 +111,7 @@ export const ProfileScreen = () => {
       </div>
 
       <BottomCTA withBottomNav>
-        <Button onClick={() => navigate('/app/create/preview')} size="full">다음 · 초대장 확인하기</Button>
+        <Button onClick={handleNext} size="full">다음 · 초대장 확인하기</Button>
       </BottomCTA>
     </ScreenShell>
   );

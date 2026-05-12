@@ -5,6 +5,8 @@ import { CalendarCandidatePicker } from '../../components/meeting/CalendarCandid
 import { calendarProviders, busyDays } from '../../data/mockCalendar';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+
 // Prototype-only fixed month.
 // Replace with dynamic calendar month state when real calendar integration starts.
 const visibleYear = 2026;
@@ -12,6 +14,15 @@ const visibleMonth = 6;
 
 export const DatePickerScreen = () => {
   const navigate = useNavigate();
+  const { updateDraft } = useCreateMeetingDraft();
+
+  const handleNext = (selectedDates: { day: number; label: string }[]) => {
+    updateDraft({
+      dateDays: selectedDates.map(d => d.day),
+      dateLabels: selectedDates.map(d => d.label),
+    });
+    navigate('/app/create/time');
+  };
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
@@ -25,7 +36,7 @@ export const DatePickerScreen = () => {
         month={visibleMonth}
         providers={calendarProviders}
         busyDays={busyDays}
-        onSubmit={() => navigate('/app/create/time')}
+        onSubmit={handleNext}
         withBottomNav
       />
     </ScreenShell>

@@ -7,10 +7,17 @@ import type { ThemeId } from '../../types';
 import { themeOptions } from '../../config/themeOptions';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const ThemeScreen = () => {
-  const [selected, setSelected] = useState<ThemeId>('calendar-kiss');
   const navigate = useNavigate();
+  const { draft, updateDraft } = useCreateMeetingDraft();
+  const [selected, setSelected] = useState<ThemeId>((draft.themeId as ThemeId) || 'calendar-kiss');
+
+  const handleNext = () => {
+    updateDraft({ themeId: selected });
+    navigate('/app/create/profile');
+  };
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
@@ -50,7 +57,7 @@ export const ThemeScreen = () => {
       <BottomCTA withBottomNav>
         <div className="flex flex-col items-center w-full">
           <p className="text-center text-sm text-ink-hint mb-3">초대장의 배경색과 글꼴이 변경됩니다</p>
-          <Button onClick={() => navigate('/app/create/profile')} size="full">다음 · 프로필 고르기</Button>
+          <Button onClick={handleNext} size="full">다음 · 프로필 고르기</Button>
         </div>
       </BottomCTA>
     </ScreenShell>

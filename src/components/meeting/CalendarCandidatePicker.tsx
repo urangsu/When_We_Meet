@@ -15,7 +15,7 @@ interface CalendarCandidatePickerProps {
   month: number;
   providers: CalendarProvider[];
   busyDays: BusyDay[];
-  onSubmit: (selectedDates: number[]) => void;
+  onSubmit: (selectedDates: { day: number; label: string }[]) => void;
   withBottomNav?: boolean;
 }
 
@@ -87,7 +87,7 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
       <BottomCTA withBottomNav={withBottomNav}>
         <Button 
           disabled={selectedDates.length === 0} 
-          onClick={() => onSubmit(selectedDates)} 
+          onClick={() => onSubmit(selectedDateLabels)} 
           size="full"
         >
           {selectedDates.length > 0 ? `다음 · 시간 정하기 (${selectedDates.length}개)` : '날짜를 선택해 주세요'}

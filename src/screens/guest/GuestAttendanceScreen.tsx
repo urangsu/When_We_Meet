@@ -6,13 +6,22 @@ import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle } from 'lucide-re
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { responseMessagePresets } from '../../config/responseMessagePresets';
+import type { AttendanceStatus } from '../../types/meeting';
+import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 
 export const GuestAttendanceScreen = () => {
-  const [attendance, setAttendance] = useState<'yes' | 'maybe' | 'no' | null>(null);
-  const [message, setMessage] = useState<string>('');
+  const { draft, updateResponseDraft } = useGuestResponseDraft();
+  const [attendance, setAttendance] = useState<AttendanceStatus | null>(draft?.attendance || null);
+  const [message, setMessage] = useState<string>(draft?.attendanceMessage || '');
   const navigate = useNavigate();
 
-  const options = [
+  const options: Array<{
+    id: AttendanceStatus;
+    label: string;
+    icon: any;
+    borderClass: string;
+    textClass: string;
+  }> = [
     { 
       id: 'yes', 
       label: '갈게요', 
@@ -37,6 +46,11 @@ export const GuestAttendanceScreen = () => {
   ];
 
   const handleNext = () => {
+    updateResponseDraft({
+      attendance: attendance ?? undefined,
+      attendanceMessage: message,
+    });
+
     if (attendance === 'no') {
       navigate('/invite/demo/complete');
     } else {
@@ -44,7 +58,7 @@ export const GuestAttendanceScreen = () => {
     }
   };
 
-  const handleAttendanceChange = (id: 'yes' | 'maybe' | 'no') => {
+  const handleAttendanceChange = (id: AttendanceStatus) => {
     setAttendance(id);
     setMessage(''); // Reset message on change
   }
@@ -65,7 +79,7 @@ export const GuestAttendanceScreen = () => {
         {options.map((opt) => (
           <button
             key={opt.id}
-            onClick={() => handleAttendanceChange(opt.id as any)}
+            onClick={() => handleAttendanceChange(opt.id)}
             className={`
               flex items-center gap-4 p-4 rounded-2xl border transition-all text-left bg-white
               ${attendance === opt.id ? `border-[1.5px] shadow-sm ${opt.borderClass}` : 'border-ink-line hover:border-ink/30'}

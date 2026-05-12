@@ -65,19 +65,22 @@ Goal:
 날짜만 정하는 앱이 아니라, 장소/시간/하고 싶은 것까지 정하는 모임 결정 플로우를 만든다.
 
 Tasks:
-- [ ] Add PlaceSetupScreen
-- [ ] Add LocationMode type
-- [ ] Add place modes:
+- [x] Add PlaceSetupScreen
+- [x] Add LocationMode type
+- [x] Add place modes:
   - 장소 미정
   - 내가 정해둘게요
   - 친구들에게 후보 받기
   - 나중에 추천받기
-- [ ] Add activity options
-- [ ] Add guest place/activity preference screen
-- [ ] Add time candidate step
-- [ ] Add ConfirmPlanScreen
-- [ ] Add ConfirmedShareScreen
-- [ ] Stop routing Dashboard confirmation directly to PostMeeting
+- [x] Add activity options
+- [x] Add guest place/activity preference screen
+- [x] Add time candidate step
+- [x] Add ConfirmPlanScreen
+- [x] Add ConfirmedShareScreen
+- [x] Stop routing Dashboard confirmation directly to PostMeeting
+
+Prototype Note:
+현재 CreateMeetingDraft와 GuestResponseDraft는 프론트엔드 메모리 상태만 사용한다. 새로고침 시 초기화되며, 실제 DB 저장 기능은 추후 연동 시 반영한다.
 
 ---
 
@@ -88,10 +91,10 @@ Goal:
 
 Tasks:
 - [ ] Improve invite landing animation placeholder
-- [ ] Add acceptance message presets
-- [ ] Add decline message presets
-- [ ] Add place candidate suggestion
-- [ ] Add activity preference vote
+- [x] Add acceptance message presets
+- [x] Add decline message presets
+- [x] Add place candidate suggestion
+- [x] Add activity preference vote
 - [ ] Add response completion card
 - [ ] Add app-save/create-own-meeting CTA
 
@@ -184,20 +187,14 @@ Tasks:
 
 ## 10. Immediate Next Tasks
 
-1. Start Phase B — Meeting Decision Flow
-   - PlaceSetupScreen
-   - TimeSetupScreen
-   - Guest place/activity preference
-   - Acceptance/decline message presets
-   - ConfirmPlanScreen
-   - ConfirmedShareScreen
-   - Stop routing Dashboard confirmation directly to PostMeeting
+1. Finish Phase C & Expand Discovery
+   - Improve invite landing animation placeholder
+   - Add response completion card
+   - Add app-save/create-own-meeting CTA
+   - Brainstorm Phase D (Local Content / Discovery) layouts
 
-2. Phase A Watchlist
+2. Phase A/B Watchlist
    - Small-screen layout QA
    - BottomCTA overlap QA
    - Preview sync QA
-
-Important:
-PostMeetingScreen은 모임이 끝난 뒤의 회고/후속 액션 화면이다.
-날짜 확정 직후에는 ConfirmPlanScreen과 ConfirmedShareScreen으로 이동해야 한다.
+   - Verify guest draft persistence through the complete flow

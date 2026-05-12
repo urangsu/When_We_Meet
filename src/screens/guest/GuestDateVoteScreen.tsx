@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Check } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const GuestDateVoteScreen = () => {
-  const [selectedDates, setSelectedDates] = useState<string[]>([]);
+  const { draft, updateResponseDraft } = useGuestResponseDraft();
+  const { draft: hostDraft } = useCreateMeetingDraft();
+  
+  const [selectedDates, setSelectedDates] = useState<string[]>(draft?.dateLabels || []);
   const navigate = useNavigate();
 
-  const candidateDates = ['6월 21일 (토)', '6월 22일 (일)'];
+  // If host hasn't selected dates, use fallback. In real flow this comes from DB meeting data.
+  const candidateDates = hostDraft.dateLabels.length > 0 
+    ? hostDraft.dateLabels.slice(0, 5) 
+    : ['6월 21일 (토)', '6월 22일 (일)'];
 
   const toggleDate = (date: string) => {
     setSelectedDates(prev => prev.includes(date) ? prev.filter(d => d !== date) : [...prev, date]);
+  };
+
+  const handleNext = () => {
+    updateResponseDraft({
+      dateLabels: selectedDates,
+    });
+    navigate('/invite/demo/place');
   };
 
   return (
@@ -51,7 +66,7 @@ export const GuestDateVoteScreen = () => {
       <BottomCTA>
         <Button 
           disabled={selectedDates.length === 0} 
-          onClick={() => navigate('/invite/demo/place')} 
+          onClick={handleNext} 
           size="full"
         >
           다음으로

@@ -6,13 +6,25 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { locationModeOptions } from '../../config/locationOptions';
 import type { LocationMode } from '../../types/meeting';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const PlaceSetupScreen = () => {
   const navigate = useNavigate();
-  const [selectedMode, setSelectedMode] = useState<LocationMode | null>(null);
-  const [fixedPlace, setFixedPlace] = useState('');
+  const { draft, updateDraft } = useCreateMeetingDraft();
+  const [selectedMode, setSelectedMode] = useState<LocationMode | null>(
+    draft.locationMode !== 'undecided' ? draft.locationMode : null
+  );
+  const [fixedPlace, setFixedPlace] = useState(draft.fixedPlaceName || '');
 
   const isValid = selectedMode !== null && (selectedMode !== 'fixed' || fixedPlace.trim().length > 0);
+
+  const handleNext = () => {
+    updateDraft({
+      locationMode: selectedMode ?? 'undecided',
+      fixedPlaceName: selectedMode === 'fixed' ? fixedPlace : undefined,
+    });
+    navigate('/app/create/dates');
+  };
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
@@ -84,7 +96,7 @@ export const PlaceSetupScreen = () => {
       <BottomCTA withBottomNav>
         <Button 
           disabled={!isValid} 
-          onClick={() => navigate('/app/create/dates')} 
+          onClick={handleNext} 
           size="full"
         >
           다음 · 날짜 고르기

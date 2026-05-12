@@ -1,13 +1,16 @@
 import React from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft, Share2, MapPin, Calendar, User } from 'lucide-react';
+import { ChevronLeft, Share2, MapPin, Calendar, User, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
+  const { draft } = useCreateMeetingDraft();
+  
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
       <header className="flex items-center gap-4 pt-2">
@@ -29,11 +32,11 @@ export const InvitePreviewScreen = () => {
               <div className="flex flex-col gap-2">
                 <span className="text-xs font-bold tracking-[0.2em] text-ink-muted uppercase">Invitation · 2026</span>
                 <h2 className="font-bold text-3xl leading-tight text-rose-deep">
-                  수민이의 생일 모임
+                  {draft.title || '수민이의 생일 모임'}
                 </h2>
               </div>
-              <p className="text-lg font-medium text-ink/80 leading-relaxed max-w-[80%]">
-                다같이 모여서 맛있는 밥 먹자!
+              <p className="text-lg font-medium text-ink/80 leading-relaxed max-w-[80%] whitespace-pre-wrap">
+                {draft.hostMessage || '다같이 모여서 맛있는 밥 먹자!'}
               </p>
             </div>
 
@@ -41,16 +44,36 @@ export const InvitePreviewScreen = () => {
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">
                   <User size={16} className="text-rose"/>
-                  <span>Host: 수민</span>
+                  <span>Host: 수민 (프로토타입)</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">
                   <MapPin size={16} className="text-rose"/>
-                  <span>📍 강남역</span>
+                  <span>
+                    {draft.locationMode === 'fixed' && draft.fixedPlaceName 
+                      ? draft.fixedPlaceName 
+                      : draft.locationMode === 'candidate_vote'
+                        ? '장소 후보 투표 예정'
+                        : '장소 미정'}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">
                   <Calendar size={16} className="text-rose"/>
-                  <span>🗓 6월 21일 (토) 등 2개</span>
+                  <span>
+                    {draft.dateLabels.length > 0
+                      ? `${draft.dateLabels[0]} 등 ${draft.dateLabels.length}개`
+                      : '날짜 후보 투표 예정'}
+                  </span>
                 </div>
+                {draft.timeMode !== 'undecided' && (
+                  <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">
+                    <Clock size={16} className="text-rose"/>
+                    <span>
+                      {draft.timeMode === 'fixed' && draft.timeLabels.length > 0
+                        ? draft.timeLabels[0]
+                        : '시간 후보 투표 예정'}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 

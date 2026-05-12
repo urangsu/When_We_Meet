@@ -4,13 +4,23 @@ import { ChevronLeft, AlignLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const MeetingInfoScreen = () => {
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
+  const { draft, updateDraft } = useCreateMeetingDraft();
+  const [name, setName] = useState(draft.title);
+  const [message, setMessage] = useState(draft.hostMessage);
   const navigate = useNavigate();
 
   const isValid = name.length > 0 && message.length > 0;
+
+  const handleNext = () => {
+    updateDraft({
+      title: name,
+      hostMessage: message,
+    });
+    navigate('/app/create/place');
+  };
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
@@ -54,7 +64,7 @@ export const MeetingInfoScreen = () => {
       <BottomCTA withBottomNav>
         <Button 
           disabled={!isValid} 
-          onClick={() => navigate('/app/create/place')} 
+          onClick={handleNext} 
           size="full"
         >
           다음 · 장소 정하기

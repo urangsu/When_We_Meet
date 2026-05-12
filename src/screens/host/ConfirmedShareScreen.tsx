@@ -7,9 +7,11 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Card } from '../../components/Card';
 import { InitialAvatarGroup } from '../../components/profile/InitialAvatarGroup';
 import { mockMeetings } from '../../data/mockMeetings';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const ConfirmedShareScreen = () => {
   const navigate = useNavigate();
+  const { draft } = useCreateMeetingDraft();
 
   const handleShare = () => {
     window.alert('카톡/DM으로 공유하기는 준비 중이에요.');
@@ -19,11 +21,32 @@ export const ConfirmedShareScreen = () => {
     window.alert('캘린더에 추가하기는 준비 중이에요.');
   };
 
-  // Mock data for preview
+  // Mock data for preview fallback
   const meeting = mockMeetings[0];
 
+  const title = draft.title || meeting.title;
+  const dateDisplay = draft.dateLabels.length > 0 ? draft.dateLabels[0] : '6월 21일 (토)';
+  
+  let timeDisplay = '시간 미정';
+  if (draft.timeMode === 'fixed' && draft.timeLabels.length > 0) {
+    timeDisplay = draft.timeLabels[0];
+  } else if (draft.timeMode === 'candidate_vote') {
+    timeDisplay = '시간 투표 예정';
+  }
+
+  let placeDisplay = '장소 미정';
+  if (draft.locationMode === 'fixed' && draft.fixedPlaceName) {
+    placeDisplay = draft.fixedPlaceName;
+  } else if (draft.locationMode === 'candidate_vote') {
+    placeDisplay = '장소 후보 투표 예정';
+  }
+
+  const activityDisplay = draft.activityIds.length > 0 
+    ? draft.activityIds.join(' · ')
+    : '맛있는 거 먹기 · 카페 가기';
+
   return (
-    <ScreenShell hasBottomCTA className="gap-6 bg-bg-app">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
       <header className="flex flex-col gap-2 pt-2 px-5">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate('/app')} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
@@ -40,25 +63,25 @@ export const ConfirmedShareScreen = () => {
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rose-light via-rose to-rose-deep opacity-50" />
           
           <div className="flex flex-col gap-2 items-center w-full mt-2">
-            <h2 className="text-xl font-black text-ink">{meeting.title}</h2>
+            <h2 className="text-xl font-black text-ink">{title}</h2>
             <div className="px-3 py-1 bg-rose-light/50 text-rose-deep text-xs font-bold rounded-full">
               모임이 확정되었어요
             </div>
           </div>
 
           <div className="flex flex-col items-center gap-1">
-            <span className="text-3xl font-black text-rose">6/21</span>
-            <span className="font-bold text-ink">토요일 오후 6:30</span>
+            <span className="text-xl font-black text-rose">{dateDisplay}</span>
+            <span className="font-bold text-ink">{timeDisplay}</span>
           </div>
 
           <div className="flex flex-col items-center w-full gap-3 mt-2">
-            <div className="flex w-full bg-bg-app rounded-xl p-3 items-center justify-between">
-              <span className="text-xs font-bold text-ink-hint">장소</span>
-              <span className="text-sm font-bold text-ink">후보 투표 예정</span>
+            <div className="flex w-full bg-bg-app rounded-xl p-3 items-center justify-between gap-4">
+              <span className="text-xs font-bold text-ink-hint whitespace-nowrap">장소</span>
+              <span className="text-sm font-bold text-ink text-right">{placeDisplay}</span>
             </div>
-            <div className="flex w-full bg-bg-app rounded-xl p-3 items-center justify-between">
-              <span className="text-xs font-bold text-ink-hint">할 것</span>
-              <span className="text-sm font-bold text-ink text-right">맛있는 거 먹기<br/>카페 가기</span>
+            <div className="flex w-full bg-bg-app rounded-xl p-3 items-center justify-between gap-4">
+              <span className="text-xs font-bold text-ink-hint whitespace-nowrap">할 것</span>
+              <span className="text-sm font-bold text-ink text-right break-words min-w-0 max-w-[150px]">{activityDisplay}</span>
             </div>
           </div>
 
@@ -69,7 +92,7 @@ export const ConfirmedShareScreen = () => {
         </div>
       </div>
 
-      <BottomCTA>
+      <BottomCTA withBottomNav>
         <div className="flex flex-col gap-3 w-full">
           <Button 
             onClick={handleShare}

@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 
 export const GuestPreferenceScreen = () => {
   const navigate = useNavigate();
+  const { draft, updateResponseDraft } = useGuestResponseDraft();
+  const [requestNote, setRequestNote] = useState(draft?.requestNote || '');
+
+  const handleNext = () => {
+    updateResponseDraft({
+      requestNote,
+    });
+    navigate('/invite/demo/complete');
+  };
 
   return (
     <ScreenShell hasBottomCTA className="gap-8">
@@ -21,6 +31,8 @@ export const GuestPreferenceScreen = () => {
 
       <div className="flex flex-col gap-2 mt-4">
         <textarea 
+          value={requestNote}
+          onChange={(e) => setRequestNote(e.target.value)}
           placeholder="예) 해산물을 못 먹어요, 강남역은 너무 멀어요 등..."
           className="w-full p-4 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all min-h-[160px] resize-none text-base"
         />
@@ -28,7 +40,7 @@ export const GuestPreferenceScreen = () => {
 
       <BottomCTA>
         <Button 
-          onClick={() => navigate('/invite/demo/complete')} 
+          onClick={handleNext} 
           size="full"
         >
           응답 완료하기

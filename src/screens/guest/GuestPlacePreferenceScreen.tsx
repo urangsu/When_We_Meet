@@ -6,12 +6,15 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { activityOptions } from '../../config/activityOptions';
 import { Chip } from '../../components/Card';
+import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
+import type { ActivityOptionId } from '../../types/meeting';
 
 export const GuestPlacePreferenceScreen = () => {
   const navigate = useNavigate();
-  const [candidates, setCandidates] = useState('');
-  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
-  const [customActivity, setCustomActivity] = useState('');
+  const { draft, updateResponseDraft } = useGuestResponseDraft();
+  const [candidates, setCandidates] = useState(draft?.placeCandidate || '');
+  const [selectedActivities, setSelectedActivities] = useState<string[]>(draft?.activityIds || []);
+  const [customActivity, setCustomActivity] = useState(draft?.customActivity || '');
 
   const toggleActivity = (id: string) => {
     setSelectedActivities((prev) => 
@@ -21,8 +24,16 @@ export const GuestPlacePreferenceScreen = () => {
 
   const isCustomSelected = selectedActivities.includes('custom');
   
-  // Custom logic for isValid if desired. Let's make it always valid for now so they can skip or next.
   const isValid = true; 
+
+  const handleNext = () => {
+    updateResponseDraft({
+      placeCandidate: candidates,
+      activityIds: selectedActivities as ActivityOptionId[],
+      customActivity,
+    });
+    navigate('/invite/demo/preferences');
+  };
 
   return (
     <ScreenShell hasBottomCTA className="gap-8">
@@ -79,7 +90,7 @@ export const GuestPlacePreferenceScreen = () => {
       <BottomCTA>
         <Button 
           disabled={!isValid} 
-          onClick={() => navigate('/invite/demo/preferences')} 
+          onClick={handleNext} 
           size="full"
         >
           다음

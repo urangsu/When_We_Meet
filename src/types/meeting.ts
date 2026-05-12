@@ -47,6 +47,8 @@ export interface TimeCandidate {
   votes?: number;
 }
 
+export type AttendanceStatus = 'yes' | 'maybe' | 'no';
+
 export interface MeetingPlan {
   dateLabel?: string;
   timeLabel?: string;
@@ -70,4 +72,30 @@ export interface Meeting {
   guests: number;
   participants: Participant[];
   plan?: MeetingPlan;
+}
+
+export interface CreateMeetingDraft {
+  category: string;
+  title: string;
+  hostMessage: string;
+  locationMode: LocationMode;
+  fixedPlaceName: string;
+  dateDays: number[];
+  dateLabels: string[];
+  timeMode: TimeMode;
+  timeLabels: string[];
+  themeId: string;
+  hostName: string;
+  hostColorId: ProfileColorId;
+}
+
+export interface GuestResponseDraft {
+  nickname: string;
+  attendance?: AttendanceStatus;
+  attendanceMessage: string;
+  dateLabels: string[];
+  placeCandidate: string;
+  activityIds: ActivityOptionId[];
+  customActivity: string;
+  requestNote: string;
 }

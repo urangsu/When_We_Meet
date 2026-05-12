@@ -7,11 +7,15 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 import { timeModeOptions, timeCandidateOptions } from '../../config/timeOptions';
 import type { TimeMode } from '../../types/meeting';
 import { Chip } from '../../components/Card';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const TimeSetupScreen = () => {
   const navigate = useNavigate();
-  const [selectedMode, setSelectedMode] = useState<TimeMode | null>(null);
-  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
+  const { draft, updateDraft } = useCreateMeetingDraft();
+  const [selectedMode, setSelectedMode] = useState<TimeMode | null>(
+    draft.timeMode !== 'undecided' ? draft.timeMode : null
+  );
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>(draft.timeLabels || []);
 
   const toggleCandidate = (time: string) => {
     if (selectedMode === 'fixed') {
@@ -27,6 +31,14 @@ export const TimeSetupScreen = () => {
     selectedMode === 'undecided' || 
     selectedCandidates.length > 0
   );
+
+  const handleNext = () => {
+    updateDraft({
+      timeMode: selectedMode ?? 'undecided',
+      timeLabels: selectedCandidates,
+    });
+    navigate('/app/create/theme');
+  };
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
@@ -97,7 +109,7 @@ export const TimeSetupScreen = () => {
       <BottomCTA withBottomNav>
         <Button 
           disabled={!isValid} 
-          onClick={() => navigate('/app/create/theme')} 
+          onClick={handleNext} 
           size="full"
         >
           다음 · 테마 고르기

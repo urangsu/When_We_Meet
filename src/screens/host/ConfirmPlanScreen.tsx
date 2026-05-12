@@ -5,12 +5,35 @@ import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Card } from '../../components/Card';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
+  const { draft } = useCreateMeetingDraft();
+
+  // Helper to determine display formats based on current draft state.
+  const dateDisplay = draft.dateLabels.length > 0 ? draft.dateLabels[0] : '6월 21일 (토)';
+  
+  let timeDisplay = '시간 미정';
+  if (draft.timeMode === 'fixed' && draft.timeLabels.length > 0) {
+    timeDisplay = draft.timeLabels[0];
+  } else if (draft.timeMode === 'candidate_vote') {
+    timeDisplay = '시간 투표 예정';
+  }
+
+  let placeDisplay = '장소 미정';
+  if (draft.locationMode === 'fixed' && draft.fixedPlaceName) {
+    placeDisplay = draft.fixedPlaceName;
+  } else if (draft.locationMode === 'candidate_vote') {
+    placeDisplay = '장소 후보 투표 예정';
+  }
+
+  const activityDisplay = draft.activityIds.length > 0 
+    ? draft.activityIds.join(' · ') // in real app we'd map ID to label
+    : '맛있는 거 먹기 · 카페 가기';
 
   return (
-    <ScreenShell hasBottomCTA className="gap-6 bg-bg-app">
+    <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
       <header className="flex flex-col gap-2 pt-2 px-5">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
@@ -27,7 +50,7 @@ export const ConfirmPlanScreen = () => {
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
               <span className="text-sm font-bold text-ink-hint">날짜</span>
-              <span className="font-semibold text-lg text-ink">6월 21일 (토)</span>
+              <span className="font-semibold text-lg text-ink">{dateDisplay}</span>
             </div>
             <button className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
@@ -37,7 +60,7 @@ export const ConfirmPlanScreen = () => {
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
               <span className="text-sm font-bold text-ink-hint">시간</span>
-              <span className="font-semibold text-lg text-ink">오후 6:30 또는 시간 미정</span>
+              <span className="font-semibold text-lg text-ink">{timeDisplay}</span>
             </div>
             <button className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
@@ -47,8 +70,7 @@ export const ConfirmPlanScreen = () => {
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
               <span className="text-sm font-bold text-ink-hint">장소</span>
-              <span className="font-semibold text-lg text-ink">후보 투표 예정</span>
-              <span className="text-sm text-ink-muted mt-0.5">성수동 조용한 카페, 한강공원 등</span>
+              <span className="font-semibold text-lg text-ink">{placeDisplay}</span>
             </div>
             <button className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
@@ -58,7 +80,7 @@ export const ConfirmPlanScreen = () => {
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
               <span className="text-sm font-bold text-ink-hint">하고 싶은 것</span>
-              <span className="font-semibold text-lg text-ink">맛있는 거 먹기 · 카페 가기</span>
+              <span className="font-semibold text-lg text-ink">{activityDisplay}</span>
             </div>
             <button className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
@@ -66,7 +88,7 @@ export const ConfirmPlanScreen = () => {
         </Card>
       </div>
 
-      <BottomCTA>
+      <BottomCTA withBottomNav>
         <Button 
           onClick={() => navigate('/app/meetings/demo/confirmed-share')} 
           size="full"
