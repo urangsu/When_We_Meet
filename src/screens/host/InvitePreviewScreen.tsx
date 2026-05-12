@@ -9,7 +9,6 @@ import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { categoryOptions } from '../../config/categoryOptions';
 import { getActivityDisplayItems } from '../../utils/activity';
 import { getDateMessageContext } from '../../utils/dateContext';
-import { getDateAwareHostMessageSuggestions } from '../../config/hostMessageSuggestions';
 import {
   getPlaceContext,
   getContextualInviteCopySuggestions,
@@ -50,21 +49,6 @@ export const InvitePreviewScreen = () => {
       </header>
 
       <div className="flex-1 overflow-y-auto no-scrollbar pb-10 gap-6 flex flex-col">
-        <section className="rounded-2xl border border-line bg-surface-warm p-4">
-          <p className="text-xs font-bold text-ink-hint mb-3">초대 문구 추천</p>
-          <div className="flex flex-wrap gap-2">
-            {smartSuggestions.map((suggestion) => (
-              <button
-                key={suggestion}
-                onClick={() => updateDraft({ hostMessage: suggestion })}
-                className="px-3 py-1.5 bg-surface text-ink text-xs font-semibold rounded-full border border-line shadow-soft"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        </section>
-        
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,7 +69,7 @@ export const InvitePreviewScreen = () => {
                 </h2>
               </div>
               <p className="text-lg font-medium text-ink/80 leading-relaxed max-w-[80%] whitespace-pre-wrap">
-                {draft.hostMessage || '다같이 모여서 맛있는 밥 먹자!'}
+                {draft.hostMessage || '편한 날 골라주면 제가 맞춰볼게요.'}
               </p>
             </div>
 
@@ -142,6 +126,41 @@ export const InvitePreviewScreen = () => {
             </div>
           </div>
         </motion.div>
+
+        <section className="rounded-2xl border border-line bg-surface p-4 shadow-soft">
+          <div className="mb-3">
+            <p className="text-sm font-bold text-ink">문구 바꿔보기</p>
+            <p className="mt-1 text-xs text-ink-hint">
+              만날 곳과 뭐 할지에 맞춰 가볍게 골라봤어요.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            {smartSuggestions.map((suggestion) => {
+              const isSelected = draft.hostMessage === suggestion;
+              return (
+                <button
+                  key={suggestion}
+                  onClick={() => updateDraft({ hostMessage: suggestion })}
+                  className={`
+                    rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition-all active:scale-[0.99]
+                    ${isSelected
+                      ? 'border-primary bg-primary-soft text-primary-deep'
+                      : 'border-line bg-surface-warm text-ink'
+                    }
+                  `}
+                >
+                  {suggestion}
+                  {isSelected && (
+                    <span className="mt-1 block text-[11px] font-bold text-primary-deep">
+                      현재 적용 중
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
       </div>
 
       <BottomCTA withBottomNav>
