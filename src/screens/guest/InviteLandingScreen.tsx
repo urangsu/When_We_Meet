@@ -55,7 +55,7 @@ export const InviteLandingScreen = () => {
           </h2>
           
           <p className="text-sm font-medium text-ink-muted leading-relaxed">
-            이번 주말, 같이 시간 맞춰볼까요?<br/>가능한 날짜와 하고 싶은 걸 가볍게 골라주세요.
+            같이 시간 맞춰볼까요?<br/>가능한 날짜와 하고 싶은 걸 가볍게 골라주세요.
           </p>
         </div>
 

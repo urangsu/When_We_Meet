@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import type { GuestResponseDraft, AttendanceStatus } from '../types/meeting';
-import type { ActivityOptionId } from '../types/meeting';
+import type { GuestResponseDraft } from '../types/meeting';
 
 interface GuestResponseDraftContextState {
   draft: GuestResponseDraft;

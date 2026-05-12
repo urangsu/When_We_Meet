@@ -19,10 +19,13 @@ export const TimeSetupScreen = () => {
   );
   
   const toggleCandidate = (time: string) => {
+    if (selectedMode === 'fixed') {
+        setSelectedCandidates([time]);
+        return;
+    }
+
     if (time === '직접 입력') {
         setSelectedCandidates(prev => prev.includes('직접 입력') ? prev.filter(t => t !== '직접 입력') : [...prev, '직접 입력']);
-    } else if (selectedMode === 'fixed') {
-      setSelectedCandidates([time]);
     } else {
       setSelectedCandidates((prev) => 
         prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time]
@@ -37,10 +40,14 @@ export const TimeSetupScreen = () => {
     (isCustomTimeSelected ? customTime.trim().length > 0 : selectedCandidates.length > 0);
 
   const handleNext = () => {
+    const baseTimeLabels = selectedCandidates.filter(
+      (time) => time !== '직접 입력'
+    );
+
     const normalizedTimeLabels =
-        selectedCandidates.includes('직접 입력') && customTime.trim()
-            ? [customTime.trim()]
-            : selectedCandidates.filter((time) => time !== '직접 입력');
+      isCustomTimeSelected && customTime.trim()
+        ? [...baseTimeLabels, customTime.trim()]
+        : baseTimeLabels;
 
     updateDraft({
       timeMode: selectedMode,

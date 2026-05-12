@@ -148,7 +148,7 @@ export const GuestAttendanceScreen = () => {
           onClick={handleNext} 
           size="full"
         >
-          {attendance === 'no' ? '응답 완료하기' : '다음 · 날짜 고르기'}
+          {attendance === 'no' ? '답장 보내기' : '다음 · 날짜 고르기'}
         </Button>
       </BottomCTA>
     </ScreenShell>

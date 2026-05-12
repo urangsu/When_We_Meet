@@ -31,7 +31,7 @@ export const GuestCompleteScreen = () => {
 
       <div className="flex flex-col gap-2 shrink-0">
         <h1 className="font-bold text-2xl">
-          {draft.guestName ? `${draft.guestName}님, ` : ''}답장 보냈어요!
+          {draft.nickname ? `${draft.nickname}님, ` : ''}답장 보냈어요!
         </h1>
         <p className="text-ink-muted text-sm px-4">의견을 모아서 확정되면 알려드릴게요.<br/>호스트가 링크를 공유할 때까지 기다려주세요.</p>
       </div>
@@ -40,8 +40,8 @@ export const GuestCompleteScreen = () => {
         <h3 className="font-bold text-sm text-ink-hint border-b border-line pb-2">내 답장 요약</h3>
         
         <div className="flex justify-between items-start gap-4">
-          <span className="text-sm font-medium text-ink-hint shrink-0">이름</span>
-          <span className="text-sm font-bold text-ink text-right">{draft.guestName || '(입력 안 함)'}</span>
+          <span className="text-sm font-medium text-ink-hint shrink-0">닉네임</span>
+          <span className="text-sm font-bold text-ink text-right">{draft.nickname || '(입력 안 함)'}</span>
         </div>
         
         <div className="flex justify-between items-start gap-4">
@@ -53,7 +53,7 @@ export const GuestCompleteScreen = () => {
 
         {draft.attendanceMessage && (
           <div className="flex justify-between items-start gap-4">
-            <span className="text-sm font-medium text-ink-hint shrink-0">메시지</span>
+            <span className="text-sm font-medium text-ink-hint shrink-0">답장</span>
             <span className="text-sm font-bold text-ink text-right break-words max-w-[200px]">"{draft.attendanceMessage}"</span>
           </div>
         )}

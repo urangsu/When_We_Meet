@@ -23,8 +23,6 @@ export const MeetingInfoScreen = () => {
     navigate('/app/create/place');
   };
 
-  const [isCustomMessage, setIsCustomMessage] = useState(false);
-
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
       <header className="flex items-center gap-4 pt-2">
