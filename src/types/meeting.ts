@@ -97,6 +97,7 @@ export interface GuestResponseDraft {
   attendance?: AttendanceStatus;
   attendanceMessage: string;
   dateLabels: string[];
+  suggestedDateLabels: string[];
   placeCandidate: string;
   activityIds: ActivityOptionId[];
   customActivity: string;

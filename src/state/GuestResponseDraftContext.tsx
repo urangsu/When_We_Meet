@@ -13,6 +13,7 @@ const defaultDraft: GuestResponseDraft = {
   attendance: undefined,
   attendanceMessage: '',
   dateLabels: [],
+  suggestedDateLabels: [],
   placeCandidate: '',
   activityIds: [],
   customActivity: '',

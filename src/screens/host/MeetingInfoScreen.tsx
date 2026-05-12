@@ -49,7 +49,7 @@ export const MeetingInfoScreen = () => {
             <textarea 
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="친구들에게 보낼 따뜻한 한마디"
+              placeholder="직접 써도 되고, 아래 문구를 골라도 좋아요."
               className="w-full p-4 pl-12 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all min-h-[100px] resize-none"
             />
             <AlignLeft className="absolute top-4 left-4 text-ink-hint" size={20} />
