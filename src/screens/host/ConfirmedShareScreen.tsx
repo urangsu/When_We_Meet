@@ -35,11 +35,11 @@ export const ConfirmedShareScreen = () => {
     timeDisplay = '시간 투표 예정';
   }
 
-  let placeDisplay = '장소 미정';
+  let placeDisplay = '만날 곳 미정';
   if (draft.locationMode === 'fixed' && draft.fixedPlaceName) {
     placeDisplay = draft.fixedPlaceName;
   } else if (draft.locationMode === 'candidate_vote') {
-    placeDisplay = '장소 후보 투표 예정';
+    placeDisplay = '만날 곳 투표 예정';
   }
 
   const activityItems = draft.activityIds.length > 0 
@@ -77,7 +77,7 @@ export const ConfirmedShareScreen = () => {
 
           <div className="flex flex-col items-center w-full gap-3 mt-2">
             <div className="flex w-full bg-bg-app rounded-xl p-3 items-center justify-between gap-4">
-              <span className="text-xs font-bold text-ink-hint whitespace-nowrap">장소</span>
+              <span className="text-xs font-bold text-ink-hint whitespace-nowrap">만날 곳</span>
               <span className="text-sm font-bold text-ink text-right">{placeDisplay}</span>
             </div>
             {activityItems.length > 0 && (

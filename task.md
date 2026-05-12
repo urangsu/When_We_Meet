@@ -100,6 +100,69 @@ Prototype Note:
 - [x] Display custom activity in preview/confirm/share
 - [x] Display guest custom activity in complete screen
 
+## Invite Link Policy
+
+MVP sharing principle:
+초대 링크는 카카오톡 단톡방, 인스타 DM, 문자 등 어디에나 공유될 수 있다.
+링크를 가진 사람은 앱 설치 없이 Guest Web에서 응답할 수 있다.
+
+Access modes:
+- link_anyone: 링크를 가진 사람은 누구나 응답 가능
+- approval_required: 호스트 승인 후 참여 가능, 추후 구현
+
+Safety limits:
+- maxResponses: 링크당 최대 응답 수
+- expiresAt: 링크 만료일
+- isClosed: 호스트가 링크 닫기 가능
+- duplicateGuard: 닉네임/기기/브라우저 기준 중복 응답 방지
+- hostCanDeleteResponse: 호스트가 잘못된 응답 삭제 가능
+
+Prototype:
+현재는 link_anyone 정책을 가정하되, 실제 제한 로직은 DB 연동 후 구현한다.
+
+## Share Channel Policy
+
+MVP:
+- Copy link
+- OS share sheet
+- KakaoTalk share via user action
+- Instagram DM copy text
+
+Important:
+MVP에서는 앱이 자동으로 카톡방이나 인스타 DM에 메시지를 발송하지 않는다.
+사용자가 직접 공유 대상을 선택하거나 링크를 복사해 보낸다.
+
+Kakao:
+카카오톡 공유는 추후 Kakao Share SDK로 구현한다.
+
+Instagram:
+인스타그램 DM은 MVP에서 자동 발송하지 않고, 공유 문구 복사/OS share 중심으로 처리한다.
+
+## Notification Policy
+
+Notification types:
+- 새 초대장을 받았어요
+- 친구가 응답했어요
+- 모두 응답했어요
+- 모임이 확정됐어요
+- 오늘은 모임이 있는 날이에요
+- 모임 1시간 전이에요
+- 아직 응답하지 않은 초대장이 있어요
+- 추천/이벤트 알림
+
+Settings:
+- 전체 알림
+- 초대장 알림
+- 응답 알림
+- 확정 알림
+- 모임 당일 알림
+- 추천/이벤트 알림
+
+Principle:
+사용자가 불편하지 않도록 추천/이벤트 알림은 별도 토글로 분리한다.
+전체 알림을 끄면 모든 알림이 꺼진다.
+중요 알림과 마케팅성 알림은 분리한다.
+
 ## 4. Phase C — Guest Experience
 
 Goal:

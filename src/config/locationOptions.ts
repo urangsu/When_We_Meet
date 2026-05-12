@@ -8,18 +8,18 @@ export const locationModeOptions: Array<{
 }> = [
   {
     id: 'undecided',
-    title: '장소는 아직 미정',
-    description: '날짜를 먼저 정하고 장소는 나중에 정할게요.',
+    title: '만날 곳은 아직 미정',
+    description: '날짜를 먼저 정하고 만날 곳은 나중에 정할게요.',
   },
   {
     id: 'fixed',
     title: '내가 정해둘게요',
-    description: '초대장에 장소를 미리 넣어둘게요.',
+    description: '초대장에 만날 곳을 미리 넣어둘게요.',
   },
   {
     id: 'candidate_vote',
-    title: '친구들에게 후보를 받을게요',
-    description: '참여자들이 장소 후보를 올리고 나중에 고를 수 있어요.',
+    title: '친구들에게 "여기 어때?"를 받아볼게요',
+    description: '참여자들이 만날 곳을 제안하고 나중에 고를 수 있어요.',
   },
   {
     id: 'recommend_later',

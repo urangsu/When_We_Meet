@@ -22,11 +22,11 @@ export const ConfirmPlanScreen = () => {
     timeDisplay = '시간 투표 예정';
   }
 
-  let placeDisplay = '장소 미정';
+  let placeDisplay = '만날 곳 미정';
   if (draft.locationMode === 'fixed' && draft.fixedPlaceName) {
     placeDisplay = draft.fixedPlaceName;
   } else if (draft.locationMode === 'candidate_vote') {
-    placeDisplay = '장소 후보 투표 예정';
+    placeDisplay = '만날 곳 투표 예정';
   }
 
   const activityItems = draft.activityIds.length > 0 
@@ -41,7 +41,7 @@ export const ConfirmPlanScreen = () => {
           <h1 className="font-bold text-2xl">이렇게 확정할까요?</h1>
         </div>
         <p className="text-ink-muted text-sm px-1">
-          날짜, 시간, 장소, 하고 싶은 것을 한 번 더 확인해요.
+          날짜, 시간, 만날 곳, 하고 싶은 것을 한 번 더 확인해요.
         </p>
       </header>
 
@@ -70,7 +70,7 @@ export const ConfirmPlanScreen = () => {
 
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
-              <span className="text-sm font-bold text-ink-hint">장소</span>
+              <span className="text-sm font-bold text-ink-hint">만날 곳</span>
               <span className="font-semibold text-lg text-ink">{placeDisplay}</span>
             </div>
             <button onClick={() => navigate('/app/create/place')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>

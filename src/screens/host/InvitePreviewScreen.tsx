@@ -64,8 +64,8 @@ export const InvitePreviewScreen = () => {
                     {draft.locationMode === 'fixed' && draft.fixedPlaceName 
                       ? draft.fixedPlaceName 
                       : draft.locationMode === 'candidate_vote'
-                        ? '장소 후보 투표 예정'
-                        : '장소 미정'}
+                        ? '만날 곳 투표 예정'
+                        : '만날 곳 미정'}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">

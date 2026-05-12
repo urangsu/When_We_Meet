@@ -35,7 +35,7 @@ export const PlaceSetupScreen = () => {
           <h1 className="font-bold text-2xl">어디서 만날까요?</h1>
         </div>
         <p className="text-ink-muted text-sm px-1">
-          장소를 정해도 되고, 친구들에게 후보를 받아도 좋아요.
+          만날 곳을 정해도 되고, 친구들에게 “여기 어때?”를 받아도 좋아요.
         </p>
       </header>
 
@@ -71,7 +71,7 @@ export const PlaceSetupScreen = () => {
 
         {selectedMode === 'fixed' && (
           <div className="flex flex-col gap-2 mt-4 animate-in fade-in slide-in-from-top-2">
-            <label className="text-sm font-bold text-ink ml-1">장소 이름</label>
+            <label className="text-sm font-bold text-ink ml-1">만날 곳</label>
             <input 
               value={fixedPlace}
               onChange={(e) => setFixedPlace(e.target.value)}
@@ -83,13 +83,13 @@ export const PlaceSetupScreen = () => {
 
         {selectedMode === 'candidate_vote' && (
           <div className="p-4 bg-bg-app rounded-xl text-sm text-ink-hint mt-2 animate-in fade-in slide-in-from-top-2">
-            친구들이 초대장에서 장소 후보를 추가하고 투표할 수 있어요.
+            친구들이 초대장에서 만날 곳 후보를 추가하고 투표할 수 있어요.
           </div>
         )}
 
         {selectedMode === 'undecided' && (
           <div className="p-4 bg-bg-app rounded-xl text-sm text-ink-hint mt-2 animate-in fade-in slide-in-from-top-2">
-            날짜를 먼저 정하고 나중에 장소를 알려줄 수 있어요.
+            날짜를 먼저 정하고 나중에 만날 곳을 알려줄 수 있어요.
           </div>
         )}
       </div>

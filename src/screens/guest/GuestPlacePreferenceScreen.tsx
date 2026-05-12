@@ -43,13 +43,13 @@ export const GuestPlacePreferenceScreen = () => {
           <h1 className="font-bold text-2xl">어디가 좋을까요?</h1>
         </div>
         <p className="text-ink-muted text-sm px-1">
-          좋아하는 장소나 하고 싶은 걸 가볍게 골라주세요.
+          가고 싶은 곳이나 하고 싶은 걸 가볍게 골라주세요.
         </p>
       </header>
 
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold text-ink ml-1">장소 후보 입력</label>
+          <label className="text-sm font-bold text-ink ml-1">만날 곳 후보 입력</label>
           <div className="relative">
             <textarea 
               value={candidates}
