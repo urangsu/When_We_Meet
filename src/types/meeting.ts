@@ -86,6 +86,7 @@ export interface CreateMeetingDraft {
   timeMode: TimeMode;
   timeLabels: string[];
   activityIds: ActivityOptionId[];
+  customActivity: string;
   themeId: ThemeId;
   hostName: string;
   hostColorId: ProfileColorId;

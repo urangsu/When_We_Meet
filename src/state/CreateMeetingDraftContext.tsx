@@ -19,6 +19,7 @@ const defaultDraft: CreateMeetingDraft = {
   timeMode: 'undecided',
   timeLabels: [],
   activityIds: [],
+  customActivity: '',
   themeId: 'calendar-kiss',
   hostName: '',
   hostColorId: 'black',

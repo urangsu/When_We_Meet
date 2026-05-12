@@ -5,14 +5,14 @@ import { Check, CalendarHeart } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
-import { getActivityLabels } from '../../utils/activity';
+import { getActivityLabels, getActivityDisplayText } from '../../utils/activity';
 
 export const GuestCompleteScreen = () => {
   const navigate = useNavigate();
   const { draft } = useGuestResponseDraft();
 
   const activityDisplay = draft.activityIds.length > 0 
-    ? getActivityLabels(draft.activityIds).join(', ')
+    ? getActivityDisplayText(draft.activityIds, draft.customActivity)
     : '선택 안 함';
 
   const attendanceLabel = 

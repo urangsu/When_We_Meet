@@ -8,3 +8,17 @@ export const getActivityLabel = (id: ActivityOptionId) => {
 export const getActivityLabels = (ids: ActivityOptionId[]) => {
   return ids.map(getActivityLabel);
 };
+
+export const getActivityDisplayText = (
+  ids: ActivityOptionId[],
+  customActivity?: string
+) => {
+  const labels = ids.map((id) => {
+    if (id === 'custom' && customActivity?.trim()) {
+      return customActivity.trim();
+    }
+    return getActivityLabel(id);
+  });
+
+  return labels.join(' · ');
+};

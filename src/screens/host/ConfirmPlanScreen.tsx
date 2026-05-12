@@ -6,7 +6,7 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Card } from '../../components/Card';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
-import { getActivityLabels } from '../../utils/activity';
+import { getActivityLabels, getActivityDisplayText } from '../../utils/activity';
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export const ConfirmPlanScreen = () => {
   }
 
   const activityDisplay = draft.activityIds.length > 0 
-    ? getActivityLabels(draft.activityIds).join(' · ')
+    ? getActivityDisplayText(draft.activityIds, draft.customActivity)
     : '맛있는 거 먹기 · 카페 가기';
 
   return (

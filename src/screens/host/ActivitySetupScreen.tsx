@@ -13,7 +13,7 @@ export const ActivitySetupScreen = () => {
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selectedActivities, setSelectedActivities] = useState<ActivityOptionId[]>(draft.activityIds);
-  const [customActivity, setCustomActivity] = useState('');
+  const [customActivity, setCustomActivity] = useState(draft.customActivity || '');
 
   const toggleActivity = (id: ActivityOptionId) => {
     setSelectedActivities((prev) => 
@@ -26,6 +26,7 @@ export const ActivitySetupScreen = () => {
   const handleNext = () => {
     updateDraft({
       activityIds: selectedActivities,
+      customActivity: selectedActivities.includes('custom') ? customActivity.trim() : '',
     });
     navigate('/app/create/theme');
   };

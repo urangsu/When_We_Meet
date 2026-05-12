@@ -7,7 +7,7 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { categoryOptions } from '../../config/categoryOptions';
-import { getActivityLabels } from '../../utils/activity';
+import { getActivityLabels, getActivityDisplayText } from '../../utils/activity';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export const InvitePreviewScreen = () => {
   const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
   
   const activityDisplay = draft.activityIds.length > 0 
-    ? getActivityLabels(draft.activityIds).join(' · ')
+    ? getActivityDisplayText(draft.activityIds, draft.customActivity)
     : '';
   
   return (

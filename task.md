@@ -94,8 +94,11 @@ Prototype Note:
 
 ### Phase B Final QA
 - [x] Add host activity selection step
-- [x] Connect confirm edit buttons to edit routes
+- [x] Connect ConfirmPlan edit buttons
 - [x] Fix B-stage draft integrity issues
+- [x] Persist host custom activity
+- [x] Display custom activity in preview/confirm/share
+- [x] Display guest custom activity in complete screen
 
 ## 4. Phase C — Guest Experience
 

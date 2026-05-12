@@ -9,9 +9,8 @@ export type MeetingCategory =
 export type ThemeId = 'calendar-kiss' | 'invite-spark' | 'brunch-letter' | 'office-escape';
 export type ProfileColorId = 'white' | 'black' | 'pink' | 'skyblue' | 'beige' | 'red' | 'gray';
 
+export type { AttendanceStatus } from './types/meeting';
 import type { AttendanceStatus } from './types/meeting';
-
-export type { AttendanceStatus };
 
 export type {
   CalendarProviderId,
