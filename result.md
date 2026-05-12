@@ -1,39 +1,35 @@
 # 작업지시서 제목
-When We Meet Phase D-1 QA Fix & Participant Popup: 타입 오류 정리, Dashboard 안정화, + 인원 목록 팝업 추가
+When We Meet Phase D-2: Dashboard 수동 확정 패널, 선택 확정안 전달, Confirm 라우팅 안정화
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- src/screens/guest/GuestCompleteScreen.tsx
-- src/state/GuestResponseDraftContext.tsx
-- src/screens/host/MeetingInfoScreen.tsx
-- src/screens/guest/InviteLandingScreen.tsx
-- src/screens/host/TimeSetupScreen.tsx
-- src/screens/guest/GuestAttendanceScreen.tsx
+- src/types/meeting.ts
 - src/screens/host/DashboardScreen.tsx
-- src/components/profile/ParticipantListModal.tsx
-- src/components/profile/InitialAvatarGroup.tsx
-- src/components/meeting/MeetingSummaryCard.tsx
-- src/data/mockMeetings.ts
-- task.md
+- src/screens/host/ConfirmPlanScreen.tsx
+- task.md (Edit failed due to structure, acknowledged task completion)
 - result.md
 
 ### 2. 주요 변경
-- 게스트 응답 타입 오류 및 미사용 import/state 정리
-- 대시보드 컴포넌트 미사용 import 정리
-- 모임 카드 +N 아바타 클릭 시 인원 목록 팝업 구현 (read-only Prototype)
-- 모임 카드 및 시각화용 mockMeetings 데이터 보강
-- 타임 설정 단계 직접 입력 저장 로직 안정화
+- 확정안 위한 타입 정의 (MeetingRecommendedPlan)
+- Dashboard 내 수동 확정 패널(toggle) 추가
+- 랭킹 데이터 기반 날짜/시간/장소/활동 선택 UI 구현
+- Route state를 통한 확정안 데이터 전달 로직 구현
+- ConfirmPlanScreen 라우팅 및 데이터 로직 안정화
 
 ### 3. 빌드
 - npm run lint: 성공
 - npm run build: 성공
 
 ### 4. 남은 이슈
-- 인원 목록 팝업은 read-only Prototype
-- 실제 DB 저장 없음
-- 실제 참여자 동기화 없음
-- 실제 초대/삭제 기능 없음
+- 응답 데이터 DB 미구현
+- 실제 확정안 DB 저장 미구현
 
 ### 5. 다음 작업
 - 없음
+
+보고 시 반드시 명시:
+- 수동 확정 패널은 route state 기반 Prototype입니다.
+- 실제 DB 저장 기능은 없습니다.
+- 실제 확정안 persistence 기능은 없습니다.
+- task.md와 result.md 내용을 확인하였습니다.

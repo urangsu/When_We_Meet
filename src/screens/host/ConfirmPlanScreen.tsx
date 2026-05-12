@@ -1,16 +1,24 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Edit2, Star } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { ChevronLeft, Star } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { mockResponses } from '../../data/mockResponses';
 import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
+import type { MeetingRecommendedPlan } from '../../types/meeting';
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const statePlan = (location.state as { selectedPlan?: MeetingRecommendedPlan } | null)
+    ?.selectedPlan;
+
   const { recommendedPlan } = aggregateMeetingResponses(mockResponses);
+
+  const plan = statePlan || recommendedPlan;
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
@@ -21,7 +29,7 @@ export const ConfirmPlanScreen = () => {
         </div>
         <div className="flex items-center gap-2 text-rose font-bold text-sm px-1">
           <Star size={16} fill="currentColor" />
-          친구들이 가장 많이 고른 조합이에요!
+          {plan.reason}
         </div>
       </header>
 
@@ -30,9 +38,8 @@ export const ConfirmPlanScreen = () => {
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
               <span className="text-sm font-bold text-ink-hint">날짜</span>
-              <span className="font-semibold text-lg text-ink">{recommendedPlan.dateLabel || '미정'}</span>
+              <span className="font-semibold text-lg text-ink">{plan.dateLabel || '미정'}</span>
             </div>
-            <button onClick={() => navigate('/app/create/dates')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
           
           <div className="h-px bg-ink-line/50 w-full" />
@@ -40,7 +47,7 @@ export const ConfirmPlanScreen = () => {
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
               <span className="text-sm font-bold text-ink-hint">시간</span>
-              <span className="font-semibold text-lg text-ink">{recommendedPlan.timeLabel || '미정'}</span>
+              <span className="font-semibold text-lg text-ink">{plan.timeLabel || '미정'}</span>
             </div>
           </div>
 
@@ -49,7 +56,7 @@ export const ConfirmPlanScreen = () => {
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1">
               <span className="text-sm font-bold text-ink-hint">만나는 곳</span>
-              <span className="font-semibold text-lg text-ink">{recommendedPlan.placeName || '미정'}</span>
+              <span className="font-semibold text-lg text-ink">{plan.placeName || '미정'}</span>
             </div>
           </div>
 
@@ -59,7 +66,7 @@ export const ConfirmPlanScreen = () => {
             <div className="flex flex-col gap-1">
               <span className="text-sm font-bold text-ink-hint">오늘의 계획</span>
               <div className="flex flex-col gap-1">
-                {recommendedPlan.activityLabels.map((item, idx) => (
+                {plan.activityLabels.map((item, idx) => (
                   <span key={idx} className="font-semibold text-lg text-ink leading-tight">{item}</span>
                 ))}
               </div>
@@ -69,7 +76,7 @@ export const ConfirmPlanScreen = () => {
       </div>
 
       <BottomCTA withBottomNav>
-        <Button onClick={() => navigate('/app/meetings/demo/confirmed')} size="full">
+        <Button onClick={() => navigate('/app/meetings/demo/confirmed-share')} size="full">
           이 모임으로 확정하기
         </Button>
       </BottomCTA>

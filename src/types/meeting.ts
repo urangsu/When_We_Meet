@@ -135,6 +135,14 @@ export interface VoteSummaryItem {
   score: number;
 }
 
+export interface MeetingRecommendedPlan {
+  dateLabel?: string;
+  timeLabel?: string;
+  placeName?: string;
+  activityLabels: string[];
+  reason: string;
+}
+
 export interface MeetingAggregationSummary {
   totalResponses: number;
   yesCount: number;
@@ -146,11 +154,5 @@ export interface MeetingAggregationSummary {
   placeRanking: VoteSummaryItem[];
   activityRanking: VoteSummaryItem[];
 
-  recommendedPlan: {
-    dateLabel?: string;
-    timeLabel?: string;
-    placeName?: string;
-    activityLabels: string[];
-    reason: string;
-  };
+  recommendedPlan: MeetingRecommendedPlan;
 }
