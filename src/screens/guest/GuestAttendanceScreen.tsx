@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Chip } from '../../components/Card';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle, Pencil } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
@@ -9,6 +9,7 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 import { responseMessagePresets } from '../../config/responseMessagePresets';
 import type { AttendanceStatus } from '../../types/meeting';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
+import { getInviteRoute } from '../../utils/inviteRoutes';
 
 export const GuestAttendanceScreen = () => {
   const { draft, updateResponseDraft } = useGuestResponseDraft();
@@ -16,6 +17,7 @@ export const GuestAttendanceScreen = () => {
   const [message, setMessage] = useState<string>(draft?.attendanceMessage || '');
   const [isCustomMessage, setIsCustomMessage] = useState(false);
   const navigate = useNavigate();
+  const { meetingId, token } = useParams();
 
   const options: Array<{
     id: AttendanceStatus;
@@ -54,9 +56,9 @@ export const GuestAttendanceScreen = () => {
     });
 
     if (attendance === 'no') {
-      navigate('/invite/demo/complete');
+      navigate(getInviteRoute({ meetingId, token }, 'complete'));
     } else {
-      navigate('/invite/demo/dates');
+      navigate(getInviteRoute({ meetingId, token }, 'dates'));
     }
   };
 

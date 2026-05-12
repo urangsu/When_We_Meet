@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
+import { getInviteRoute } from '../../utils/inviteRoutes';
 
 export const GuestPreferenceScreen = () => {
   const navigate = useNavigate();
+  const { meetingId, token } = useParams();
   const { draft, updateResponseDraft } = useGuestResponseDraft();
   const [requestNote, setRequestNote] = useState(draft?.requestNote || '');
 
@@ -15,7 +17,7 @@ export const GuestPreferenceScreen = () => {
     updateResponseDraft({
       requestNote,
     });
-    navigate('/invite/demo/complete');
+    navigate(getInviteRoute({ meetingId, token }, 'complete'));
   };
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { ChevronLeft, Star } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
@@ -8,17 +8,28 @@ import { Card } from '../../components/Card';
 import { mockResponses } from '../../data/mockResponses';
 import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
 import type { MeetingRecommendedPlan } from '../../types/meeting';
+import { mockMeetingRepository } from '../../repositories/meetingRepository';
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { meetingId } = useParams();
+  const resolvedMeetingId = meetingId || 'demo';
 
   const statePlan = (location.state as { selectedPlan?: MeetingRecommendedPlan } | null)
     ?.selectedPlan;
 
-  const { recommendedPlan } = aggregateMeetingResponses(mockResponses);
+  const aggregation = aggregateMeetingResponses(mockResponses); // Still partially using mockResponses for initial agg
+  const plan = statePlan || aggregation.recommendedPlan;
 
-  const plan = statePlan || recommendedPlan;
+  const handleConfirm = async () => {
+    await mockMeetingRepository.confirmPlan({
+      meetingId: resolvedMeetingId,
+      selectedPlan: plan,
+      confirmSource: statePlan ? 'manual' : 'recommended',
+    });
+    navigate(`/app/meetings/${resolvedMeetingId}/confirmed-share`);
+  };
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
@@ -76,7 +87,7 @@ export const ConfirmPlanScreen = () => {
       </div>
 
       <BottomCTA withBottomNav>
-        <Button onClick={() => navigate('/app/meetings/demo/confirmed-share')} size="full">
+        <Button onClick={handleConfirm} size="full">
           이 모임으로 확정하기
         </Button>
       </BottomCTA>

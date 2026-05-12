@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { getInviteShareUrl, getInviteHashPath } from '../../utils/shareUrls';
 
 export const ShareScreen = () => {
   const navigate = useNavigate();
@@ -13,10 +14,13 @@ export const ShareScreen = () => {
     window.alert(`${label} 기능은 실제 연동 전 Prototype입니다.`);
   };
 
+  const inviteUrl = getInviteShareUrl({ demo: true });
+  const displayUrl = getInviteHashPath({ demo: true });
+  
   const shareMessage = `수민이의 생일 모임 초대장이 도착했어요.
 편한 날 골라주면 제가 맞춰볼게요.
 
-초대장 보기: https://whenwemeet.app/invite/demo`;
+초대장 보기: ${inviteUrl}`;
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8 items-center justify-center text-center p-5 pt-20">
@@ -35,9 +39,9 @@ export const ShareScreen = () => {
 
       <div className="w-full bg-white border border-line rounded-2xl p-6 flex flex-col gap-6 mt-4 shadow-soft">
         <div className="flex items-center justify-between p-4 bg-surface-warm rounded-2xl">
-          <span className="text-ink-hint font-mono text-sm truncate mr-4">wwm.app/i/A4K-92F</span>
+          <span className="text-ink-hint font-mono text-sm truncate mr-4">whenwemeet.app{displayUrl}</span>
           <button onClick={() => {
-            navigator.clipboard.writeText("https://whenwemeet.app/invite/demo").then(() => alert("링크가 복사되었습니다."));
+            navigator.clipboard.writeText(inviteUrl).then(() => alert("링크가 복사되었습니다."));
           }} className="text-primary font-bold flex items-center gap-2 text-sm shrink-0">
             <Copy size={16} /> 복사
           </button>
@@ -66,11 +70,10 @@ export const ShareScreen = () => {
       </div>
 
       <BottomCTA withBottomNav>
-        <Button onClick={() => navigate('/app/meetings')} size="full" variant="outline">
+        <Button onClick={() => navigate('/app/meetings/demo/dashboard')} size="full" variant="outline">
           <LayoutDashboard size={20}/> 응답 현황 보기
         </Button>
       </BottomCTA>
     </ScreenShell>
-
   );
 };

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, Check, CalendarDays, Plus } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { getInviteRoute } from '../../utils/inviteRoutes';
 
 export const GuestDateVoteScreen = () => {
   const { draft, updateResponseDraft } = useGuestResponseDraft();
@@ -18,6 +19,7 @@ export const GuestDateVoteScreen = () => {
   const [showCalendarPanel, setShowCalendarPanel] = useState(false);
 
   const navigate = useNavigate();
+  const { meetingId, token } = useParams();
 
   // If host hasn't selected dates, use fallback. In real flow this comes from DB meeting data.
   const candidateDates = hostDraft.dateLabels.length > 0 
@@ -35,7 +37,7 @@ export const GuestDateVoteScreen = () => {
       dateLabels: selectedDates,
       suggestedDateLabels: guestAddedDates,
     });
-    navigate('/invite/demo/place');
+    navigate(getInviteRoute({ meetingId, token }, 'place'));
   };
 
   return (

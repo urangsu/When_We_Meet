@@ -1,38 +1,49 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { ChevronLeft, MoreVertical, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Button } from '../../components/Button';
-import { mockResponses } from '../../data/mockResponses';
 import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
 import { VoteRankingList } from '../../components/meeting/VoteRankingList';
 import { RecommendedPlanCard } from '../../components/meeting/RecommendedPlanCard';
-import type { MeetingRecommendedPlan } from '../../types/meeting';
+import type { MeetingRecommendedPlan, MeetingResponse } from '../../types/meeting';
+import { mockMeetingRepository } from '../../repositories/meetingRepository';
 
 export const DashboardScreen = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams();
   const resolvedMeetingId = meetingId || 'demo';
-  const aggregation = aggregateMeetingResponses(mockResponses);
+
+  const [responses, setResponses] = useState<MeetingResponse[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    mockMeetingRepository.getMeetingResponses(resolvedMeetingId).then((nextResponses) => {
+      if (mounted) setResponses(nextResponses);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [resolvedMeetingId]);
+
+  const aggregation = useMemo(() => aggregateMeetingResponses(responses), [responses]);
 
   const [isManualOpen, setIsManualOpen] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState(
-    aggregation.recommendedPlan.dateLabel || ''
-  );
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [selectedPlace, setSelectedPlace] = useState('');
+  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
 
-  const [selectedTime, setSelectedTime] = useState(
-    aggregation.recommendedPlan.timeLabel || ''
-  );
-
-  const [selectedPlace, setSelectedPlace] = useState(
-    aggregation.recommendedPlan.placeName || ''
-  );
-
-  const [selectedActivities, setSelectedActivities] = useState<string[]>(
-    aggregation.recommendedPlan.activityLabels || []
-  );
+  useEffect(() => {
+    if (aggregation.recommendedPlan) {
+      setSelectedDate(aggregation.recommendedPlan.dateLabel || '');
+      setSelectedTime(aggregation.recommendedPlan.timeLabel || '');
+      setSelectedPlace(aggregation.recommendedPlan.placeName || '');
+      setSelectedActivities(aggregation.recommendedPlan.activityLabels || []);
+    }
+  }, [aggregation]);
 
   const selectedPlan = useMemo<MeetingRecommendedPlan>(() => {
     return {

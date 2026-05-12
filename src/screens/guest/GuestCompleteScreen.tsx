@@ -1,23 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Check, CalendarHeart } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 import { getActivityDisplayItems } from '../../utils/activity';
+import { mockMeetingRepository } from '../../repositories/meetingRepository';
 
 export const GuestCompleteScreen = () => {
   const navigate = useNavigate();
+  const { meetingId, token } = useParams();
   const { draft } = useGuestResponseDraft();
 
   const activityItems = draft.activityIds.length > 0 
     ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
     : [];
 
-  const attendanceLabel = 
-    draft.attendance === 'yes' ? '갈게요' :
-    draft.attendance === 'no' ? '어려워요' : '모르겠어요';
+  const [submitState, setSubmitState] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
+
+  useEffect(() => {
+    if (submitState !== 'idle') return;
+
+    const submit = async () => {
+      setSubmitState('submitting');
+      try {
+        await mockMeetingRepository.submitGuestResponse({
+          meetingId: meetingId || 'demo',
+          inviteToken: token || 'demo-token',
+          idempotencyKey: `${meetingId || 'demo'}-${token || 'demo-token'}-${draft.nickname || 'anonymous'}`,
+          response: {
+            nickname: draft.nickname,
+            attendance: draft.attendance || 'maybe',
+            attendanceMessage: draft.attendanceMessage,
+            dateLabels: draft.dateLabels,
+            suggestedDateLabels: draft.suggestedDateLabels,
+            timeLabels: draft.timeLabels,
+            placeCandidate: draft.placeCandidate,
+            activityIds: draft.activityIds,
+            customActivity: draft.customActivity,
+            requestNote: draft.requestNote,
+            source: 'guest_web',
+          },
+        });
+        setSubmitState('submitted');
+      } catch {
+        setSubmitState('failed');
+      }
+    };
+    submit();
+  }, [submitState, meetingId, token, draft]);
 
   return (
     <ScreenShell className="items-center justify-center text-center p-5 pt-12">

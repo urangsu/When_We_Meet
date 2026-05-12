@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { activityOptions } from '../../config/activityOptions';
 import { Chip } from '../../components/Card';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 import type { ActivityOptionId } from '../../types/meeting';
+import { getInviteRoute } from '../../utils/inviteRoutes';
 
 export const GuestPlacePreferenceScreen = () => {
   const navigate = useNavigate();
+  const { meetingId, token } = useParams();
   const { draft, updateResponseDraft } = useGuestResponseDraft();
   const [candidates, setCandidates] = useState(draft?.placeCandidate || '');
   const [selectedActivities, setSelectedActivities] = useState<ActivityOptionId[]>(draft?.activityIds || []);
@@ -32,7 +34,7 @@ export const GuestPlacePreferenceScreen = () => {
       activityIds: selectedActivities,
       customActivity: isCustomSelected ? customActivity.trim() : '',
     });
-    navigate('/invite/demo/preferences');
+    navigate(getInviteRoute({ meetingId, token }, 'preferences'));
   };
 
   return (

@@ -1,45 +1,40 @@
-# When We Meet Phase E-1: Production Route 전환, 데이터 계약 분리, Demo 격리, 패키지/의존성 정리
+# When We Meet Phase E-2: 공유 링크 신뢰성 복구, Guest Production Route 유지, Repository 계약 도입
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- package.json
-- src/types/meeting.ts
-- src/utils/inviteRoutes.ts
-- src/App.tsx
-- src/screens/guest/InviteLandingScreen.tsx
+- src/utils/shareUrls.ts (신규)
+- src/repositories/meetingRepository.ts (신규)
+- src/screens/host/ShareScreen.tsx
 - src/screens/host/DashboardScreen.tsx
-- result.md
+- src/screens/host/ConfirmPlanScreen.tsx
+- src/screens/guest/GuestNicknameScreen.tsx
+- src/screens/guest/GuestAttendanceScreen.tsx
+- src/screens/guest/GuestDateVoteScreen.tsx
+- src/screens/guest/GuestPlacePreferenceScreen.tsx
+- src/screens/guest/GuestPreferenceScreen.tsx
+- src/screens/guest/GuestCompleteScreen.tsx
+- vite.config.ts
 
 ### 2. 주요 변경
-- 패키지명 `react-example`에서 `when-we-meet`으로 변경
-- ID 타입 계약(MeetingId, InviteToken, ResponseId, ConfirmedPlanId, UserId) 추가
-- `InviteLink`, `MeetingRecord`, `ConfirmedPlan` 등 실제 데이터 모델 인터페이스 추가
-- Guest 및 Host 생산 환경용 Production Route (/invite/:meetingId/:token, /app/meetings/:meetingId/...) 설계 및 구현
-- Route generation용 utility(`getInviteRoute`) 생성
-- `DashboardScreen`에서 `useParams`를 통해 `meetingId` 읽기 로직 준비
-- App.tsx에 Production Routes와 Demo Routes(fallback) 공존 구성
+- HashRouter-safe 공유 URL 생성을 위한 `getInviteShareUrl` 유틸리티 추가
+- `ShareScreen` 공유 링크를 HashRouter 기준으로 수정
+- `MeetingRepository` 인터페이스 및 mock 구현체 추가
+- `DashboardScreen`에서 mockResponses 직접 import를 제거하고 repository 사용
+- `ConfirmPlanScreen`에서 repository 확정 계약 사용
+- Guest Route 흐름을 `useParams`와 `getInviteRoute` 기반으로 리팩토링하여 `meetingId/token` 유지
+- Guest Complete 화면에서 `submitGuestResponse` repository 계약 호출 처리
+- `vite.config.ts`에서 AI API Key client define 제거 (server-only 준수)
 
 ### 3. 빌드
 - npm run lint: 성공
 - npm run build: 성공
 
 ### 4. 남은 이슈
-- 응답 데이터의 실제 DB persisting 기능 미구현
-- 모임 데이터의 실제 DB 저장 및 invite validation 미구현
-- Guest response idempotency 정책 문서화 필요 (Server-side 정책)
-- Demo 라우트 완전 격리 필요 (Phase E-2 작업 목표)
+- mock repository의 실제 DB 연결 필요
+- 진짜 invite link 및 response persistence 구현 필요
 
 ### 5. 다음 작업
-1. task.md 로드맵 정리 (Phase E-1 완료 기록)
-2. Demo route /demo 하위 완전 격리 (Phase E-2)
-3. 실제 DB 기반 Invite lookup 및 응답 검증 구현 (Phase E-2)
-4. ConfirmedPlan 및 Guest response persistence 구현
-
----
-보고 명시:
-- production route는 계약 준비 단계입니다.
-- 실제 DB lookup이나 데이터 관리는 이루어지지 않습니다.
-- 실제 invite token validation이나 guest response persistence 기능은 포함되어 있지 않습니다.
-- AI 추천 기능은 추후 server-only 방침에 따라 분리될 예정입니다.
-- task.md와 result.md 내용을 확인하였습니다.
+1. 실제 backend repository 구현 및 연동
+2. 진짜 invite token validation 로직 구현
+3. Guest response DB 저장소 연동
