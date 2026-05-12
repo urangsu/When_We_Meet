@@ -178,7 +178,8 @@ Tasks:
 - [ ] Add response completion card
 - [ ] Add app-save/create-own-meeting CTA
 - [x] Add unopened received invite letter UX
-- [x] Add open-envelope motion before entering invite
+- [x] Add simple sealed-invite tap feedback
+- [ ] Add full open-envelope motion after mobile QA
 - [x] Add received invite delete/manage mode
 - [ ] Consider swipe-to-delete after mobile QA
 
@@ -273,14 +274,15 @@ Tasks:
 
 ## 10. Immediate Next Tasks
 
-1. Finish Phase C & Expand Discovery
+1. Start Phase C — Guest Experience
    - Improve invite landing animation placeholder
-   - Add response completion card
+   - Add stronger response completion card
    - Add app-save/create-own-meeting CTA
-   - Brainstorm Phase D (Local Content / Discovery) layouts
+   - QA guest yes / maybe / no branch flows
 
-2. Phase A/B Watchlist
+2. Phase B/C Watchlist
    - Small-screen layout QA
    - BottomCTA overlap QA
    - Preview sync QA
    - Verify guest draft persistence through the complete flow
+   - Keep Phase D Discovery as roadmap only

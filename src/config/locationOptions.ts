@@ -24,7 +24,7 @@ export const locationModeOptions: Array<{
   {
     id: 'recommend_later',
     title: '나중에 추천받기',
-    description: '모임 성격에 맞는 장소 추천은 준비 중이에요.',
+    description: '모임 성격에 맞는 만날 곳 추천은 준비 중이에요.',
     disabled: true,
   },
 ];
