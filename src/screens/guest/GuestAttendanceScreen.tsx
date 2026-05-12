@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Chip } from '../../components/Card';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle } from 'lucide-react';
+import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle, Pencil } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
@@ -14,6 +14,7 @@ export const GuestAttendanceScreen = () => {
   const { draft, updateResponseDraft } = useGuestResponseDraft();
   const [attendance, setAttendance] = useState<AttendanceStatus | null>(draft?.attendance || null);
   const [message, setMessage] = useState<string>(draft?.attendanceMessage || '');
+  const [isCustomMessage, setIsCustomMessage] = useState(false);
   const navigate = useNavigate();
 
   const options: Array<{
@@ -49,7 +50,7 @@ export const GuestAttendanceScreen = () => {
   const handleNext = () => {
     updateResponseDraft({
       attendance: attendance ?? undefined,
-      attendanceMessage: message,
+      attendanceMessage: message.trim(),
     });
 
     if (attendance === 'no') {
@@ -61,8 +62,21 @@ export const GuestAttendanceScreen = () => {
 
   const handleAttendanceChange = (id: AttendanceStatus) => {
     setAttendance(id);
-    setMessage(''); // Reset message on change
+    setMessage('');
+    setIsCustomMessage(false);
   }
+
+  const handleCustomMessage = () => {
+    if (!isCustomMessage) {
+      setMessage('');
+    }
+    setIsCustomMessage(true);
+  };
+  
+  const handlePresetMessage = (msg: string) => {
+    setMessage(msg);
+    setIsCustomMessage(false);
+  };
 
   const currentPresets = attendance ? responseMessagePresets[attendance] : [];
 
@@ -73,7 +87,7 @@ export const GuestAttendanceScreen = () => {
       </header>
 
       <div>
-        <h1 className="font-bold text-2xl mb-2">참석하실 수 있나요?</h1>
+        <h1 className="font-bold text-2xl mb-2">함께할 수 있나요?</h1>
       </div>
 
       <div className="flex flex-col gap-3">
@@ -97,24 +111,34 @@ export const GuestAttendanceScreen = () => {
 
       {attendance && (
         <div className="flex flex-col gap-3 mt-4 animate-in fade-in slide-in-from-top-4">
-          <p className="font-bold text-ink-muted">호스트에게 남길 짧은 메시지 (선택)</p>
+          <p className="font-bold text-ink-muted">호스트에게 답장 남기기</p>
+          <p className="text-sm text-ink-hint -mt-2">고르거나, 직접 짧게 써도 좋아요.</p>
           <div className="flex flex-wrap gap-2">
             {currentPresets.map((msg) => (
               <Chip 
                 key={msg} 
-                selected={message === msg} 
-                onClick={() => setMessage(msg)}
+                selected={!isCustomMessage && message === msg} 
+                onClick={() => handlePresetMessage(msg)}
               >
                 {msg}
               </Chip>
             ))}
+            <Chip
+              selected={isCustomMessage}
+              onClick={handleCustomMessage}
+            >
+              <Pencil size={14} className="mr-1" />
+              직접 쓰기
+            </Chip>
           </div>
-          <input 
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="직접 입력할 수도 있어요"
-            className="mt-2 w-full p-4 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all"
-          />
+          {isCustomMessage && (
+            <input 
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="직접 입력할 수도 있어요"
+              className="mt-2 w-full p-4 rounded-2xl border border-line focus:border-primary focus:outline-none focus:shadow-sm transition-all"
+            />
+          )}
         </div>
       )}
 

@@ -31,44 +31,64 @@ export const GuestCompleteScreen = () => {
 
       <div className="flex flex-col gap-2 shrink-0">
         <h1 className="font-bold text-2xl">
-          {draft.nickname ? `${draft.nickname}님, ` : ''}응답 완료!
+          {draft.guestName ? `${draft.guestName}님, ` : ''}답장 보냈어요!
         </h1>
-        <p className="text-ink-muted text-sm px-4">호스트가 일정을 확정하면 다시 알려드릴게요.</p>
+        <p className="text-ink-muted text-sm px-4">의견을 모아서 확정되면 알려드릴게요.<br/>호스트가 링크를 공유할 때까지 기다려주세요.</p>
       </div>
 
-      <div className="w-full bg-white border border-ink-line rounded-2xl p-5 flex flex-col gap-3 mt-6 shadow-sm text-left">
-        <h3 className="font-bold text-sm text-ink-muted border-b border-ink-line pb-2">작성한 내용</h3>
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-medium text-ink-hint">참석 여부</span>
-          <span className="text-sm font-bold text-ink">{attendanceLabel}</span>
+      <div className="w-full bg-white border border-line rounded-2xl p-5 flex flex-col gap-3 mt-6 shadow-sm text-left">
+        <h3 className="font-bold text-sm text-ink-hint border-b border-line pb-2">내 답장 요약</h3>
+        
+        <div className="flex justify-between items-start gap-4">
+          <span className="text-sm font-medium text-ink-hint shrink-0">이름</span>
+          <span className="text-sm font-bold text-ink text-right">{draft.guestName || '(입력 안 함)'}</span>
         </div>
+        
+        <div className="flex justify-between items-start gap-4">
+          <span className="text-sm font-medium text-ink-hint shrink-0">참석 여부</span>
+          <span className="text-sm font-bold text-ink text-right">
+            {draft.attendance === 'yes' ? '갈게!' : draft.attendance === 'no' ? '못 가 서운해' : '아직 몰라'}
+          </span>
+        </div>
+
+        {draft.attendanceMessage && (
+          <div className="flex justify-between items-start gap-4">
+            <span className="text-sm font-medium text-ink-hint shrink-0">메시지</span>
+            <span className="text-sm font-bold text-ink text-right break-words max-w-[200px]">"{draft.attendanceMessage}"</span>
+          </div>
+        )}
+
         {draft.attendance !== 'no' && (
           <>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-ink-hint">선택한 날짜</span>
-              <span className="text-sm font-bold text-ink">
-                {draft.dateLabels.length > 0 ? `${draft.dateLabels.length}개 선택함` : '선택 안 함'}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-ink-hint">장소 후보</span>
-              <span className="text-sm font-bold text-ink max-w-[150px] truncate text-right">
-                {draft.placeCandidate || '선택 안 함'}
-              </span>
-            </div>
-            {activityItems.length > 0 ? (
-              <div className="flex justify-between items-start">
-                <span className="text-sm font-medium text-ink-hint whitespace-nowrap">뭐 할지</span>
-                <div className="flex flex-col gap-1 items-end text-sm font-bold text-ink max-w-[150px] text-right break-words">
+            {(draft.dateLabels && draft.dateLabels.length > 0) && (
+              <div className="flex justify-between items-start gap-4">
+                <span className="text-sm font-medium text-ink-hint shrink-0">선택한 날짜</span>
+                <span className="text-sm font-bold text-ink text-right break-words max-w-[200px]">{draft.dateLabels.join(', ')}</span>
+              </div>
+            )}
+
+            {(draft.suggestedDateLabels && draft.suggestedDateLabels.length > 0) && (
+              <div className="flex justify-between items-start gap-4">
+                <span className="text-sm font-medium text-ink-hint shrink-0">제안한 날짜</span>
+                <span className="text-sm font-bold text-primary-deep text-right break-words max-w-[200px]">{draft.suggestedDateLabels.join(', ')}</span>
+              </div>
+            )}
+
+            {draft.placeCandidate && (
+              <div className="flex justify-between items-start gap-4">
+                <span className="text-sm font-medium text-ink-hint shrink-0">만날 곳 후보</span>
+                <span className="text-sm font-bold text-ink text-right break-words max-w-[200px]">{draft.placeCandidate}</span>
+              </div>
+            )}
+
+            {activityItems.length > 0 && (
+              <div className="flex justify-between items-start gap-4">
+                <span className="text-sm font-medium text-ink-hint shrink-0">뭐 할지</span>
+                <div className="flex flex-col gap-1 items-end text-sm font-bold text-ink text-right break-words">
                   {activityItems.map((item, idx) => (
                     <span key={idx}>{item}</span>
                   ))}
                 </div>
-              </div>
-            ) : (
-              <div className="flex justify-between items-start">
-                <span className="text-sm font-medium text-ink-hint whitespace-nowrap">뭐 할지</span>
-                <span className="text-sm font-bold text-ink max-w-[150px] text-right break-words">선택 안 함</span>
               </div>
             )}
           </>

@@ -3,15 +3,31 @@ import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
-import { CalendarCheck } from 'lucide-react';
+import { CalendarCheck, ChevronLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const InviteLandingScreen = () => {
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate('/app');
+  };
+
   return (
     <ScreenShell hasBottomCTA className="gap-6 items-center justify-center p-5 bg-transparent">
       
+      <button
+        onClick={handleBack}
+        className="absolute left-5 top-5 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 border border-line shadow-soft text-ink"
+        aria-label="뒤로가기"
+      >
+        <ChevronLeft size={20} />
+      </button>
+
       <motion.div 
         className="w-full flex justify-center mb-[-12px] z-10"
         initial={{ opacity: 0, y: 12 }}

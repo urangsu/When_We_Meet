@@ -150,12 +150,47 @@
 -
 
 ### 5. 다음 작업
--
-```
+## 작업 결과
 
----
+### 1. 수정 파일
+- src/types/meeting.ts
+  - GuestResponseDraft 타입에 `suggestedDateLabels` 속성 추가
+- src/state/GuestResponseDraftContext.tsx
+  - GuestResponseDraft 기본값에 `suggestedDateLabels` 추가
+- src/screens/guest/InviteLandingScreen.tsx
+  - 좌상단 작은 back 버튼(`ChevronLeft`) 추가 및 `handleBack` 핸들러 구현
+- src/screens/guest/GuestAttendanceScreen.tsx
+  - “호스트에게 답장 남기기” 카피 반영
+  - “직접 쓰기” chip(`Pencil` 아이콘) 추가
+  - 직접 쓰기 선택 시에만 input 노출되도록 변경, 메시지 trim 처리 추가
+- src/screens/guest/GuestDateVoteScreen.tsx
+  - “다른 날짜 제안하기”, “달력으로 보기” 보조 액션 버튼 추가
+  - 날짜 추천 input 패널과 mock 달력(Prototype) 패널 추가
+  - 추천한 날짜(`guestAddedDates`) 저장 로직 구성
+- src/screens/guest/GuestCompleteScreen.tsx
+  - 완료 카피 “답장 보냈어요”로 수정
+  - 입력한 닉네임, 참석 여부, 메시지, 날짜, 장소 후보, 활동 등을 정리된 요약 UI로 변경 
+- task.md
+  - Phase C-2 작업 항목(Prototype) 및 주의사항 기록
 
-# 고정 보고 규칙
+### 2. 주요 변경
+- 게스트 랜딩 화면 진입 시 뒤로 가기 추가
+- 단순히 폼에 입력하는 느낌에서 초대된 게스트가 '답장'을 쓰는 톤앤매너로 개선
+- 날짜 후보를 추가하거나(mock) 달력으로 조회하는(mock) 새로운 게스트 상호작용 추가
+- 최종 제출 시 내 응답을 시각적으로 더 잘 요약해서 보여줌
+
+### 3. 빌드
+- npm run lint: 성공
+- npm run build: 성공
+
+### 4. 남은 이슈
+- 달력으로 보기는 UI 프로토타입이며, 실제 캘린더 연동 및 달력 기능 없음
+- 다른 날짜 추천(`guestAddedDates`)은 DB 연동 전까지 로컬 스테이트의 프로토타입으로만 동작
+- 실제 카카오/인스타 DM 등의 공유 및 API/DB 통신 없음
+
+### 5. 다음 작업
+- Phase B/C QA 및 화면 최적화 또는 DB 연동 준비 
+
 
 - “완료”라고 적은 항목은 실제 파일 기준으로 확인 가능해야 한다.
 - 기능이 Mock이면 `Mock`, `Prototype`, `Placeholder` 중 하나를 붙인다.
