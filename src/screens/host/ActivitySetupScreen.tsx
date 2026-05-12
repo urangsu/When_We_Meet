@@ -22,6 +22,7 @@ export const ActivitySetupScreen = () => {
   };
 
   const isCustomSelected = selectedActivities.includes('custom');
+  const isValid = !isCustomSelected || customActivity.trim().length > 0;
 
   const handleNext = () => {
     updateDraft({
@@ -36,22 +37,22 @@ export const ActivitySetupScreen = () => {
       <header className="flex flex-col gap-2 pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
-          <h1 className="font-bold text-2xl">만나서 뭐 하고 싶어요?</h1>
+          <h1 className="font-bold text-2xl">만나서 뭐 할까요?</h1>
         </div>
         <p className="text-ink-muted text-sm px-1">
-          식사, 카페, 산책처럼 가볍게 골라두면 초대장이 더 자연스러워져요.
+          가볍게 골라두면 친구들이 모임 분위기를 더 쉽게 알 수 있어요.
         </p>
       </header>
 
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-bold text-ink ml-1">하고 싶은 것 (여러 개 가능)</label>
+          <label className="text-sm font-bold text-ink ml-1">뭐 할지 골라두기</label>
           <div className="flex flex-wrap gap-2">
             {activityOptions.map((opt) => (
               <Chip
                 key={opt.id}
-                selected={selectedActivities.includes(opt.id as ActivityOptionId)}
-                onClick={() => toggleActivity(opt.id as ActivityOptionId)}
+                selected={selectedActivities.includes(opt.id)}
+                onClick={() => toggleActivity(opt.id)}
               >
                 {opt.label}
               </Chip>
@@ -74,6 +75,7 @@ export const ActivitySetupScreen = () => {
 
       <BottomCTA withBottomNav>
         <Button 
+          disabled={!isValid}
           onClick={handleNext} 
           size="full"
         >

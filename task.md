@@ -113,6 +113,10 @@ Tasks:
 - [x] Add activity preference vote
 - [ ] Add response completion card
 - [ ] Add app-save/create-own-meeting CTA
+- [x] Add unopened received invite letter UX
+- [x] Add open-envelope motion before entering invite
+- [x] Add received invite delete/manage mode
+- [ ] Consider swipe-to-delete after mobile QA
 
 ---
 
@@ -135,6 +139,8 @@ Ideas:
 Important:
 초기에는 자유 게시판이 아니라 운영자/큐레이션 콘텐츠로 시작한다.
 유저 게시판, 소모임, 동네 커뮤니티는 후기 단계에서 검토한다.
+Local Content / Discovery는 당장 구현하지 않는다.
+홈/모임 탭에 콘텐츠 피드를 넣는 방향은 추후 콘텐츠 운영 구조가 생긴 뒤 검토한다.
 
 ---
 

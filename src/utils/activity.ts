@@ -22,3 +22,17 @@ export const getActivityDisplayText = (
 
   return labels.join(' · ');
 };
+
+export const getActivityDisplayItems = (
+  ids: ActivityOptionId[],
+  customActivity?: string
+) => {
+  return ids
+    .map((id) => {
+      if (id === 'custom') {
+        return customActivity?.trim() || '';
+      }
+      return getActivityLabel(id);
+    })
+    .filter(Boolean);
+};

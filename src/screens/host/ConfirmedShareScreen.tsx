@@ -8,7 +8,7 @@ import { Card } from '../../components/Card';
 import { InitialAvatarGroup } from '../../components/profile/InitialAvatarGroup';
 import { mockMeetings } from '../../data/mockMeetings';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
-import { getActivityLabels, getActivityDisplayText } from '../../utils/activity';
+import { getActivityDisplayItems } from '../../utils/activity';
 
 export const ConfirmedShareScreen = () => {
   const navigate = useNavigate();
@@ -42,9 +42,9 @@ export const ConfirmedShareScreen = () => {
     placeDisplay = '장소 후보 투표 예정';
   }
 
-  const activityDisplay = draft.activityIds.length > 0 
-    ? getActivityDisplayText(draft.activityIds, draft.customActivity)
-    : '맛있는 거 먹기 · 카페 가기';
+  const activityItems = draft.activityIds.length > 0 
+    ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
+    : [];
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
@@ -80,10 +80,16 @@ export const ConfirmedShareScreen = () => {
               <span className="text-xs font-bold text-ink-hint whitespace-nowrap">장소</span>
               <span className="text-sm font-bold text-ink text-right">{placeDisplay}</span>
             </div>
-            <div className="flex w-full bg-bg-app rounded-xl p-3 items-center justify-between gap-4">
-              <span className="text-xs font-bold text-ink-hint whitespace-nowrap">할 것</span>
-              <span className="text-sm font-bold text-ink text-right break-words min-w-0 max-w-[150px]">{activityDisplay}</span>
-            </div>
+            {activityItems.length > 0 && (
+              <div className="flex w-full bg-bg-app rounded-xl p-3 items-center justify-between gap-4">
+                <span className="text-xs font-bold text-ink-hint whitespace-nowrap">뭐 할지</span>
+                <div className="flex flex-col gap-1 items-end text-sm font-bold text-ink text-right break-words min-w-0 max-w-[150px]">
+                  {activityItems.map((item, idx) => (
+                    <span key={idx}>{item}</span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col items-center gap-2 mt-2">

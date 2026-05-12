@@ -5,15 +5,15 @@ import { Check, CalendarHeart } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
-import { getActivityLabels, getActivityDisplayText } from '../../utils/activity';
+import { getActivityDisplayItems } from '../../utils/activity';
 
 export const GuestCompleteScreen = () => {
   const navigate = useNavigate();
   const { draft } = useGuestResponseDraft();
 
-  const activityDisplay = draft.activityIds.length > 0 
-    ? getActivityDisplayText(draft.activityIds, draft.customActivity)
-    : '선택 안 함';
+  const activityItems = draft.activityIds.length > 0 
+    ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
+    : [];
 
   const attendanceLabel = 
     draft.attendance === 'yes' ? '갈게요' :
@@ -56,12 +56,21 @@ export const GuestCompleteScreen = () => {
                 {draft.placeCandidate || '선택 안 함'}
               </span>
             </div>
-            <div className="flex justify-between items-start">
-              <span className="text-sm font-medium text-ink-hint whitespace-nowrap">하고 싶은 것</span>
-              <span className="text-sm font-bold text-ink max-w-[150px] text-right break-words">
-                {activityDisplay}
-              </span>
-            </div>
+            {activityItems.length > 0 ? (
+              <div className="flex justify-between items-start">
+                <span className="text-sm font-medium text-ink-hint whitespace-nowrap">뭐 할지</span>
+                <div className="flex flex-col gap-1 items-end text-sm font-bold text-ink max-w-[150px] text-right break-words">
+                  {activityItems.map((item, idx) => (
+                    <span key={idx}>{item}</span>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-between items-start">
+                <span className="text-sm font-medium text-ink-hint whitespace-nowrap">뭐 할지</span>
+                <span className="text-sm font-bold text-ink max-w-[150px] text-right break-words">선택 안 함</span>
+              </div>
+            )}
           </>
         )}
       </div>

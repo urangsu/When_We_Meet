@@ -7,7 +7,7 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { categoryOptions } from '../../config/categoryOptions';
-import { getActivityLabels, getActivityDisplayText } from '../../utils/activity';
+import { getActivityDisplayItems } from '../../utils/activity';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
@@ -16,9 +16,9 @@ export const InvitePreviewScreen = () => {
   const selectedCategory = categoryOptions.find(c => c.id === draft.category);
   const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
   
-  const activityDisplay = draft.activityIds.length > 0 
-    ? getActivityDisplayText(draft.activityIds, draft.customActivity)
-    : '';
+  const activityItems = draft.activityIds.length > 0 
+    ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
+    : [];
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
@@ -86,10 +86,14 @@ export const InvitePreviewScreen = () => {
                     </span>
                   </div>
                 )}
-                {activityDisplay && (
-                  <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">
-                    <span className="text-rose">할 것:</span>
-                    <span>{activityDisplay}</span>
+                {activityItems.length > 0 && (
+                  <div className="flex flex-col gap-2 bg-white/60 backdrop-blur-sm self-start px-4 py-3 rounded-2xl shadow-sm">
+                    <span className="text-xs font-bold text-rose uppercase tracking-widest leading-none">뭐 할지</span>
+                    <div className="flex flex-col gap-1">
+                      {activityItems.map((item, idx) => (
+                        <span key={idx} className="text-sm font-bold text-ink leading-tight">{item}</span>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

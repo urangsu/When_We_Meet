@@ -6,7 +6,7 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Card } from '../../components/Card';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
-import { getActivityLabels, getActivityDisplayText } from '../../utils/activity';
+import { getActivityDisplayItems } from '../../utils/activity';
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
@@ -29,9 +29,9 @@ export const ConfirmPlanScreen = () => {
     placeDisplay = '장소 후보 투표 예정';
   }
 
-  const activityDisplay = draft.activityIds.length > 0 
-    ? getActivityDisplayText(draft.activityIds, draft.customActivity)
-    : '맛있는 거 먹기 · 카페 가기';
+  const activityItems = draft.activityIds.length > 0 
+    ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
+    : [];
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
@@ -76,15 +76,22 @@ export const ConfirmPlanScreen = () => {
             <button onClick={() => navigate('/app/create/place')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
           </div>
 
-          <div className="h-px bg-ink-line/50 w-full" />
-
-          <div className="flex justify-between items-start">
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-bold text-ink-hint">하고 싶은 것</span>
-              <span className="font-semibold text-lg text-ink">{activityDisplay}</span>
-            </div>
-            <button onClick={() => navigate('/app/create/activity')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
-          </div>
+          {activityItems.length > 0 && (
+            <>
+              <div className="h-px bg-ink-line/50 w-full" />
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-bold text-ink-hint">뭐 할지</span>
+                  <div className="flex flex-col gap-1">
+                    {activityItems.map((item, idx) => (
+                      <span key={idx} className="font-semibold text-lg text-ink leading-tight">{item}</span>
+                    ))}
+                  </div>
+                </div>
+                <button onClick={() => navigate('/app/create/activity')} className="p-2 text-ink-hint hover:text-ink transition-colors bg-bg-app rounded-full"><Edit2 size={16} /></button>
+              </div>
+            </>
+          )}
 
         </Card>
       </div>
