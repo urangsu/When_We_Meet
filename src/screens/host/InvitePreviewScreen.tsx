@@ -10,6 +10,10 @@ import { categoryOptions } from '../../config/categoryOptions';
 import { getActivityDisplayItems } from '../../utils/activity';
 import { getDateMessageContext } from '../../utils/dateContext';
 import { getDateAwareHostMessageSuggestions } from '../../config/hostMessageSuggestions';
+import {
+  getPlaceContext,
+  getContextualInviteCopySuggestions,
+} from '../../config/contextualInviteCopy';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
@@ -22,8 +26,21 @@ export const InvitePreviewScreen = () => {
     ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
     : [];
 
-  const messageContext = getDateMessageContext(draft.dateLabels, draft.timeLabels, draft.activityIds);
-  const smartSuggestions = getDateAwareHostMessageSuggestions(messageContext);
+  const dateContext = getDateMessageContext(
+    draft.dateLabels,
+    draft.timeLabels,
+    draft.activityIds
+  );
+
+  const smartSuggestions = getContextualInviteCopySuggestions({
+    placeContext: getPlaceContext(draft.fixedPlaceName),
+    activityIds: draft.activityIds,
+    customActivity: draft.customActivity,
+    hasWeekendDate: dateContext.hasWeekendDate,
+    hasWeekdayDate: dateContext.hasWeekdayDate,
+    hasEveningTime: dateContext.hasEveningTime,
+    hasLunchTime: dateContext.hasLunchTime,
+  });
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">

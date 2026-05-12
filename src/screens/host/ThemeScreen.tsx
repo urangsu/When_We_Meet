@@ -26,27 +26,32 @@ export const ThemeScreen = () => {
         <h1 className="font-bold text-2xl">어떤 분위기가 좋은가요?</h1>
       </header>
 
-      <div className="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 no-scrollbar auto-cols-max">
+      <div className="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 no-scrollbar">
         {themeOptions.map((theme) => (
           <motion.button
             key={theme.id}
             whileTap={{ scale: 0.96 }}
             onClick={() => setSelected(theme.id)}
             className={`
-              relative min-w-[88px] h-[104px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
-              ${selected === theme.id ? 'border-rose shadow-sm text-rose-deep' : 'border-ink-line text-ink hover:border-ink/30'}
+              relative min-w-[132px] h-[96px] rounded-2xl border p-4 text-left transition-all bg-white shrink-0
+              ${selected === theme.id ? 'border-primary shadow-soft text-primary-deep' : 'border-line text-ink hover:border-ink/30'}
             `}
           >
-            <div className="mb-4">
-              <theme.icon size={22} className={selected === theme.id ? 'text-rose' : 'text-ink-hint'} />
+            <div className="mb-2">
+              <theme.icon size={20} className={selected === theme.id ? 'text-primary' : 'text-ink-hint'} />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-[13px] leading-tight">
-                {theme.lines[0]}<br/>{theme.lines[1]}
+              <span className="font-bold text-[14px] leading-tight whitespace-nowrap">
+                {theme.label}
               </span>
+              {theme.description && (
+                <span className="mt-1 block text-[11px] text-ink-hint whitespace-nowrap">
+                  {theme.description}
+                </span>
+              )}
             </div>
             {selected === theme.id && (
-              <div className="absolute top-3 right-3 text-rose">
+              <div className="absolute top-3 right-3 text-primary">
                 <Check size={16} strokeWidth={3} />
               </div>
             )}
