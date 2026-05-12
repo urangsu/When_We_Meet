@@ -1,34 +1,39 @@
 # 작업지시서 제목
-When We Meet Phase D-1: 응답 데이터 구조 정리, Host Dashboard 집계 고도화, 확정 플로우 안정화
+When We Meet Phase D-1 QA Fix & Participant Popup: 타입 오류 정리, Dashboard 안정화, + 인원 목록 팝업 추가
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- src/types/meeting.ts
-- src/data/mockResponses.ts
-- src/utils/meetingAggregation.ts
-- src/components/meeting/VoteRankingList.tsx
-- src/components/meeting/RecommendedPlanCard.tsx
+- src/screens/guest/GuestCompleteScreen.tsx
+- src/state/GuestResponseDraftContext.tsx
+- src/screens/host/MeetingInfoScreen.tsx
+- src/screens/guest/InviteLandingScreen.tsx
+- src/screens/host/TimeSetupScreen.tsx
+- src/screens/guest/GuestAttendanceScreen.tsx
 - src/screens/host/DashboardScreen.tsx
-- src/screens/host/ConfirmPlanScreen.tsx
+- src/components/profile/ParticipantListModal.tsx
+- src/components/profile/InitialAvatarGroup.tsx
+- src/components/meeting/MeetingSummaryCard.tsx
+- src/data/mockMeetings.ts
 - task.md
 - result.md
 
 ### 2. 주요 변경
-- 게스트 응답 데이터 모델 정의 (MeetingResponse)
-- 현실적인 Mock Response 데이터셋 구축
-- 응답 집계 유틸리티(가중치 점수 방식) 구현
-- Host Dashboard 고도화 (응답 현황, 추천 확정안 카드, 날짜/시간/장소/활동 랭킹)
-- ConfirmPlanScreen 확정 플로우 안정화
+- 게스트 응답 타입 오류 및 미사용 import/state 정리
+- 대시보드 컴포넌트 미사용 import 정리
+- 모임 카드 +N 아바타 클릭 시 인원 목록 팝업 구현 (read-only Prototype)
+- 모임 카드 및 시각화용 mockMeetings 데이터 보강
+- 타임 설정 단계 직접 입력 저장 로직 안정화
 
 ### 3. 빌드
 - npm run lint: 성공
 - npm run build: 성공
 
 ### 4. 남은 이슈
-- 후보 추가 / 달력 보기는 Prototype
-- 응답 데이터 DB 미구현
-- 실제 확정안 DB 미저장
+- 인원 목록 팝업은 read-only Prototype
+- 실제 DB 저장 없음
+- 실제 참여자 동기화 없음
+- 실제 초대/삭제 기능 없음
 
 ### 5. 다음 작업
 - 없음

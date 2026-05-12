@@ -6,9 +6,10 @@ interface InitialAvatarGroupProps {
   participants: Participant[];
   totalCount: number;
   maxVisible?: number;
+  onOpenList?: () => void;
 }
 
-export const InitialAvatarGroup = ({ participants, totalCount, maxVisible = 2 }: InitialAvatarGroupProps) => {
+export const InitialAvatarGroup = ({ participants, totalCount, maxVisible = 2, onOpenList }: InitialAvatarGroupProps) => {
   const visibleParticipants = participants.slice(0, maxVisible);
   const remainingCount = totalCount - visibleParticipants.length;
 
@@ -24,9 +25,17 @@ export const InitialAvatarGroup = ({ participants, totalCount, maxVisible = 2 }:
         </div>
       ))}
       {remainingCount > 0 && (
-        <div className="relative z-10 w-8 h-8 rounded-full border-2 border-white bg-white text-ink-hint text-[10px] font-bold flex items-center justify-center shadow-sm">
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenList?.();
+          }}
+          className="relative z-10 w-8 h-8 rounded-full border-2 border-white bg-white text-ink-hint text-[10px] font-bold flex items-center justify-center shadow-sm"
+          aria-label={`인원 ${totalCount}명 보기`}
+        >
           +{remainingCount}
-        </div>
+        </button>
       )}
     </div>
   );

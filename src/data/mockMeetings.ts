@@ -12,6 +12,12 @@ export const mockMeetings: Meeting[] = [
     participants: [
       { id: 'p1', name: '유라', colorId: 'beige' },
       { id: 'p2', name: '지수', colorId: 'gray' },
+      { id: 'p3', name: '민지', colorId: 'pink' },
+      { id: 'p4', name: '도영', colorId: 'skyblue' },
+      { id: 'p5', name: '수민', colorId: 'black' },
+      { id: 'p6', name: '은지', colorId: 'red' },
+      { id: 'p7', name: '하린', colorId: 'white' },
+      { id: 'p8', name: '정우', colorId: 'beige' },
     ]
   },
   { 
@@ -23,8 +29,10 @@ export const mockMeetings: Meeting[] = [
     status: 'waiting', 
     guests: 4,
     participants: [
-      { id: 'p3', name: '도영', colorId: 'skyblue' },
-      { id: 'p4', name: '은지', colorId: 'pink' },
+      { id: 'p9', name: '도영', colorId: 'skyblue' },
+      { id: 'p10', name: '은지', colorId: 'pink' },
+      { id: 'p11', name: '지수', colorId: 'gray' },
+      { id: 'p12', name: '유라', colorId: 'beige' },
     ]
   },
   { 
@@ -36,8 +44,12 @@ export const mockMeetings: Meeting[] = [
     status: 'past', 
     guests: 6,
     participants: [
-      { id: 'p5', name: '민수', colorId: 'black' },
-      { id: 'p6', name: '수진', colorId: 'red' },
+      { id: 'p13', name: '민수', colorId: 'black' },
+      { id: 'p14', name: '수진', colorId: 'red' },
+      { id: 'p15', name: '하린', colorId: 'white' },
+      { id: 'p16', name: '정우', colorId: 'beige' },
+      { id: 'p17', name: '민지', colorId: 'pink' },
+      { id: 'p18', name: '도영', colorId: 'skyblue' },
     ]
   },
 ];

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Clock, MessageCircle } from 'lucide-react';
 import type { Meeting } from '../../types/meeting';
 import { Card } from '../Card';
 import { InitialAvatarGroup } from '../profile/InitialAvatarGroup';
+import { ParticipantListModal } from '../profile/ParticipantListModal';
 
 interface MeetingSummaryCardProps {
   meeting: Meeting;
@@ -31,6 +32,7 @@ const statusMeta = {
 
 export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting, variant = 'home', onOpen }) => {
   const meta = statusMeta[meeting.status] || statusMeta.ongoing;
+  const [isParticipantModalOpen, setIsParticipantModalOpen] = useState(false);
 
   return (
     <Card 
@@ -45,13 +47,21 @@ export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting,
           </div>
         </div>
         {variant === 'home' && (
-           <InitialAvatarGroup participants={meeting.participants} totalCount={meeting.guests} />
+           <InitialAvatarGroup 
+              participants={meeting.participants} 
+              totalCount={meeting.guests} 
+              onOpenList={() => setIsParticipantModalOpen(true)}
+            />
         )}
       </div>
       
       <div className={`flex gap-2 items-center ${variant === 'list' ? 'justify-between' : ''}`}>
         {variant === 'list' && (
-          <InitialAvatarGroup participants={meeting.participants} totalCount={meeting.guests} />
+          <InitialAvatarGroup 
+            participants={meeting.participants} 
+            totalCount={meeting.guests} 
+            onOpenList={() => setIsParticipantModalOpen(true)}
+          />
         )}
         <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1.5 ${meta.className}`}>
           {meta.label}
@@ -63,6 +73,13 @@ export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting,
           현황 보기
         </button>
       </div>
+
+      <ParticipantListModal
+        open={isParticipantModalOpen}
+        participants={meeting.participants}
+        totalCount={meeting.guests}
+        onClose={() => setIsParticipantModalOpen(false)}
+      />
     </Card>
   );
 };

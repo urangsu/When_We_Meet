@@ -1,6 +1,5 @@
 import React from 'react';
-import { ChevronLeft, MoreVertical, Star } from 'lucide-react';
-import { motion } from 'motion/react';
+import { ChevronLeft, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';

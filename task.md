@@ -115,6 +115,8 @@ Tasks:
 - [x] Add response aggregation utility
 - [x] Improve Host Dashboard with ranking summaries
 - [x] Add recommended plan card
+- [x] Add participant list popup from +N avatar group
+- [x] Keep participant popup read-only
 - [ ] Persist responses in DB
 - [ ] Connect real invite link responses
 - [ ] Save confirmed plan to DB
