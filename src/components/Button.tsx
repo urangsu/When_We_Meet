@@ -14,11 +14,11 @@ export const Button = ({ variant = 'primary', size = 'md', children, className =
   const baseStyles = "rounded-2xl font-semibold transition-all flex items-center justify-center gap-2 active:scale-[0.98]";
   
   const variants = {
-    primary: "bg-rose text-white active:bg-rose-deep",
-    secondary: "bg-white text-ink border border-ink-line",
-    ghost: "bg-transparent text-ink-muted active:bg-ink-line",
-    outline: "bg-white border border-ink-line text-ink",
-    decline: "bg-white border border-ink-line text-danger active:bg-danger-bg"
+    primary: "bg-primary text-white shadow-soft active:bg-primary-deep",
+    secondary: "bg-surface text-ink border border-line shadow-soft",
+    ghost: "bg-transparent text-ink-muted active:bg-line",
+    outline: "bg-surface border border-line text-ink",
+    decline: "bg-surface border border-line text-danger active:bg-danger-bg"
   };
 
   const sizes = {
@@ -33,10 +33,7 @@ export const Button = ({ variant = 'primary', size = 'md', children, className =
       whileTap={props.disabled ? undefined : { scale: 0.98 }}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className} ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       {...props}
-      onClick={(e) => {
-        console.log('[Button click]', children);
-        props.onClick?.(e);
-      }}
+      onClick={props.onClick}
     >
       {children}
     </motion.button>

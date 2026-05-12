@@ -9,8 +9,8 @@ export interface ThemeOption {
 }
 
 export const themeOptions: ThemeOption[] = [
-  { id: 'calendar-kiss', label: 'Calendar Kiss', lines: ['Calendar', 'Kiss'], icon: CalendarCheck },
-  { id: 'invite-spark', label: 'Invite Spark', lines: ['Invite', 'Spark'], icon: Sparkles },
-  { id: 'brunch-letter', label: 'Brunch Letter', lines: ['Brunch', 'Letter'], icon: MailOpen },
-  { id: 'office-escape', label: 'Office Escape', lines: ['Office', 'Escape'], icon: Briefcase },
+  { id: 'calendar-kiss', label: '포근한 약속', lines: ['포근한', '약속'], icon: CalendarCheck },
+  { id: 'invite-spark', label: '반짝이는 초대', lines: ['반짝이는', '초대'], icon: Sparkles },
+  { id: 'brunch-letter', label: '식사 편지', lines: ['식사', '편지'], icon: MailOpen },
+  { id: 'office-escape', label: '퇴근 후 만남', lines: ['퇴근 후', '만남'], icon: Briefcase },
 ];

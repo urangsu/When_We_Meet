@@ -272,7 +272,37 @@ Tasks:
 
 ---
 
-## 10. Immediate Next Tasks
+## 10. Theme Roadmap
+
+### Default — Soft Social
+- Warm ivory background
+- Muted rose primary
+- Soft card shadows
+- Friendly Korean copy
+- Target: 20-35 social planning users
+
+### Future — Calm Utility
+- Lower saturation green/blue-gray primary
+- More neutral copy
+- Less decorative motion
+- Stronger information hierarchy
+- Target: users who prefer practical, low-emotion planning UX
+
+### Future — Editorial Mono
+- Black and white editorial invitation style
+- Strong typography
+- Thin borders
+- Minimal shadows
+- Reduced radius
+- Target: premium / gender-neutral / formal invite use cases
+
+Implementation note:
+현재는 테마 로드맵만 기록한다.
+실제 theme switching, dark mode, user preference 저장은 추후 구현한다.
+
+---
+
+## 11. Immediate Next Tasks
 
 1. Start Phase C — Guest Experience
    - Improve invite landing animation placeholder

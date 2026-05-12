@@ -33,7 +33,7 @@ export const ReceivedInviteCard = ({
           onClick={() => onDelete(invite.id)}
           className="absolute left-0 z-10 p-2"
         >
-          <div className="h-8 w-8 rounded-full bg-rose flex items-center justify-center shadow-sm">
+          <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-soft">
             <Minus size={18} className="text-white" />
           </div>
         </motion.button>
@@ -46,18 +46,18 @@ export const ReceivedInviteCard = ({
         whileTap={!isManaging ? { scale: 0.985 } : {}}
       >
         {isUnopened ? (
-          <div className="relative h-[104px] rounded-2xl border border-rose/20 bg-gradient-to-br from-[#FFF7F2] to-[#FFE9EE] p-4 shadow-sm overflow-hidden">
-            <div className="absolute right-4 top-4 rounded-full bg-white/75 px-2 py-1 text-[10px] font-bold text-rose-deep">
+          <div className="relative h-[104px] rounded-2xl border border-primary/20 bg-gradient-to-br from-surface-warm to-primary-soft p-4 shadow-soft overflow-hidden">
+            <div className="absolute right-4 top-4 rounded-full bg-white/75 px-2 py-1 text-[10px] font-bold text-primary-deep shadow-sm">
               NEW
             </div>
 
             <div className="flex h-full items-center gap-4 pr-12">
-              <div className="h-11 w-11 shrink-0 rounded-full bg-white shadow-sm border border-rose/20 flex items-center justify-center">
-                <CalendarCheck size={20} className="text-rose" />
+              <div className="h-11 w-11 shrink-0 rounded-full bg-white shadow-soft border border-primary/20 flex items-center justify-center">
+                <CalendarCheck size={20} className="text-primary" />
               </div>
 
               <div className="flex min-w-0 flex-col gap-1">
-                <p className="text-xs font-bold text-rose-deep truncate">
+                <p className="text-xs font-bold text-primary-deep truncate">
                   {invite.fromName}님이 초대장을 보냈어요
                 </p>
                 <p className="text-sm font-bold text-ink truncate">
@@ -70,7 +70,7 @@ export const ReceivedInviteCard = ({
             </div>
           </div>
         ) : (
-          <div className="bg-white border border-ink-line rounded-2xl p-5 shadow-sm flex justify-between items-center h-[104px]">
+          <div className="bg-surface border border-line rounded-2xl p-5 shadow-soft flex justify-between items-center h-[104px]">
             <div className="flex flex-col gap-1">
               <span className="text-xs font-bold text-ink-hint">{invite.fromName}님이 보낸 초대장</span>
               <h3 className="font-bold text-lg text-ink truncate max-w-[200px]">{invite.title}</h3>
