@@ -36,12 +36,27 @@ export interface ActivityOption {
   label: string;
 }
 
+export type TimeMode =
+  | 'undecided'
+  | 'fixed'
+  | 'candidate_vote';
+
+export interface TimeCandidate {
+  id: string;
+  label: string;
+  votes?: number;
+}
+
 export interface MeetingPlan {
   dateLabel?: string;
   timeLabel?: string;
+  timeMode?: TimeMode;
+  timeCandidates?: TimeCandidate[];
+
   locationMode: LocationMode;
   fixedPlaceName?: string;
   placeCandidates?: PlaceCandidate[];
+
   activityIds?: ActivityOptionId[];
 }
 

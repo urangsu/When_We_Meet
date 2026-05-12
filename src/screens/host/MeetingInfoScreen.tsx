@@ -44,9 +44,9 @@ export const MeetingInfoScreen = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold text-ink ml-1">장소</label>
-          <div className="w-full p-4 rounded-2xl border border-ink-line bg-bg-app text-ink-hint">
-            장소는 다음 단계에서 정할게요.
+          <label className="text-sm font-bold text-ink ml-1">장소 / 시간</label>
+          <div className="w-full p-4 rounded-2xl border border-ink-line bg-bg-app text-sm text-ink-hint">
+            장소와 시간은 다음 단계에서 정할게요.
           </div>
         </div>
       </div>

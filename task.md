@@ -184,13 +184,20 @@ Tasks:
 
 ## 10. Immediate Next Tasks
 
-1. Finish Phase A QA
-   - Meeting types
-   - Card accessibility
-   - Calendar dateKey
-
-2. Start Phase B
+1. Start Phase B — Meeting Decision Flow
    - PlaceSetupScreen
+   - TimeSetupScreen
    - Guest place/activity preference
+   - Acceptance/decline message presets
    - ConfirmPlanScreen
    - ConfirmedShareScreen
+   - Stop routing Dashboard confirmation directly to PostMeeting
+
+2. Phase A Watchlist
+   - Small-screen layout QA
+   - BottomCTA overlap QA
+   - Preview sync QA
+
+Important:
+PostMeetingScreen은 모임이 끝난 뒤의 회고/후속 액션 화면이다.
+날짜 확정 직후에는 ConfirmPlanScreen과 ConfirmedShareScreen으로 이동해야 한다.

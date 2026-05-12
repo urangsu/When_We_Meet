@@ -1,4 +1,6 @@
-export const activityOptions = [
+import type { ActivityOption } from '../types/meeting';
+
+export const activityOptions: ActivityOption[] = [
   { id: 'meal', label: '맛있는 거 먹기' },
   { id: 'cafe', label: '카페 가기' },
   { id: 'walk', label: '가볍게 걷기' },

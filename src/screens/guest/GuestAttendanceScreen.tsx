@@ -5,10 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Check, CheckCircle2, CircleHelp, XCircle } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { responseMessagePresets } from '../../config/responseMessagePresets';
 
 export const GuestAttendanceScreen = () => {
   const [attendance, setAttendance] = useState<'yes' | 'maybe' | 'no' | null>(null);
-  const [declineMsg, setDeclineMsg] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>('');
   const navigate = useNavigate();
 
   const options = [
@@ -35,13 +36,6 @@ export const GuestAttendanceScreen = () => {
     },
   ];
 
-  const declineMessages = [
-    '이번엔 일정이 어려워요',
-    '다음엔 꼭 함께할게요',
-    '재밌게 놀고 와요',
-    '다음 모임 불러주세요'
-  ];
-
   const handleNext = () => {
     if (attendance === 'no') {
       navigate('/invite/demo/complete');
@@ -49,6 +43,13 @@ export const GuestAttendanceScreen = () => {
       navigate('/invite/demo/dates');
     }
   };
+
+  const handleAttendanceChange = (id: 'yes' | 'maybe' | 'no') => {
+    setAttendance(id);
+    setMessage(''); // Reset message on change
+  }
+
+  const currentPresets = attendance ? responseMessagePresets[attendance] : [];
 
   return (
     <ScreenShell hasBottomCTA className="gap-8">
@@ -64,7 +65,7 @@ export const GuestAttendanceScreen = () => {
         {options.map((opt) => (
           <button
             key={opt.id}
-            onClick={() => setAttendance(opt.id as any)}
+            onClick={() => handleAttendanceChange(opt.id as any)}
             className={`
               flex items-center gap-4 p-4 rounded-2xl border transition-all text-left bg-white
               ${attendance === opt.id ? `border-[1.5px] shadow-sm ${opt.borderClass}` : 'border-ink-line hover:border-ink/30'}
@@ -79,20 +80,26 @@ export const GuestAttendanceScreen = () => {
         ))}
       </div>
 
-      {attendance === 'no' && (
+      {attendance && (
         <div className="flex flex-col gap-3 mt-4 animate-in fade-in slide-in-from-top-4">
           <p className="font-bold text-ink-muted">호스트에게 남길 짧은 메시지 (선택)</p>
           <div className="flex flex-wrap gap-2">
-            {declineMessages.map((msg) => (
+            {currentPresets.map((msg) => (
               <Chip 
                 key={msg} 
-                selected={declineMsg === msg} 
-                onClick={() => setDeclineMsg(msg)}
+                selected={message === msg} 
+                onClick={() => setMessage(msg)}
               >
                 {msg}
               </Chip>
             ))}
           </div>
+          <input 
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="직접 입력할 수도 있어요"
+            className="mt-2 w-full p-4 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all"
+          />
         </div>
       )}
 

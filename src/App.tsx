@@ -12,6 +12,7 @@ import { MeetingInfoScreen } from './screens/host/MeetingInfoScreen';
 import { ThemeScreen } from './screens/host/ThemeScreen';
 import { ProfileScreen } from './screens/host/ProfileScreen';
 import { DatePickerScreen } from './screens/host/DatePickerScreen';
+import { TimeSetupScreen } from './screens/host/TimeSetupScreen';
 import { InvitePreviewScreen } from './screens/host/InvitePreviewScreen';
 import { ShareScreen } from './screens/host/ShareScreen';
 import { DashboardScreen } from './screens/host/DashboardScreen';
@@ -50,6 +51,7 @@ export default function App() {
           <Route path="create/info" element={<MeetingInfoScreen />} />
           <Route path="create/place" element={<PlaceSetupScreen />} />
           <Route path="create/dates" element={<DatePickerScreen />} />
+          <Route path="create/time" element={<TimeSetupScreen />} />
           <Route path="create/theme" element={<ThemeScreen />} />
           <Route path="create/profile" element={<ProfileScreen />} />
           <Route path="create/preview" element={<InvitePreviewScreen />} />

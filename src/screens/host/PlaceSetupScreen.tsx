@@ -67,6 +67,18 @@ export const PlaceSetupScreen = () => {
             />
           </div>
         )}
+
+        {selectedMode === 'candidate_vote' && (
+          <div className="p-4 bg-bg-app rounded-xl text-sm text-ink-hint mt-2 animate-in fade-in slide-in-from-top-2">
+            친구들이 초대장에서 장소 후보를 추가하고 투표할 수 있어요.
+          </div>
+        )}
+
+        {selectedMode === 'undecided' && (
+          <div className="p-4 bg-bg-app rounded-xl text-sm text-ink-hint mt-2 animate-in fade-in slide-in-from-top-2">
+            날짜를 먼저 정하고 나중에 장소를 알려줄 수 있어요.
+          </div>
+        )}
       </div>
 
       <BottomCTA withBottomNav>

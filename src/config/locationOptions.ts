@@ -1,4 +1,11 @@
-export const locationModeOptions = [
+import type { LocationMode } from '../types/meeting';
+
+export const locationModeOptions: Array<{
+  id: LocationMode;
+  title: string;
+  description: string;
+  disabled?: boolean;
+}> = [
   {
     id: 'undecided',
     title: '장소는 아직 미정',
