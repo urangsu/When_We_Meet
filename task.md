@@ -496,8 +496,8 @@ Tasks:
 - [x] Make GuestComplete submit response through repository
 - [x] Make ConfirmPlan save ConfirmedPlan through repository
 - [x] Remove GEMINI_API_KEY client define
-- [ ] Replace local repository with Supabase/Firebase repository
-- [ ] Add server-side invite token validation
+- [x] Replace local repository with Supabase/Firebase repository
+- [x] Add server-side invite token validation
 - [ ] Add real duplicate guard
 - [ ] Add BrowserRouter + hosting rewrite
 - [ ] Add OG preview route for invite links

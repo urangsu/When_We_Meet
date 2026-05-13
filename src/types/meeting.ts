@@ -179,6 +179,8 @@ export interface MeetingResponse {
 
   requestNote?: string;
 
+  inviteToken?: InviteToken;
+  idempotencyKey?: string;
   source: 'guest_web' | 'app';
   createdAt: string;
   updatedAt: string;

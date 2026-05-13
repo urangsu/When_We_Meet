@@ -5,8 +5,10 @@ import type {
   MeetingRecommendedPlan,
   ResponseId,
   CreateMeetingDraft,
+  MeetingRecord,
+  InviteLink,
+  ConfirmedPlan,
 } from '../types/meeting';
-import { mockResponses } from '../data/mockResponses';
 
 export interface SubmitGuestResponseInput {
   meetingId: MeetingId;
@@ -39,31 +41,7 @@ export interface MeetingRepository {
   getMeetingResponses(meetingId: MeetingId): Promise<MeetingResponse[]>;
   submitGuestResponse(input: SubmitGuestResponseInput): Promise<SubmitGuestResponseResult>;
   createMeetingWithInviteLink(draft: CreateMeetingDraft): Promise<CreateMeetingWithInviteLinkResult>;
-  confirmPlan(input: ConfirmPlanInput): Promise<void>;
+  confirmPlan(input: ConfirmPlanInput): Promise<ConfirmedPlan>;
+  getConfirmedPlan(meetingId: MeetingId): Promise<ConfirmedPlan | null>;
+  getMeetingByInvite(meetingId: MeetingId, token: InviteToken): Promise<{ meeting: MeetingRecord; inviteLink: InviteLink } | null>;
 }
-
-export const mockMeetingRepository: MeetingRepository = {
-  async getMeetingResponses(meetingId) {
-    if (meetingId === 'demo') return mockResponses;
-    return mockResponses.filter((response) => response.meetingId === meetingId);
-  },
-
-  async submitGuestResponse(input) {
-    return {
-      responseId: `mock-response-${input.idempotencyKey}`,
-      saved: true,
-    };
-  },
-
-  async createMeetingWithInviteLink() {
-    return {
-      meetingId: 'demo',
-      inviteToken: 'demo-token',
-      inviteUrlPath: '/invite/demo',
-    };
-  },
-
-  async confirmPlan() {
-    return;
-  },
-};

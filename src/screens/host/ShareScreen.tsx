@@ -25,12 +25,12 @@ export const ShareScreen = () => {
       try {
         const result = await localMeetingRepository.createMeetingWithInviteLink(draft);
         const nextUrl = getInviteShareUrl({
-          meetingId: result.meeting.id,
-          token: result.inviteLink.token,
+          meetingId: result.meetingId,
+          token: result.inviteToken,
         });
 
         setInviteUrl(nextUrl);
-        setMeetingId(result.meeting.id);
+        setMeetingId(result.meetingId);
         setShareState('ready');
       } catch {
         setShareState('failed');

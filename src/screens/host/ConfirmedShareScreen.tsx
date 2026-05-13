@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, Share2, CalendarPlus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Card } from '../../components/Card';
 import { InitialAvatarGroup } from '../../components/profile/InitialAvatarGroup';
-import { mockMeetings } from '../../data/mockMeetings';
-import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
-import { getActivityDisplayItems } from '../../utils/activity';
+import { localMeetingRepository } from '../../repositories/localMeetingRepository';
+import type { ConfirmedPlan } from '../../types/meeting';
 
 export const ConfirmedShareScreen = () => {
   const navigate = useNavigate();
-  const { draft } = useCreateMeetingDraft();
+  const { meetingId } = useParams();
+  const resolvedMeetingId = meetingId || 'demo';
+  const [confirmedPlan, setConfirmedPlan] = useState<ConfirmedPlan | null>(null);
+
+  useEffect(() => {
+    localMeetingRepository.getConfirmedPlan(resolvedMeetingId).then(setConfirmedPlan);
+  }, [resolvedMeetingId]);
 
   const handleShare = () => {
     window.alert('카톡/DM으로 공유하기는 준비 중이에요.');
@@ -22,29 +27,10 @@ export const ConfirmedShareScreen = () => {
     window.alert('캘린더에 추가하기는 준비 중이에요.');
   };
 
-  // Mock data for preview fallback
-  const meeting = mockMeetings[0];
-
-  const title = draft.title || meeting.title;
-  const dateDisplay = draft.dateLabels.length > 0 ? draft.dateLabels[0] : '6월 21일 (토)';
-  
-  let timeDisplay = '시간 미정';
-  if (draft.timeMode === 'fixed' && draft.timeLabels.length > 0) {
-    timeDisplay = draft.timeLabels[0];
-  } else if (draft.timeMode === 'candidate_vote') {
-    timeDisplay = '시간 투표 예정';
-  }
-
-  let placeDisplay = '만날 곳 미정';
-  if (draft.locationMode === 'fixed' && draft.fixedPlaceName) {
-    placeDisplay = draft.fixedPlaceName;
-  } else if (draft.locationMode === 'candidate_vote') {
-    placeDisplay = '만날 곳 투표 예정';
-  }
-
-  const activityItems = draft.activityIds.length > 0 
-    ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
-    : [];
+  const dateDisplay = confirmedPlan?.dateLabel || '날짜 미정';
+  const timeDisplay = confirmedPlan?.timeLabel || '시간 미정';
+  const placeDisplay = confirmedPlan?.placeName || '만날 곳 미정';
+  const activityItems = confirmedPlan?.activityLabels || [];
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
@@ -64,7 +50,7 @@ export const ConfirmedShareScreen = () => {
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rose-light via-rose to-rose-deep opacity-50" />
           
           <div className="flex flex-col gap-2 items-center w-full mt-2">
-            <h2 className="text-xl font-black text-ink">{title}</h2>
+            <h2 className="text-xl font-black text-ink">모임 확정</h2>
             <div className="px-3 py-1 bg-rose-light/50 text-rose-deep text-xs font-bold rounded-full">
               모임이 확정되었어요
             </div>
@@ -94,7 +80,7 @@ export const ConfirmedShareScreen = () => {
 
           <div className="flex flex-col items-center gap-2 mt-2">
             <span className="text-xs font-bold text-ink-muted mb-1">함께하는 사람들</span>
-            <InitialAvatarGroup participants={meeting.participants} totalCount={meeting.guests} maxVisible={3} />
+            <InitialAvatarGroup participants={[]} totalCount={0} maxVisible={3} />
           </div>
         </div>
       </div>

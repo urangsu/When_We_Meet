@@ -19,6 +19,12 @@ export const GuestAttendanceScreen = () => {
   const navigate = useNavigate();
   const { meetingId, token } = useParams();
 
+  const goToInviteStep = (
+    step?: 'nickname' | 'attendance' | 'dates' | 'place' | 'preferences' | 'complete'
+  ) => {
+    navigate(getInviteRoute({ meetingId, token }, step));
+  };
+
   const options: Array<{
     id: AttendanceStatus;
     label: string;
@@ -56,9 +62,9 @@ export const GuestAttendanceScreen = () => {
     });
 
     if (attendance === 'no') {
-      navigate(getInviteRoute({ meetingId, token }, 'complete'));
+      goToInviteStep('complete');
     } else {
-      navigate(getInviteRoute({ meetingId, token }, 'dates'));
+      goToInviteStep('dates');
     }
   };
 

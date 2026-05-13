@@ -8,7 +8,7 @@ import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
 import { VoteRankingList } from '../../components/meeting/VoteRankingList';
 import { RecommendedPlanCard } from '../../components/meeting/RecommendedPlanCard';
 import type { MeetingRecommendedPlan, MeetingResponse } from '../../types/meeting';
-import { mockMeetingRepository } from '../../repositories/meetingRepository';
+import { localMeetingRepository } from '../../repositories/localMeetingRepository';
 
 export const DashboardScreen = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export const DashboardScreen = () => {
 
   useEffect(() => {
     let mounted = true;
-    mockMeetingRepository.getMeetingResponses(resolvedMeetingId).then((nextResponses) => {
+    localMeetingRepository.getMeetingResponses(resolvedMeetingId).then((nextResponses) => {
       if (mounted) setResponses(nextResponses);
     });
     return () => {
@@ -205,7 +205,7 @@ export const DashboardScreen = () => {
           <Button
             size="full"
             onClick={() =>
-              navigate('/app/meetings/demo/confirm', {
+              navigate(`/app/meetings/${resolvedMeetingId}/confirm`, {
                 state: { selectedPlan },
               })
             }
@@ -223,7 +223,7 @@ export const DashboardScreen = () => {
       <BottomCTA withBottomNav>
         <Button
           onClick={() =>
-            navigate('/app/meetings/demo/confirm', {
+            navigate(`/app/meetings/${resolvedMeetingId}/confirm`, {
               state: { selectedPlan: aggregation.recommendedPlan },
             })
           }

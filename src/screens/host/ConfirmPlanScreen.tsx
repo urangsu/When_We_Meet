@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { ChevronLeft, Star } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
-import { mockResponses } from '../../data/mockResponses';
 import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
 import type { MeetingRecommendedPlan } from '../../types/meeting';
-import { mockMeetingRepository } from '../../repositories/meetingRepository';
+import { localMeetingRepository } from '../../repositories/localMeetingRepository';
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
@@ -18,18 +17,33 @@ export const ConfirmPlanScreen = () => {
 
   const statePlan = (location.state as { selectedPlan?: MeetingRecommendedPlan } | null)
     ?.selectedPlan;
+  
+  const [fallbackPlan, setFallbackPlan] = useState<MeetingRecommendedPlan | null>(null);
 
-  const aggregation = aggregateMeetingResponses(mockResponses); // Still partially using mockResponses for initial agg
-  const plan = statePlan || aggregation.recommendedPlan;
+  useEffect(() => {
+    if (statePlan) return;
+
+    localMeetingRepository.getMeetingResponses(resolvedMeetingId).then((responses) => {
+      const aggregation = aggregateMeetingResponses(responses);
+      setFallbackPlan(aggregation.recommendedPlan);
+    });
+  }, [statePlan, resolvedMeetingId]);
+
+  const plan = statePlan || fallbackPlan;
 
   const handleConfirm = async () => {
-    await mockMeetingRepository.confirmPlan({
+    if (!plan) return;
+    await localMeetingRepository.confirmPlan({
       meetingId: resolvedMeetingId,
       selectedPlan: plan,
       confirmSource: statePlan ? 'manual' : 'recommended',
     });
     navigate(`/app/meetings/${resolvedMeetingId}/confirmed-share`);
   };
+
+  if (!plan) {
+    return <ScreenShell className="items-center justify-center">확정할 응답 데이터가 아직 없어요.</ScreenShell>;
+  }
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">

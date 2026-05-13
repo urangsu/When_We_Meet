@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 import { getActivityDisplayItems } from '../../utils/activity';
-import { mockMeetingRepository } from '../../repositories/meetingRepository';
+import { localMeetingRepository } from '../../repositories/localMeetingRepository';
 
 export const GuestCompleteScreen = () => {
   const navigate = useNavigate();
@@ -25,22 +25,24 @@ export const GuestCompleteScreen = () => {
     const submit = async () => {
       setSubmitState('submitting');
       try {
-        await mockMeetingRepository.submitGuestResponse({
+        await localMeetingRepository.submitGuestResponse({
           meetingId: meetingId || 'demo',
           inviteToken: token || 'demo-token',
           idempotencyKey: `${meetingId || 'demo'}-${token || 'demo-token'}-${draft.nickname || 'anonymous'}`,
           response: {
-            nickname: draft.nickname,
+            nickname: draft.nickname || '익명',
             attendance: draft.attendance || 'maybe',
             attendanceMessage: draft.attendanceMessage,
             dateLabels: draft.dateLabels,
             suggestedDateLabels: draft.suggestedDateLabels,
-            timeLabels: draft.timeLabels,
+            timeLabels: [],
             placeCandidate: draft.placeCandidate,
             activityIds: draft.activityIds,
             customActivity: draft.customActivity,
             requestNote: draft.requestNote,
             source: 'guest_web',
+            inviteToken: token || 'demo-token',
+            idempotencyKey: `${meetingId || 'demo'}-${token || 'demo-token'}-${draft.nickname || 'anonymous'}`,
           },
         });
         setSubmitState('submitted');
@@ -63,9 +65,16 @@ export const GuestCompleteScreen = () => {
 
       <div className="flex flex-col gap-2 shrink-0">
         <h1 className="font-bold text-2xl">
-          {draft.nickname ? `${draft.nickname}님, ` : ''}답장 보냈어요!
+          {submitState === 'submitting' && '답장을 보내는 중이에요...'}
+          {submitState === 'submitted' && (draft.nickname ? `${draft.nickname}님, ` : '') + '답장 보냈어요!'}
+          {submitState === 'failed' && '답장을 저장하지 못했어요.'}
         </h1>
-        <p className="text-ink-muted text-sm px-4">의견을 모아서 확정되면 알려드릴게요.<br/>호스트가 링크를 공유할 때까지 기다려주세요.</p>
+        {submitState === 'submitted' && (
+          <p className="text-ink-muted text-sm px-4">의견을 모아서 확정되면 알려드릴게요.<br/>호스트가 링크를 공유할 때까지 기다려주세요.</p>
+        )}
+        {submitState === 'failed' && (
+          <Button onClick={() => setSubmitState('idle')} variant="outline" className="mt-2">재시도</Button>
+        )}
       </div>
 
       <div className="w-full bg-white border border-line rounded-2xl p-5 flex flex-col gap-3 mt-6 shadow-sm text-left">

@@ -1,4 +1,11 @@
 import { readJson, writeJson } from './localStorageAdapter';
+import type {
+  MeetingRepository,
+  SubmitGuestResponseInput,
+  ConfirmPlanInput,
+  SubmitGuestResponseResult,
+  CreateMeetingWithInviteLinkResult,
+} from './meetingRepository';
 import {
   ConfirmedPlan,
   CreateMeetingDraft,
@@ -7,6 +14,8 @@ import {
   MeetingId,
   MeetingRecord,
   MeetingResponse,
+  ResponseId,
+  ConfirmedPlanId,
 } from '../types/meeting';
 
 const MEETINGS_KEY = 'wwm:meetings:v1';
@@ -23,8 +32,8 @@ const createId = (prefix: string) => {
 
 const now = () => new Date().toISOString();
 
-export const localMeetingRepository = {
-  async createMeetingWithInviteLink(draft: CreateMeetingDraft) {
+export const localMeetingRepository: MeetingRepository = {
+  async createMeetingWithInviteLink(draft: CreateMeetingDraft): Promise<CreateMeetingWithInviteLinkResult> {
     const meetingId = createId('m') as MeetingId;
     const inviteToken = createId('t') as InviteToken;
     const meeting: MeetingRecord = {
@@ -50,7 +59,7 @@ export const localMeetingRepository = {
     const links = readJson<InviteLink[]>(INVITE_LINKS_KEY, []);
     writeJson(INVITE_LINKS_KEY, [...links, inviteLink]);
 
-    return { meeting, inviteLink, inviteUrlPath: `/#/invite/${meetingId}/${inviteToken}` };
+    return { meetingId, inviteToken, inviteUrlPath: `/#/invite/${meetingId}/${inviteToken}` };
   },
 
   async getMeetingByInvite(meetingId: MeetingId, token: InviteToken) {
@@ -63,13 +72,25 @@ export const localMeetingRepository = {
     return meeting ? { meeting, inviteLink: link } : null;
   },
 
-  async getMeetingResponses(meetingId: MeetingId) {
+  async getMeetingResponses(meetingId: MeetingId): Promise<MeetingResponse[]> {
     const responses = readJson<MeetingResponse[]>(RESPONSES_KEY, []);
     return responses.filter((r) => r.meetingId === meetingId);
   },
 
-  async submitGuestResponse(input: any) {
-    const id = createId('r');
+  async submitGuestResponse(input: SubmitGuestResponseInput): Promise<SubmitGuestResponseResult> {
+    const responses = readJson<MeetingResponse[]>(RESPONSES_KEY, []);
+    const existing = responses.find(
+      (response) => response.idempotencyKey === input.idempotencyKey
+    );
+
+    if (existing) {
+      return {
+        responseId: existing.id as ResponseId,
+        saved: false,
+      };
+    }
+
+    const id = createId('r') as ResponseId;
     const response: MeetingResponse = {
       ...input.response,
       id,
@@ -80,25 +101,34 @@ export const localMeetingRepository = {
       updatedAt: now(),
       source: 'guest_web',
     };
-    const responses = readJson<MeetingResponse[]>(RESPONSES_KEY, []);
+
     writeJson(RESPONSES_KEY, [...responses, response]);
     return { responseId: id, saved: true };
   },
 
-  async confirmPlan(input: any) {
+  async confirmPlan(input: ConfirmPlanInput): Promise<ConfirmedPlan> {
+    const plans = readJson<ConfirmedPlan[]>(CONFIRMED_PLANS_KEY, []);
+    const existingIndex = plans.findIndex((plan) => plan.meetingId === input.meetingId);
+
     const plan: ConfirmedPlan = {
-      id: createId('p'),
+      id: existingIndex >= 0 ? plans[existingIndex].id : (createId('p') as ConfirmedPlanId),
       meetingId: input.meetingId,
       dateLabel: input.selectedPlan.dateLabel,
       timeLabel: input.selectedPlan.timeLabel,
       placeName: input.selectedPlan.placeName,
       activityLabels: input.selectedPlan.activityLabels,
       confirmSource: input.confirmSource,
-      createdAt: now(),
+      reason: input.selectedPlan.reason,
+      createdAt: existingIndex >= 0 ? plans[existingIndex].createdAt : now(),
       updatedAt: now(),
     };
-    const plans = readJson<ConfirmedPlan[]>(CONFIRMED_PLANS_KEY, []);
-    writeJson(CONFIRMED_PLANS_KEY, [...plans, plan]);
+
+    const nextPlans =
+      existingIndex >= 0
+        ? plans.map((item, index) => (index === existingIndex ? plan : item))
+        : [...plans, plan];
+
+    writeJson(CONFIRMED_PLANS_KEY, nextPlans);
 
     const meetings = readJson<MeetingRecord[]>(MEETINGS_KEY, []);
     const meetingIndex = meetings.findIndex((m) => m.id === input.meetingId);
@@ -109,7 +139,7 @@ export const localMeetingRepository = {
     return plan;
   },
 
-  async getConfirmedPlan(meetingId: MeetingId) {
+  async getConfirmedPlan(meetingId: MeetingId): Promise<ConfirmedPlan | null> {
     const plans = readJson<ConfirmedPlan[]>(CONFIRMED_PLANS_KEY, []);
     return plans.find((p) => p.meetingId === meetingId) || null;
   },

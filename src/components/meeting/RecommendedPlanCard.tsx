@@ -24,7 +24,7 @@ export const RecommendedPlanCard: React.FC<RecommendedPlanCardProps> = ({ plan }
         )}
       </div>
 
-      <Button onClick={() => navigate('/app/meetings/demo/confirm')} size="full">
+      <Button onClick={() => {}} size="full">
         이 조합으로 확정하기
       </Button>
     </section>
