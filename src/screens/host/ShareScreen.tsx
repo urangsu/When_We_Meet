@@ -8,6 +8,15 @@ import { Button } from '../../components/Button';
 import { getInviteShareUrl, getInviteHashPath } from '../../utils/shareUrls';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { localMeetingRepository } from '../../repositories/localMeetingRepository';
+import { readJson, writeJson } from '../../repositories/localStorageAdapter';
+
+const SHARE_SESSION_KEY = 'wwm:last-created-share:v1';
+
+interface LastCreatedShare {
+  draftTitle: string;
+  meetingId: string;
+  inviteToken: string;
+}
 
 export const ShareScreen = () => {
   const navigate = useNavigate();
@@ -23,10 +32,30 @@ export const ShareScreen = () => {
 
     const create = async () => {
       try {
+        const existing = readJson<LastCreatedShare | null>(SHARE_SESSION_KEY, null);
+
+        if (existing?.draftTitle === draft.title) {
+          const nextUrl = getInviteShareUrl({
+            meetingId: existing.meetingId,
+            token: existing.inviteToken,
+          });
+
+          setInviteUrl(nextUrl);
+          setMeetingId(existing.meetingId);
+          setShareState('ready');
+          return;
+        }
+
         const result = await localMeetingRepository.createMeetingWithInviteLink(draft);
         const nextUrl = getInviteShareUrl({
           meetingId: result.meetingId,
           token: result.inviteToken,
+        });
+
+        writeJson(SHARE_SESSION_KEY, {
+          draftTitle: draft.title,
+          meetingId: result.meetingId,
+          inviteToken: result.inviteToken,
         });
 
         setInviteUrl(nextUrl);

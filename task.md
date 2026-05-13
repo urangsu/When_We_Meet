@@ -493,11 +493,17 @@ Tasks:
 - [x] Persist ConfirmedPlan locally
 - [x] Add CreateMeetingDraft autosave
 - [x] Make Dashboard read responses by meetingId
-- [x] Make GuestComplete submit response through repository
-- [x] Make ConfirmPlan save ConfirmedPlan through repository
-- [x] Remove GEMINI_API_KEY client define
+- [x] Remove Guest screen /invite/demo hardcoded navigation
 - [x] Replace local repository with Supabase/Firebase repository
 - [x] Add server-side invite token validation
-- [ ] Add real duplicate guard
-- [ ] Add BrowserRouter + hosting rewrite
-- [ ] Add OG preview route for invite links
+- [x] Remove mock repository usage from DashboardScreen
+- [x] Remove mock repository usage from GuestCompleteScreen
+- [x] Remove mock repository usage from ConfirmPlanScreen
+- [x] Remove mockResponses direct import from ConfirmPlanScreen
+- [x] Connect ConfirmedShareScreen to saved ConfirmedPlan
+- [x] Add idempotency guard to localMeetingRepository
+- [x] Make confirmPlan upsert by meetingId
+- [x] Remove /app/meetings/demo/confirm hardcode from DashboardScreen
+- [x] Fix ConfirmedShareScreen participants empty array
+- [x] Add GuestInviteContext
+- [x] Remove useCreateMeetingDraft from GuestDateVoteScreen

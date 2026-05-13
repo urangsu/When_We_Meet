@@ -5,12 +5,12 @@ import { ChevronLeft, Check, CalendarDays, Plus } from 'lucide-react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
-import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { useGuestInvite } from '../../state/GuestInviteContext';
 import { getInviteRoute } from '../../utils/inviteRoutes';
 
 export const GuestDateVoteScreen = () => {
   const { draft, updateResponseDraft } = useGuestResponseDraft();
-  const { draft: hostDraft } = useCreateMeetingDraft();
+  const { meeting } = useGuestInvite();
   
   const [selectedDates, setSelectedDates] = useState<string[]>(draft?.dateLabels || []);
   const [guestAddedDates, setGuestAddedDates] = useState<string[]>(draft?.suggestedDateLabels || []);
@@ -21,10 +21,11 @@ export const GuestDateVoteScreen = () => {
   const navigate = useNavigate();
   const { meetingId, token } = useParams();
 
-  // If host hasn't selected dates, use fallback. In real flow this comes from DB meeting data.
-  const candidateDates = hostDraft.dateLabels.length > 0 
-    ? hostDraft.dateLabels.slice(0, 5) 
-    : ['6월 21일 (토)', '6월 22일 (일)'];
+  // Guest screens must rely on invite-loaded MeetingRecord, not host draft context.
+  const candidateDates =
+    meeting?.dateLabels && meeting.dateLabels.length > 0
+      ? meeting.dateLabels.slice(0, 5)
+      : ['6월 21일 (토)', '6월 22일 (일)'];
 
   const visibleDates = Array.from(new Set([...candidateDates, ...guestAddedDates]));
 

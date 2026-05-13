@@ -1,15 +1,16 @@
 import React from 'react';
 import { Button } from '../../components/Button';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
-import { CalendarCheck, ChevronLeft } from 'lucide-react';
+import { CalendarCheck, ChevronLeft, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { getInviteRoute } from '../../utils/inviteRoutes';
+import { useGuestInvite } from '../../state/GuestInviteContext';
 
 export const InviteLandingScreen = () => {
   const navigate = useNavigate();
-  const { meetingId, token } = useParams();
+  const { meetingId, token, loadState, meeting } = useGuestInvite();
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -18,6 +19,17 @@ export const InviteLandingScreen = () => {
     }
     navigate('/app');
   };
+
+  if (loadState === 'loading') {
+    return <ScreenShell className="items-center justify-center"><Loader2 className="animate-spin text-primary" size={32}/></ScreenShell>;
+  }
+
+  if (loadState === 'invalid') {
+    return <ScreenShell className="items-center justify-center p-5 text-center">초대장이 유효하지 않아요.</ScreenShell>;
+  }
+
+  const title = meeting?.title || '수민이의 생일 모임';
+  const message = meeting?.hostMessage || '같이 시간 맞춰볼까요?\n가능한 날짜와 하고 싶은 걸 가볍게 골라주세요.';
 
   return (
     <ScreenShell hasBottomCTA className="gap-6 items-center justify-center p-5 bg-transparent">
@@ -37,7 +49,7 @@ export const InviteLandingScreen = () => {
         transition={{ duration: 0.28, delay: 0.1 }}
       >
         <div className="bg-surface-warm shadow-soft border border-line rounded-full px-4 py-1.5 text-xs font-bold text-ink-muted">
-          수민님이 보낸 초대장
+          초대장이 도착했어요
         </div>
       </motion.div>
 
@@ -53,23 +65,12 @@ export const InviteLandingScreen = () => {
           </div>
 
           <h2 className="font-bold text-2xl leading-tight text-ink">
-            수민이의 생일 모임
+            {title}
           </h2>
           
-          <p className="text-sm font-medium text-ink-muted leading-relaxed">
-            같이 시간 맞춰볼까요?<br/>가능한 날짜와 하고 싶은 걸 가볍게 골라주세요.
+          <p className="text-sm font-medium text-ink-muted leading-relaxed whitespace-pre-line">
+            {message}
           </p>
-        </div>
-
-        <div className="z-10 w-full flex flex-col gap-2 mt-4 bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/50 shadow-sm">
-          <div className="flex justify-between items-center text-sm">
-            <span className="font-bold text-ink-hint">날짜 후보</span>
-            <span className="font-bold text-ink-muted text-right">6월 21일 (토) 등 2개</span>
-          </div>
-          <div className="flex justify-between items-center text-sm">
-            <span className="font-bold text-ink-hint">만나는 곳</span>
-            <span className="font-bold text-ink-muted text-right">후보 받는 중</span>
-          </div>
         </div>
       </motion.div>
 

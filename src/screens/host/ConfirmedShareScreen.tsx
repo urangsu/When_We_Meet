@@ -4,19 +4,21 @@ import { ChevronLeft, Share2, CalendarPlus } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
-import { Card } from '../../components/Card';
 import { InitialAvatarGroup } from '../../components/profile/InitialAvatarGroup';
 import { localMeetingRepository } from '../../repositories/localMeetingRepository';
-import type { ConfirmedPlan } from '../../types/meeting';
+import type { ConfirmedPlan, MeetingResponse } from '../../types/meeting';
+import type { ProfileColorId } from '../../types';
 
 export const ConfirmedShareScreen = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams();
   const resolvedMeetingId = meetingId || 'demo';
   const [confirmedPlan, setConfirmedPlan] = useState<ConfirmedPlan | null>(null);
+  const [responses, setResponses] = useState<MeetingResponse[]>([]);
 
   useEffect(() => {
     localMeetingRepository.getConfirmedPlan(resolvedMeetingId).then(setConfirmedPlan);
+    localMeetingRepository.getMeetingResponses(resolvedMeetingId).then(setResponses);
   }, [resolvedMeetingId]);
 
   const handleShare = () => {
@@ -26,6 +28,14 @@ export const ConfirmedShareScreen = () => {
   const handleCalendar = () => {
     window.alert('캘린더에 추가하기는 준비 중이에요.');
   };
+
+  const participants = responses
+    .filter((response) => response.attendance === 'yes' || response.attendance === 'maybe')
+    .map((response, index) => ({
+      id: response.id,
+      name: response.nickname,
+      colorId: ['pink', 'skyblue', 'beige', 'gray', 'red', 'white'][index % 6] as ProfileColorId,
+    }));
 
   const dateDisplay = confirmedPlan?.dateLabel || '날짜 미정';
   const timeDisplay = confirmedPlan?.timeLabel || '시간 미정';
@@ -78,10 +88,14 @@ export const ConfirmedShareScreen = () => {
             )}
           </div>
 
-          <div className="flex flex-col items-center gap-2 mt-2">
-            <span className="text-xs font-bold text-ink-muted mb-1">함께하는 사람들</span>
-            <InitialAvatarGroup participants={[]} totalCount={0} maxVisible={3} />
-          </div>
+          {confirmedPlan ? (
+             <div className="flex flex-col items-center gap-2 mt-2">
+               <span className="text-xs font-bold text-ink-muted mb-1">함께하는 사람들</span>
+               <InitialAvatarGroup participants={participants} totalCount={participants.length} maxVisible={3} />
+             </div>
+           ) : (
+             <p className="text-sm text-ink-muted mt-2">아직 저장된 확정안이 없어요.<br />응답 현황에서 모임을 먼저 확정해 주세요.</p>
+           )}
         </div>
       </div>
 
