@@ -42,24 +42,6 @@ export interface ActivityOption {
   label: string;
 }
 
-export interface InviteLink {
-  id: string;
-  meetingId: MeetingId;
-  token: InviteToken;
-  slug?: string;
-
-  accessMode: 'link_anyone' | 'approval_required';
-
-  maxResponses?: number;
-  expiresAt?: string;
-  isClosed: boolean;
-
-  duplicateGuardMode: 'nickname' | 'browser' | 'device' | 'none';
-
-  createdAt: string;
-  updatedAt: string;
-}
-
 export type MeetingLifecycleStatus =
   | 'draft'
   | 'collecting'

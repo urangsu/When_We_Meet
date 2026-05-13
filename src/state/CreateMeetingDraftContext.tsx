@@ -1,5 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { CreateMeetingDraft } from '../types/meeting';
+import { readJson, writeJson } from '../repositories/localStorageAdapter';
+
+const CREATE_DRAFT_KEY = 'wwm:create-draft:v1';
 
 interface CreateMeetingDraftContextState {
   draft: CreateMeetingDraft;
@@ -22,13 +25,19 @@ const defaultDraft: CreateMeetingDraft = {
   customActivity: '',
   themeId: 'calendar-kiss',
   hostName: '',
-  hostColorId: 'black',
+  hostColorId: 'white',
 };
+
+const initialDraft = readJson<CreateMeetingDraft>(CREATE_DRAFT_KEY, defaultDraft);
 
 const CreateMeetingDraftContext = createContext<CreateMeetingDraftContextState | undefined>(undefined);
 
 export const CreateMeetingDraftProvider = ({ children }: { children: ReactNode }) => {
-  const [draft, setDraft] = useState<CreateMeetingDraft>(defaultDraft);
+  const [draft, setDraft] = useState<CreateMeetingDraft>(initialDraft);
+
+  useEffect(() => {
+    writeJson(CREATE_DRAFT_KEY, draft);
+  }, [draft]);
 
   const updateDraft = (updates: Partial<CreateMeetingDraft>) => {
     setDraft((prev) => ({ ...prev, ...updates }));

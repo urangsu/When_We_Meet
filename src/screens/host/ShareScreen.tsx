@@ -1,26 +1,54 @@
-import React from 'react';
-import { Button } from '../../components/Button';
-import { ChevronLeft, Check, Copy, MessageCircle, Send, MoreHorizontal, LayoutDashboard } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Check, Copy, LayoutDashboard } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
+import { Button } from '../../components/Button';
 import { getInviteShareUrl, getInviteHashPath } from '../../utils/shareUrls';
+import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { localMeetingRepository } from '../../repositories/localMeetingRepository';
 
 export const ShareScreen = () => {
   const navigate = useNavigate();
-  
-  const handleMockShare = (label: string) => {
-    window.alert(`${label} 기능은 실제 연동 전 Prototype입니다.`);
-  };
+  const { draft } = useCreateMeetingDraft();
+  const [shareState, setShareState] = useState<'loading' | 'ready' | 'failed'>('loading');
+  const [inviteUrl, setInviteUrl] = useState('');
+  const [meetingId, setMeetingId] = useState<string | null>(null);
+  const createdRef = useRef(false);
 
-  const inviteUrl = getInviteShareUrl({ demo: true });
-  const displayUrl = getInviteHashPath({ demo: true });
-  
-  const shareMessage = `수민이의 생일 모임 초대장이 도착했어요.
-편한 날 골라주면 제가 맞춰볼게요.
+  useEffect(() => {
+    if (createdRef.current) return;
+    createdRef.current = true;
 
-초대장 보기: ${inviteUrl}`;
+    const create = async () => {
+      try {
+        const result = await localMeetingRepository.createMeetingWithInviteLink(draft);
+        const nextUrl = getInviteShareUrl({
+          meetingId: result.meeting.id,
+          token: result.inviteLink.token,
+        });
+
+        setInviteUrl(nextUrl);
+        setMeetingId(result.meeting.id);
+        setShareState('ready');
+      } catch {
+        setShareState('failed');
+      }
+    };
+
+    create();
+  }, [draft]);
+
+  const displayUrl = inviteUrl ? `/#/invite/${meetingId}/${'...'}` : getInviteHashPath({ demo: true });
+
+  if (shareState === 'loading') {
+    return <ScreenShell className="items-center justify-center">초대장을 생성 중입니다...</ScreenShell>;
+  }
+
+  if (shareState === 'failed') {
+    return <ScreenShell className="items-center justify-center">초대장 생성에 실패했습니다.</ScreenShell>;
+  }
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8 items-center justify-center text-center p-5 pt-20">
@@ -31,12 +59,10 @@ export const ShareScreen = () => {
       >
         <Check size={40} strokeWidth={3} />
       </motion.div>
-
       <div className="flex flex-col gap-3">
         <h1 className="font-bold text-3xl">초대장이 완성되었어요!</h1>
         <p className="text-ink-muted font-medium">이제 친구들에게 링크를 공유해 주세요</p>
       </div>
-
       <div className="w-full bg-white border border-line rounded-2xl p-6 flex flex-col gap-6 mt-4 shadow-soft">
         <div className="flex items-center justify-between p-4 bg-surface-warm rounded-2xl">
           <span className="text-ink-hint font-mono text-sm truncate mr-4">whenwemeet.app{displayUrl}</span>
@@ -46,31 +72,9 @@ export const ShareScreen = () => {
             <Copy size={16} /> 복사
           </button>
         </div>
-
-        <div className="grid grid-cols-4 gap-4">
-          {[
-            { label: '카카오톡', icon: MessageCircle, color: 'bg-[#FEE500] text-black' },
-            { label: 'DM', icon: Send, color: 'bg-primary text-white' },
-            { label: '문자', icon: MessageCircle, color: 'bg-ink text-white' },
-            { label: '더보기', icon: MoreHorizontal, color: 'bg-surface border border-line text-ink-hint' },
-          ].map((app) => (
-            <button key={app.label} onClick={() => handleMockShare(app.label)} className="flex flex-col items-center gap-2">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm ${app.color}`}>
-                <app.icon size={24} />
-              </div>
-              <span className="text-[11px] font-bold text-ink-muted">{app.label}</span>
-            </button>
-          ))}
-        </div>
       </div>
-
-      <div className="text-sm text-ink-muted">
-        <p>링크를 받은 친구들은 앱 설치 없이 바로 답장할 수 있어요.</p>
-        <p className="mt-1">단톡방에 공유하면 링크를 가진 사람들이 참여할 수 있어요.</p>
-      </div>
-
       <BottomCTA withBottomNav>
-        <Button onClick={() => navigate('/app/meetings/demo/dashboard')} size="full" variant="outline">
+        <Button onClick={() => navigate(`/app/meetings/${meetingId}/dashboard`)} size="full" variant="outline">
           <LayoutDashboard size={20}/> 응답 현황 보기
         </Button>
       </BottomCTA>

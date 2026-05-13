@@ -475,3 +475,29 @@ Implementation note:
    - Preview sync QA
    - Verify guest draft persistence through the complete flow
    - Keep Phase D Discovery as roadmap only
+
+## Phase E — Product Reliability P0 Recovery
+
+Goal:
+Move from visual prototype to minimally trustworthy invite-link product flow.
+
+Tasks:
+- [x] Make share URL HashRouter-safe
+- [x] Preserve meetingId/token through all Guest routes
+- [x] Remove Guest screen /invite/demo hardcoded navigation
+- [x] Add MeetingRepository contract
+- [x] Add localStorage-backed repository Prototype
+- [x] Persist MeetingRecord locally
+- [x] Persist InviteLink locally
+- [x] Persist GuestResponse locally
+- [x] Persist ConfirmedPlan locally
+- [x] Add CreateMeetingDraft autosave
+- [x] Make Dashboard read responses by meetingId
+- [x] Make GuestComplete submit response through repository
+- [x] Make ConfirmPlan save ConfirmedPlan through repository
+- [x] Remove GEMINI_API_KEY client define
+- [ ] Replace local repository with Supabase/Firebase repository
+- [ ] Add server-side invite token validation
+- [ ] Add real duplicate guard
+- [ ] Add BrowserRouter + hosting rewrite
+- [ ] Add OG preview route for invite links
