@@ -8,7 +8,7 @@ import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
 import { VoteRankingList } from '../../components/meeting/VoteRankingList';
 import { RecommendedPlanCard } from '../../components/meeting/RecommendedPlanCard';
 import type { MeetingRecommendedPlan, MeetingResponse } from '../../types/meeting';
-import { localMeetingRepository } from '../../repositories/localMeetingRepository';
+import { meetingRepository } from '../../repositories/getMeetingRepository';
 
 export const DashboardScreen = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export const DashboardScreen = () => {
 
   useEffect(() => {
     let mounted = true;
-    localMeetingRepository.getMeetingResponses(resolvedMeetingId).then((nextResponses) => {
+    meetingRepository.getMeetingResponses(resolvedMeetingId).then((nextResponses) => {
       if (mounted) setResponses(nextResponses);
     });
     return () => {

@@ -109,11 +109,45 @@ Goal: Move from visual prototype to a minimally trustworthy local invite-link fl
 - [ ] Enforce maxResponses / expiresAt / isClosed on server
 
 ## 8. Phase F — Backend Repository & Real Invite Link
-- [ ] Choose Supabase or Firebase
-- [ ] Define Meeting / InviteLink / MeetingResponse / ConfirmedPlan schema
+
+Completed:
+- [x] Document backend choice
+- [x] Define Meeting schema
+- [x] Define InviteLink schema
+- [x] Define MeetingResponse schema
+- [x] Define ConfirmedPlan schema
+- [x] Define derived Participant view
+- [x] Add repository mode selector
+- [x] Add backend repository skeleton
+- [x] Add repository factory
+- [x] Remove direct localMeetingRepository imports from screens/state
+
+Not Completed:
+- [ ] Install backend SDK
 - [ ] Implement backend repository interface
+- [ ] Replace backend skeleton with real adapter
 - [ ] Add server-side invite token validation
 - [ ] Add response idempotency on server
+- [ ] Add maxResponses / expiresAt / isClosed enforcement
+
+---
+
+## Repository Mode
+
+Current:
+- Default repository mode is `local`.
+- `local` uses localStorage-backed localMeetingRepository.
+- `backend` is reserved for the future backend adapter.
+
+Environment:
+- VITE_REPOSITORY_MODE=local
+- VITE_REPOSITORY_MODE=backend
+
+Policy:
+- Screens must not import localMeetingRepository directly.
+- Screens must use meetingRepository or getMeetingRepository.
+- Backend mode currently throws explicit not-implemented errors.
+- Real backend implementation will be added in Phase F-3.
 
 ## 9. Phase G — BrowserRouter / Hosting / OG Preview
 - [ ] Replace HashRouter with BrowserRouter
@@ -145,6 +179,29 @@ When We Meet의 핵심 차별점:
 ## 18. Confirmed Plan Persistence Plan
 ## 19. Server-only AI Policy
 ## 20. Dependency Audit
+
+Current risk:
+- @google/genai appears in package dependencies.
+- dotenv appears in package dependencies.
+- express appears in package dependencies.
+- These are server/AI related and should not be used by browser screens.
+
+Current mitigation:
+- GEMINI_API_KEY is not injected through Vite define.
+- Client screens should not import @google/genai.
+
+Next:
+- Search for actual imports.
+- If unused, remove from client package.
+- If needed, split server package or move to API route.
+- Add CI check to prevent AI API key exposure.
+
+Audit search:
+- @google/genai imports: ./package.json, ./package-lock.json
+- dotenv imports: No imports found
+- express imports: No imports found
+- GEMINI_API_KEY references: ./task.md, ./.env.example
+- VITE_SUPABASE references: No references found
 
 ---
 

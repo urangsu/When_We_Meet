@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 import { getActivityDisplayItems } from '../../utils/activity';
-import { localMeetingRepository } from '../../repositories/localMeetingRepository';
+import { meetingRepository } from '../../repositories/getMeetingRepository';
 
 export const GuestCompleteScreen = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export const GuestCompleteScreen = () => {
     const submit = async () => {
       setSubmitState('submitting');
       try {
-        await localMeetingRepository.submitGuestResponse({
+        await meetingRepository.submitGuestResponse({
           meetingId: meetingId || 'demo',
           inviteToken: token || 'demo-token',
           idempotencyKey: `${meetingId || 'demo'}-${token || 'demo-token'}-${draft.nickname || 'anonymous'}`,

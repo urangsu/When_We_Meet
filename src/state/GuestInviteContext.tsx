@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { InviteLink, MeetingRecord } from '../types/meeting';
-import { localMeetingRepository } from '../repositories/localMeetingRepository';
+import { meetingRepository } from '../repositories/getMeetingRepository';
 
 type GuestInviteLoadState = 'demo' | 'loading' | 'ready' | 'invalid';
 
@@ -37,7 +37,7 @@ export const GuestInviteProvider = ({ children }: { children: React.ReactNode })
     let mounted = true;
     setLoadState('loading');
 
-    localMeetingRepository.getMeetingByInvite(meetingId, token).then((result) => {
+    meetingRepository.getMeetingByInvite(meetingId, token).then((result) => {
       if (!mounted) return;
 
       if (!result) {

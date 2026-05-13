@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { InitialAvatarGroup } from '../../components/profile/InitialAvatarGroup';
-import { localMeetingRepository } from '../../repositories/localMeetingRepository';
+import { meetingRepository } from '../../repositories/getMeetingRepository';
 import type { ConfirmedPlan, MeetingResponse } from '../../types/meeting';
 import type { ProfileColorId } from '../../types';
 
@@ -17,8 +17,8 @@ export const ConfirmedShareScreen = () => {
   const [responses, setResponses] = useState<MeetingResponse[]>([]);
 
   useEffect(() => {
-    localMeetingRepository.getConfirmedPlan(resolvedMeetingId).then(setConfirmedPlan);
-    localMeetingRepository.getMeetingResponses(resolvedMeetingId).then(setResponses);
+    meetingRepository.getConfirmedPlan(resolvedMeetingId).then(setConfirmedPlan);
+    meetingRepository.getMeetingResponses(resolvedMeetingId).then(setResponses);
   }, [resolvedMeetingId]);
 
   const handleShare = () => {

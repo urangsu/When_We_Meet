@@ -44,4 +44,5 @@ export interface MeetingRepository {
   confirmPlan(input: ConfirmPlanInput): Promise<ConfirmedPlan>;
   getConfirmedPlan(meetingId: MeetingId): Promise<ConfirmedPlan | null>;
   getMeetingByInvite(meetingId: MeetingId, token: InviteToken): Promise<{ meeting: MeetingRecord; inviteLink: InviteLink } | null>;
+  getMeetingById(meetingId: MeetingId): Promise<MeetingRecord | null>;
 }

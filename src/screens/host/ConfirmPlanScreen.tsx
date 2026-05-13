@@ -7,7 +7,7 @@ import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
 import type { MeetingRecommendedPlan } from '../../types/meeting';
-import { localMeetingRepository } from '../../repositories/localMeetingRepository';
+import { meetingRepository } from '../../repositories/getMeetingRepository';
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export const ConfirmPlanScreen = () => {
   useEffect(() => {
     if (statePlan) return;
 
-    localMeetingRepository.getMeetingResponses(resolvedMeetingId).then((responses) => {
+    meetingRepository.getMeetingResponses(resolvedMeetingId).then((responses) => {
       const aggregation = aggregateMeetingResponses(responses);
       setFallbackPlan(aggregation.recommendedPlan);
     });
@@ -33,7 +33,7 @@ export const ConfirmPlanScreen = () => {
 
   const handleConfirm = async () => {
     if (!plan) return;
-    await localMeetingRepository.confirmPlan({
+    await meetingRepository.confirmPlan({
       meetingId: resolvedMeetingId,
       selectedPlan: plan,
       confirmSource: statePlan ? 'manual' : 'recommended',

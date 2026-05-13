@@ -143,4 +143,9 @@ export const localMeetingRepository: MeetingRepository = {
     const plans = readJson<ConfirmedPlan[]>(CONFIRMED_PLANS_KEY, []);
     return plans.find((p) => p.meetingId === meetingId) || null;
   },
+
+  async getMeetingById(meetingId: MeetingId): Promise<MeetingRecord | null> {
+    const meetings = readJson<MeetingRecord[]>(MEETINGS_KEY, []);
+    return meetings.find((meeting) => meeting.id === meetingId) || null;
+  },
 };

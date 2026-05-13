@@ -7,7 +7,7 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Button } from '../../components/Button';
 import { getInviteShareUrl, getInviteHashPath } from '../../utils/shareUrls';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
-import { localMeetingRepository } from '../../repositories/localMeetingRepository';
+import { meetingRepository } from '../../repositories/getMeetingRepository';
 import { readJson, writeJson } from '../../repositories/localStorageAdapter';
 
 const SHARE_SESSION_KEY = 'wwm:last-created-share:v1';
@@ -46,7 +46,7 @@ export const ShareScreen = () => {
           return;
         }
 
-        const result = await localMeetingRepository.createMeetingWithInviteLink(draft);
+        const result = await meetingRepository.createMeetingWithInviteLink(draft);
         const nextUrl = getInviteShareUrl({
           meetingId: result.meetingId,
           token: result.inviteToken,

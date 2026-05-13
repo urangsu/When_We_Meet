@@ -1,39 +1,46 @@
-# When We Meet Phase E-4: task.md 로드맵 대청소, Phase 재정렬, 다음 작업 기준문서 정상화
+# When We Meet Phase F-2: Backend Repository Adapter 구조 도입, Supabase 전환 준비, Repository Factory 분리
 
 ## 작업 결과
 
 ### 1. 수정 파일
+- src/repositories/meetingRepository.ts
+- src/repositories/localMeetingRepository.ts
+- src/repositories/repositoryMode.ts (신규)
+- src/repositories/backendMeetingRepository.ts (신규)
+- src/repositories/getMeetingRepository.ts (신규)
+- src/screens/host/ShareScreen.tsx
+- src/screens/host/DashboardScreen.tsx
+- src/screens/host/ConfirmPlanScreen.tsx
+- src/screens/host/ConfirmedShareScreen.tsx
+- src/screens/guest/GuestCompleteScreen.tsx
+- src/state/GuestInviteContext.tsx
 - task.md
 - result.md
 
 ### 2. 주요 변경
-- task.md의 중복 섹션 제거 및 레이아웃 정리 (0번부터 20번 목차 준수).
-- Phase 번호 재정렬 및 Current Status, Known Limitations 최신화.
-- 구현되지 않은 기능(Supabase/Firebase 전환 등)을 완료 처리에서 미완료로 유지.
-- Immediate Next Tasks를 Phase E 이후 기준으로 정리.
-- 전체 로드맵 문서의 신뢰도를 높이기 위해 임시 문구 제거.
+- Repository Mode (`local` | `backend`) 도입
+- Backend Repository 스켈레톤 작성 (명시적으로 예외 처리)
+- 화면과 상태 파일에서 `localMeetingRepository` 직접 import 제거 후 Factory(`getMeetingRepository()`) 사용으로 교체
+- `meetingRepository` 인터페이스에 `getMeetingById` 추가 및 `localMeetingRepository`에 구현
+- `task.md` Phase F 달성도 및 Dependency Audit 결과 갱신
 
 ### 3. 빌드
-- npm run lint: 성공
-- npm run build: 성공
+- npm run lint: 통과
+- npm run build: 통과
 
 ### 4. 남은 이슈
-- 로컬 스토리지 기반 프로토타입 Bridge 구현(실제 서버 동기화/DB 저장 없음).
-- 실제 multi-user sync 없음.
-- 실제 server token validation 없음.
-- BrowserRouter 전환은 아직 안 함.
+- 아직 실제 Supabase/Firebase 연동을 수행하지 않았으므로, Backend 모드로 구동 시 에러를 던지도록 설계됨.
 
 ### 5. 다음 작업
-1. Phase F-1 — Backend Repository Choice & Schema
-2. Phase F-2 — Real Invite Link Validation
-3. Phase F-3 — BrowserRouter + Hosting Rewrite
+1. Supabase SDK 설치 및 실제 DB 연동
+2. Backend Repository 인터페이스 구현 교체
+3. 서버사이드 검증 로직 구현
 
 ### 6. 검증 검색 결과
-- Phase C 섹션 수: 1개
-- Product Signature 섹션 수: 1개
-- Data Asset Strategy 섹션 수: 1개
-- Immediate Next Tasks 섹션 수: 1개
-- Start Phase C 문구: 없음
-- rest of document remains unchanged 문구: 없음
-- Supabase/Firebase 완료 체크: 없음
-- server-side token validation 완료 체크: 없음
+- localMeetingRepository references in screens/state/layouts: 없음 (수정 후 검색 결과 없음)
+- mockMeetingRepository references: 없음
+- mockResponses direct import in screens: 없음
+- MeetingRepository references: src/repositories 내 코드 제외하고는 정상적으로 인터페이스가 import 되고 사용됨.
+- GEMINI_API_KEY references: `./task.md`, `./.env.example`
+- @google/genai imports: `./package.json`, `./package-lock.json`
+- VITE_SUPABASE references: 없음
