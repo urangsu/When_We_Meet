@@ -413,8 +413,8 @@ Next:
 
 Audit search:
 - @google/genai imports: ./package.json, ./package-lock.json
-- dotenv imports: No imports found
-- express imports: No imports found
+- dotenv imports: ./package.json, ./package-lock.json
+- express imports: ./package.json, ./package-lock.json
 - GEMINI_API_KEY references: ./task.md, ./.env.example
 - VITE_SUPABASE references: No references found
 
