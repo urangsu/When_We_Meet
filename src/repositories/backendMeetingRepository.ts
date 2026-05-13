@@ -4,6 +4,7 @@ import type {
   MeetingId,
   MeetingRecord,
   MeetingResponse,
+  InviteLink,
 } from '../types/meeting';
 import type {
   ConfirmPlanInput,
@@ -27,7 +28,7 @@ export const backendMeetingRepository: MeetingRepository = {
   getMeetingByInvite(
     _meetingId: MeetingId,
     _token: InviteToken
-  ): Promise<{ meeting: MeetingRecord; inviteLink: import('../types/meeting').InviteLink } | null> {
+  ): Promise<{ meeting: MeetingRecord; inviteLink: InviteLink } | null> {
     return notImplemented('getMeetingByInvite');
   },
 

@@ -6,7 +6,7 @@ import type {
   SubmitGuestResponseResult,
   CreateMeetingWithInviteLinkResult,
 } from './meetingRepository';
-import {
+import type {
   ConfirmedPlan,
   CreateMeetingDraft,
   InviteLink,

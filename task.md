@@ -174,10 +174,224 @@ When We Meet의 핵심 차별점:
 ## 15. Data Asset Strategy
 - 익명화/집계 데이터 기반 콘텐츠 및 추천 전략 수립
 
+## Backend Choice
+
+Recommended MVP backend: Supabase
+
+Reason:
+- When We Meet data is relational: Meeting → InviteLink → MeetingResponse → ConfirmedPlan.
+- Unique constraints are important for invite token and confirmed plan.
+- Indexes are important for meeting dashboard queries.
+- Row Level Security can later separate host access and guest link access.
+- Realtime can later update Host Dashboard as friends respond.
+- Edge Functions can later host server-only AI copy/recommendation endpoints.
+
+Firebase alternative:
+- Good for realtime-first use cases.
+- Less natural for relational joins and unique constraints in this product.
+- Can work later if the product becomes chat/community-first.
+
+Decision:
+Use Supabase as the recommended backend for Phase F unless deployment constraints force Firebase.
+
 ## 16. Data Model Draft
+
+### meetings
+
+Purpose:
+Host-created meeting record.
+
+Fields:
+- id: uuid primary key
+- host_user_id: uuid nullable
+- title: text not null
+- host_message: text nullable
+- category: text nullable
+- theme_id: text nullable
+- location_mode: text not null
+- fixed_place_name: text nullable
+- date_labels: text[] not null default '{}'
+- time_mode: text not null
+- time_labels: text[] not null default '{}'
+- activity_ids: text[] not null default '{}'
+- custom_activity: text nullable
+- status: draft | collecting | confirming | confirmed | closed
+- created_at: timestamptz not null
+- updated_at: timestamptz not null
+
+Indexes:
+- host_user_id
+- status
+- created_at
+
+### invite_links
+
+Purpose:
+Shareable guest entry point.
+
+Fields:
+- id: uuid primary key
+- meeting_id: uuid references meetings(id)
+- token_hash: text unique not null
+- access_mode: link_anyone | approval_required
+- max_responses: int nullable
+- expires_at: timestamptz nullable
+- is_closed: boolean not null default false
+- duplicate_guard_mode: nickname | browser | device | none
+- created_at: timestamptz not null
+- updated_at: timestamptz not null
+
+Indexes:
+- meeting_id
+- token_hash unique
+- expires_at
+- is_closed
+
+### meeting_responses
+
+Purpose:
+Guest response record.
+
+Fields:
+- id: uuid primary key
+- meeting_id: uuid references meetings(id)
+- invite_link_id: uuid references invite_links(id)
+- nickname: text not null
+- attendance: yes | maybe | no
+- attendance_message: text nullable
+- date_labels: text[] not null default '{}'
+- suggested_date_labels: text[] not null default '{}'
+- time_labels: text[] not null default '{}'
+- place_candidate: text nullable
+- activity_ids: text[] not null default '{}'
+- custom_activity: text nullable
+- request_note: text nullable
+- source: guest_web | app
+- idempotency_key: text not null
+- created_at: timestamptz not null
+- updated_at: timestamptz not null
+
+Indexes:
+- meeting_id
+- invite_link_id
+- idempotency_key unique
+- attendance
+- created_at
+
+### confirmed_plans
+
+Purpose:
+Final confirmed plan for a meeting.
+
+Fields:
+- id: uuid primary key
+- meeting_id: uuid references meetings(id) unique
+- date_label: text nullable
+- time_label: text nullable
+- place_name: text nullable
+- activity_labels: text[] not null default '{}'
+- confirmed_by: uuid nullable
+- confirm_source: recommended | manual
+- reason: text nullable
+- created_at: timestamptz not null
+- updated_at: timestamptz not null
+
+Indexes:
+- meeting_id unique
+- confirm_source
+
+### participants view
+
+Purpose:
+Derived participant list for cards and confirmed share.
+
+Source:
+meeting_responses where attendance in ('yes', 'maybe').
+
+Fields:
+- response_id
+- meeting_id
+- name
+- attendance
+- created_at
+
 ## 17. Invite Link Response Flow
+
+1. Host completes create flow.
+2. App creates meeting.
+3. App creates invite_link with raw token.
+4. Backend stores only token_hash.
+5. ShareScreen generates public invite URL.
+6. Guest opens /invite/:meetingId/:token.
+7. Backend validates meeting exists.
+8. Backend validates invite link exists.
+9. Backend compares token hash.
+10. Backend checks is_closed is false.
+11. Backend checks expires_at is not passed.
+12. Backend checks max_responses is not exceeded.
+13. Guest submits response.
+14. Backend checks idempotency_key.
+15. If duplicate, existing response is returned.
+16. If new, meeting_response is inserted.
+17. Dashboard fetches responses by meeting_id.
+18. Host confirms selected plan.
+19. ConfirmedPlan is upserted by meeting_id.
+20. ConfirmedShareScreen loads confirmed plan by meeting_id.
+
+Prototype today:
+- localMeetingRepository simulates this flow in one browser.
+- There is no server validation.
+- There is no cross-device sync.
+
 ## 18. Confirmed Plan Persistence Plan
+
+Current:
+- ConfirmPlanScreen calls repository.confirmPlan.
+- localMeetingRepository stores ConfirmedPlan in localStorage.
+- ConfirmedShareScreen reads ConfirmedPlan by meetingId.
+
+Backend target:
+- confirmed_plans.meeting_id must be unique.
+- confirmPlan should upsert by meeting_id.
+- confirming a plan should update meetings.status to confirmed.
+- ConfirmedShareScreen should never depend on route state.
+- ConfirmedShareScreen should load ConfirmedPlan by meetingId.
+- Future edit/history can store plan revisions separately.
+
+Failure states:
+- No confirmed plan found
+- Meeting not found
+- Permission denied
+- Network error
+- Confirmed plan conflict
+
 ## 19. Server-only AI Policy
+
+Principle:
+AI copy/recommendation features must never expose API keys to the browser bundle.
+
+Current:
+- GEMINI_API_KEY client define was removed from vite.config.ts.
+- package.json still includes AI/server-related dependencies that need audit.
+- Rule-based invite copy remains the local fallback.
+
+Allowed:
+- Client may request recommendations from a backend endpoint.
+- Backend may call AI providers.
+- Backend owns API keys.
+- Client may render AI-generated copy returned by trusted backend.
+
+Forbidden:
+- Importing @google/genai in client screens/components.
+- Injecting AI API keys through Vite define.
+- Storing AI API keys in public env variables.
+- Calling AI provider directly from browser code.
+
+Future:
+- Move AI features to server-only route or Supabase Edge Function.
+- Add request/response contract for contextual invite copy.
+- Keep rule-based invite copy as offline fallback.
+
 ## 20. Dependency Audit
 
 Current risk:
@@ -189,6 +403,7 @@ Current risk:
 Current mitigation:
 - GEMINI_API_KEY is not injected through Vite define.
 - Client screens should not import @google/genai.
+- Backend repository skeleton does not create a Supabase client yet.
 
 Next:
 - Search for actual imports.
@@ -207,25 +422,25 @@ Audit search:
 
 ## 21. Immediate Next Tasks
 
-1. Phase F-1 — Backend Repository Choice & Schema
-   - Choose Supabase or Firebase
-   - Define Meeting / InviteLink / MeetingResponse / ConfirmedPlan schema
-   - Define indexes and security rules
-   - Define migration path from localStorage repository to backend repository
+1. Phase F-3 — Supabase SDK Install & Client Boundary
+   - Install Supabase SDK
+   - Add env schema for VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+   - Create Supabase client boundary
+   - Keep service role / secret keys server-only
 
-2. Phase F-2 — Real Invite Link Validation
-   - Replace local invite lookup with backend lookup
-   - Validate meetingId/token server-side
-   - Enforce expiresAt / isClosed / maxResponses
-   - Add duplicateGuard strategy
+2. Phase F-4 — Backend Repository Implementation
+   - Implement backendMeetingRepository methods
+   - Replace stub errors with Supabase queries
+   - Keep local repository as dev fallback
 
-3. Phase G-1 — BrowserRouter + Hosting Rewrite
+3. Phase F-5 — Server-side Invite Validation
+   - Token hash validation
+   - expiresAt / isClosed / maxResponses enforcement
+   - idempotency key handling
+   - duplicateGuard strategy
+
+4. Phase G-1 — BrowserRouter + Hosting Rewrite
    - Replace HashRouter with BrowserRouter
    - Add Vercel rewrite config
    - Verify direct invite link reload
-   - Prepare OG preview route for invite links
-
-4. Phase F-3 — ConfirmedPlan Server Persistence
-   - Save confirmed plan to backend
-   - Load ConfirmedPlan in ConfirmedShareScreen from backend
-   - Add confirmed plan edit/history model
+   - Prepare OG preview route
