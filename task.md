@@ -416,11 +416,13 @@ Next:
 - Add CI check to prevent AI API key exposure.
 
 Audit search:
-- @google/genai imports: ./package.json, ./package-lock.json
-- dotenv imports: ./package.json, ./package-lock.json
-- express imports: ./package.json, ./package-lock.json
-- GEMINI_API_KEY references: ./task.md, ./.env.example
-- VITE_SUPABASE references: No references found
+- @google/genai imports: package.json, package-lock.json only
+- dotenv imports: package.json, package-lock.json only
+- express imports: package.json, package-lock.json only
+- GEMINI_API_KEY references: .env.example, task.md, result.md only
+- VITE_SUPABASE references: src/vite-env.d.ts, src/lib/supabaseClient.ts, task.md, result.md
+- createClient references: src/lib/supabaseClient.ts only
+- SUPABASE_SERVICE / SERVICE_ROLE references: documentation only, no client env definition
 
 Audit update:
 - @supabase/supabase-js is installed for the upcoming backend adapter.
@@ -429,27 +431,131 @@ Audit update:
 
 ---
 
+## Backend Repository Query Mapping
+
+### createMeetingWithInviteLink
+
+Input:
+- CreateMeetingDraft
+
+Writes:
+- meetings
+- invite_links
+
+Output:
+- MeetingRecord
+- InviteLink
+- inviteUrlPath
+
+Important:
+- Raw invite token is returned to client once for share URL.
+- Backend should store token_hash, not raw token.
+- Current client-only Supabase adapter cannot safely hash/verify secrets server-side. Server/edge function is required for production-grade token validation.
+
+### getMeetingByInvite
+
+Input:
+- meetingId
+- raw token
+
+Reads:
+- invite_links by meeting_id
+- meetings by id
+
+Checks:
+- token hash match
+- is_closed false
+- expires_at not passed
+
+Output:
+- MeetingRecord
+- InviteLink
+
+### getMeetingResponses
+
+Input:
+- meetingId
+
+Reads:
+- meeting_responses where meeting_id = meetingId
+
+Output:
+- MeetingResponse[]
+
+### submitGuestResponse
+
+Input:
+- meetingId
+- inviteToken
+- response draft
+- idempotencyKey
+
+Writes:
+- meeting_responses
+
+Checks:
+- invite link validity
+- idempotency_key duplicate
+- maxResponses
+- duplicateGuard
+
+Output:
+- responseId
+- saved
+
+### confirmPlan
+
+Input:
+- meetingId
+- selectedPlan
+- confirmSource
+
+Writes:
+- confirmed_plans upsert by meeting_id
+- meetings.status = confirmed
+
+Output:
+- ConfirmedPlan
+
+### getConfirmedPlan
+
+Input:
+- meetingId
+
+Reads:
+- confirmed_plans where meeting_id = meetingId
+
+Output:
+- ConfirmedPlan | null
+
+---
+
 ## 21. Immediate Next Tasks
 
-1. Phase F-3 — Supabase SDK Install & Client Boundary
-   - Install Supabase SDK
-   - Add env schema for VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
-   - Create Supabase client boundary
-   - Keep service role / secret keys server-only
-
-2. Phase F-4 — Backend Repository Implementation
-   - Implement backendMeetingRepository methods
-   - Replace stub errors with Supabase queries
+1. Phase F-4 — Backend Repository Implementation
+   - Implement backendMeetingRepository.createMeetingWithInviteLink
+   - Implement backendMeetingRepository.getMeetingByInvite
+   - Implement backendMeetingRepository.getMeetingResponses
+   - Implement backendMeetingRepository.submitGuestResponse
+   - Implement backendMeetingRepository.confirmPlan
+   - Implement backendMeetingRepository.getConfirmedPlan
    - Keep local repository as dev fallback
 
-3. Phase F-5 — Server-side Invite Validation
+2. Phase F-5 — Server-side Invite Validation
    - Token hash validation
    - expiresAt / isClosed / maxResponses enforcement
    - idempotency key handling
    - duplicateGuard strategy
+   - invalid / expired / closed invite states
 
-4. Phase G-1 — BrowserRouter + Hosting Rewrite
+3. Phase G-1 — BrowserRouter + Hosting Rewrite
    - Replace HashRouter with BrowserRouter
    - Add Vercel rewrite config
    - Verify direct invite link reload
    - Prepare OG preview route
+
+4. Phase H-1 — Calendar / Map / Recommendation Planning
+   - Calendar provider abstraction
+   - Place autocomplete strategy
+   - Location permission UX
+   - Recommendation API boundary

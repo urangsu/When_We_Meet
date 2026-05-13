@@ -1,31 +1,23 @@
 # 작업지시서 제목
-When We Meet Phase F-3: Supabase SDK 설치, Client Boundary 생성, Env 안전장치 구축
+When We Meet Phase F-3.5: Supabase Boundary 정합성 정리, 감사 결과 갱신, Backend Query 구현 준비
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- `package.json`
-- `package-lock.json`
-- `src/vite-env.d.ts`
-- `src/lib/supabaseClient.ts`
-- `src/repositories/backendMeetingRepository.ts`
 - `task.md`
 - `result.md`
 
 ### 2. 주요 변경
-- `@supabase/supabase-js` 설치 (`package.json`, `package-lock.json`)
-- Supabase 환경 변수 및 타입 가드 정의 (`src/vite-env.d.ts`)
-- Client 환경에서만 실행되며, Service Role을 참조하지 않는 Supabase Client 생성 경계 구축 (`src/lib/supabaseClient.ts`)
-- 백엔드 모드(`backendMeetingRepository`)에서 `getSupabaseClient`를 주입받아 사용하도록 스켈레톤 연결, 미구현 메서드는 `notImplemented` 예외 던지도록 처리 (`src/repositories/backendMeetingRepository.ts`)
-- `task.md`에 진행률(`[x]`) 갱신 및 보안 감사(`Dependency Audit`) 정책 추가 기록, 미구현 항목(`[ ]`) 유지
+- `task.md`의 `Dependency Audit` 결과를 현재 코드 상태와 일치하도록 수정 (VITE_SUPABASE_URL 관련 실제 코드 반영)
+- 완료된 F-3 단계를 `Immediate Next Tasks`에서 제거하고 F-4를 중심으로 재작성
+- `task.md`에 향후 백엔드 구현을 위한 `Backend Repository Query Mapping` 섹션 추가
 
 ### 3. 빌드
-- npm install: 성공
 - npm run lint: 통과
 - npm run build: 통과
 
 ### 4. 남은 이슈
-- 아직 실제 데이터를 백엔드로 주고받는 Supabase Query 구현체가 없음 (향후 Phase F-4에서 구현예정)
+- 실제 Supabase Query 연결은 `Phase F-4`에서 진행될 예정
 
 ### 5. 다음 작업
 1. Phase F-4 — Backend Repository Implementation
@@ -33,11 +25,20 @@ When We Meet Phase F-3: Supabase SDK 설치, Client Boundary 생성, Env 안전�
 3. Phase G-1 — BrowserRouter + Hosting Rewrite
 
 ### 6. 검증 검색 결과
-- @supabase/supabase-js in package.json: 존재 (버전 ^2.105.4 추가)
-- createClient references: 오직 `src/lib/supabaseClient.ts`에만 존재
-- VITE_SUPABASE references: `src/vite-env.d.ts`, `src/lib/supabaseClient.ts`, `task.md`, `result.md` 에 한정
-- SUPABASE_SERVICE_ROLE references: 전혀 없음 (클라이언트 코드 노출 없음 인증 완료)
-- localMeetingRepository references in screens/state/layouts: 없음
-- backendMeetingRepository references: factory 에서 호출 중임을 확인함
-- GEMINI_API_KEY references: 오직 `.env.example`, `task.md`, `result.md` 문서 영역에 한정됨
-- as any in repositories/state/screens: 없음
+- createClient references: src/lib/supabaseClient.ts
+- VITE_SUPABASE references: src/vite-env.d.ts, src/lib/supabaseClient.ts, task.md, result.md
+- SUPABASE_SERVICE references: 문서 공간에만 존재
+- SERVICE_ROLE references: 문서 공간에만 존재
+- GEMINI_API_KEY references: .env.example, task.md, result.md
+- localMeetingRepository references in screens/state/layouts: 없음 (localMeetingRepository.ts 내부 및 테스트/팩토리에서만 사용 중)
+- backendMeetingRepository references: getMeetingRepository 팩토리 등에서 사용 중
+- as any in repositories/state/screens: 없음 (이전 작업으로 해결됨)
+
+### 7. 직접 확인 파일
+- task.md
+- package.json
+- src/vite-env.d.ts
+- src/lib/supabaseClient.ts
+- src/repositories/backendMeetingRepository.ts
+- src/repositories/repositoryMode.ts
+
