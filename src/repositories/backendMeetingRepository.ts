@@ -14,43 +14,54 @@ import type {
   SubmitGuestResponseResult,
 } from './meetingRepository';
 
+import { getSupabaseClient } from '../lib/supabaseClient';
+
 const notImplemented = async <T>(methodName: string): Promise<T> => {
   throw new Error(
     `[backendMeetingRepository] ${methodName} is not implemented yet. Phase F-3 must provide the real backend adapter.`
   );
 };
 
+const getClientOrThrow = () => getSupabaseClient();
+
 export const backendMeetingRepository: MeetingRepository = {
-  createMeetingWithInviteLink(): Promise<CreateMeetingWithInviteLinkResult> {
+  async createMeetingWithInviteLink(): Promise<CreateMeetingWithInviteLinkResult> {
+    getClientOrThrow();
     return notImplemented('createMeetingWithInviteLink');
   },
 
-  getMeetingByInvite(
+  async getMeetingByInvite(
     _meetingId: MeetingId,
     _token: InviteToken
   ): Promise<{ meeting: MeetingRecord; inviteLink: InviteLink } | null> {
+    getClientOrThrow();
     return notImplemented('getMeetingByInvite');
   },
 
-  getMeetingResponses(_meetingId: MeetingId): Promise<MeetingResponse[]> {
+  async getMeetingResponses(_meetingId: MeetingId): Promise<MeetingResponse[]> {
+    getClientOrThrow();
     return notImplemented('getMeetingResponses');
   },
 
-  submitGuestResponse(
+  async submitGuestResponse(
     _input: SubmitGuestResponseInput
   ): Promise<SubmitGuestResponseResult> {
+    getClientOrThrow();
     return notImplemented('submitGuestResponse');
   },
 
-  confirmPlan(_input: ConfirmPlanInput): Promise<ConfirmedPlan> {
+  async confirmPlan(_input: ConfirmPlanInput): Promise<ConfirmedPlan> {
+    getClientOrThrow();
     return notImplemented('confirmPlan');
   },
 
-  getConfirmedPlan(_meetingId: MeetingId): Promise<ConfirmedPlan | null> {
+  async getConfirmedPlan(_meetingId: MeetingId): Promise<ConfirmedPlan | null> {
+    getClientOrThrow();
     return notImplemented('getConfirmedPlan');
   },
 
-  getMeetingById(_meetingId: MeetingId): Promise<MeetingRecord | null> {
+  async getMeetingById(_meetingId: MeetingId): Promise<MeetingRecord | null> {
+    getClientOrThrow();
     return notImplemented('getMeetingById');
   },
 };

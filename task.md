@@ -121,11 +121,15 @@ Completed:
 - [x] Add backend repository skeleton
 - [x] Add repository factory
 - [x] Remove direct localMeetingRepository imports from screens/state
+- [x] Install Supabase SDK
+- [x] Add Supabase client boundary
+- [x] Add VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY env typing
+- [x] Keep service role key server-only
+- [x] Connect backend repository skeleton to Supabase client boundary
 
 Not Completed:
-- [ ] Install backend SDK
-- [ ] Implement backend repository interface
-- [ ] Replace backend skeleton with real adapter
+- [ ] Implement backend repository queries
+- [ ] Replace backend skeleton with real Supabase adapter
 - [ ] Add server-side invite token validation
 - [ ] Add response idempotency on server
 - [ ] Add maxResponses / expiresAt / isClosed enforcement
@@ -417,6 +421,11 @@ Audit search:
 - express imports: ./package.json, ./package-lock.json
 - GEMINI_API_KEY references: ./task.md, ./.env.example
 - VITE_SUPABASE references: No references found
+
+Audit update:
+- @supabase/supabase-js is installed for the upcoming backend adapter.
+- createClient is allowed only in src/lib/supabaseClient.ts.
+- service role keys must never be exposed to client code.
 
 ---
 
