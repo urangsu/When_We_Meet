@@ -7,6 +7,7 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 import { activityOptions } from '../../config/activityOptions';
 import { Chip } from '../../components/Card';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
+import { useGuestInvite } from '../../state/GuestInviteContext';
 import type { ActivityOptionId } from '../../types/meeting';
 import { getInviteRoute } from '../../utils/inviteRoutes';
 
@@ -14,6 +15,13 @@ export const GuestPlacePreferenceScreen = () => {
   const navigate = useNavigate();
   const { meetingId, token } = useParams();
   const { draft, updateResponseDraft } = useGuestResponseDraft();
+  const { meeting } = useGuestInvite();
+
+  const hostPlaceHint =
+    meeting?.fixedPlaceName ||
+    (meeting?.locationMode === 'candidate_vote'
+      ? '친구들의 만날 곳 후보를 받을 예정이에요.'
+      : '');
   const [candidates, setCandidates] = useState(draft?.placeCandidate || '');
   const [selectedActivities, setSelectedActivities] = useState<ActivityOptionId[]>(draft?.activityIds || []);
   const [customActivity, setCustomActivity] = useState(draft?.customActivity || '');
@@ -50,6 +58,11 @@ export const GuestPlacePreferenceScreen = () => {
       </header>
 
       <div className="flex flex-col gap-8">
+        {hostPlaceHint && (
+          <p className="text-xs font-medium text-ink-hint ml-1">
+            호스트 메모: {hostPlaceHint}
+          </p>
+        )}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-bold text-ink ml-1">만날 곳 후보</label>
           <div className="relative">
