@@ -1,4 +1,4 @@
-# When We Meet Phase E-3 재작업: Host Draft 의존 완전 제거, ConfirmedShare 참여자 연결, task.md 허위 체크 정정
+# When We Meet Phase E-3 재작업: 증거 기반 검증, Host Draft 의존 제거, ConfirmedShare 참여자 연결, task.md 허위 체크 정정
 
 ## 작업 결과
 
@@ -33,8 +33,12 @@
 3. server-side invite token validation 구현
 
 ### 6. 검증 검색 결과
-- useCreateMeetingDraft in Guest screens: 없음
-- hostDraft in GuestDateVoteScreen: 없음
-- participants={[]} in ConfirmedShareScreen: 없음
-- Supabase/Firebase 완료 체크: 없음
-- server-side token validation 완료 체크: 없음
+- useCreateMeetingDraft in Guest screens: 없음 (직접 검사)
+- hostDraft in GuestDateVoteScreen: 없음 (직접 검사)
+- participants={[]} in ConfirmedShareScreen: 없음 (직접 검사)
+- mockMeetingRepository production usage: 없음 (검색결과: 0)
+- mockResponses direct import in screens: 없음 (ConfirmPlanScreen 수정 완료)
+- /invite/demo hardcoded navigate: 없음 (일부 fallback 제외)
+- /app/meetings/demo/confirm hardcode: 없음 (Dashboard 수정 완료)
+- Supabase/Firebase 완료 체크: 없음 (task.md 수정 완료)
+- server-side token validation 완료 체크: 없음 (task.md 수정 완료)
