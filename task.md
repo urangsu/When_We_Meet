@@ -494,8 +494,8 @@ Tasks:
 - [x] Add CreateMeetingDraft autosave
 - [x] Make Dashboard read responses by meetingId
 - [x] Remove Guest screen /invite/demo hardcoded navigation
-- [x] Replace local repository with Supabase/Firebase repository
-- [x] Add server-side invite token validation
+- [ ] Replace local repository with Supabase/Firebase repository
+- [ ] Add server-side invite token validation
 - [x] Remove mock repository usage from DashboardScreen
 - [x] Remove mock repository usage from GuestCompleteScreen
 - [x] Remove mock repository usage from ConfirmPlanScreen

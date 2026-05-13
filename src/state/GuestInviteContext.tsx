@@ -37,7 +37,7 @@ export const GuestInviteProvider = ({ children }: { children: React.ReactNode })
     let mounted = true;
     setLoadState('loading');
 
-    localMeetingRepository.getMeetingByInvite(meetingId as any, token as any).then((result) => {
+    localMeetingRepository.getMeetingByInvite(meetingId, token).then((result) => {
       if (!mounted) return;
 
       if (!result) {
