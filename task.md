@@ -1,4 +1,3 @@
-
 # When We Meet Development Roadmap
 
 ## 0. Product North Star
@@ -44,7 +43,7 @@ This is NOT real multi-user sync and NOT a production backend.
 - [x] BottomNav structures
 - [x] Common components (Cards, Avatars)
 
-## 4. Phase B — Meeting Decision Flow
+## 4. Phase B — Meeting Creation & Decision Flow
 - [x] Host Create Meeting Flow (Place, Time, Activity)
 - [x] Guest Preference Flow (Place, Activity)
 - [x] Confirm Plan Flow
@@ -81,11 +80,8 @@ Goal: Move from visual prototype to a minimally trustworthy local invite-link fl
 - [ ] Server-side validation
 
 ## 9. Phase G — Calendar / Recommendation
-
 ## 10. Phase H — Local Content / Discovery
-
 ## 11. Phase I — Monetization
-
 ## 12. Phase J — Global / i18n
 
 ---
@@ -101,9 +97,15 @@ When We Meet의 핵심 차별점:
 ## 14. Data Asset Strategy
 - 익명화/집계 데이터 기반 콘텐츠 및 추천 전략 수립
 
+## 15. Data Model Draft
+## 16. Invite Link Response Flow
+## 17. Confirmed Plan Persistence Plan
+## 18. Server-only AI Policy
+## 19. Dependency Audit
+
 ---
 
-## 15. Immediate Next Tasks
+## 20. Immediate Next Tasks
 
 1. Phase F-1 — Backend Repository Choice & Schema
    - Choose Supabase or Firebase
@@ -121,4 +123,3 @@ When We Meet의 핵심 차별점:
    - Add Vercel rewrite config
    - Verify direct invite link reload
    - Prepare OG preview route for invite links
-
