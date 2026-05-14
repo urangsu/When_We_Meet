@@ -1,9 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PencilLine } from 'lucide-react';
 import { ourCalendarRepository } from '../../repositories/getOurCalendarRepository';
 import { getMonthDays, getMonthStartOffset } from '../../utils/calendar';
-import { getCalendarContextByDateKey } from '../../utils/ourCalendar';
+import { 
+  getCalendarContextByDateKey,
+  getPrimaryScheduleLabel,
+  getRecordLabel,
+  getRecordTone,
+} from '../../utils/ourCalendar';
 import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage';
 import { OurCalendarShareCard } from '../../components/calendar/OurCalendarShareCard';
 import { CalendarDayCell } from '../../components/meeting/CalendarDayCell';
@@ -15,10 +20,9 @@ import type {
 } from '../../types/calendar';
 
 export const CalendarTabScreen = () => {
-  const today = new Date();
   const [visibleYear, setVisibleYear] = useState(2026);
   const [visibleMonth, setVisibleMonth] = useState(6);
-  const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null);
+  const [selectedDateKey, setSelectedDateKey] = useState<string | null>('2026-06-21');
 
   const [events, setEvents] = useState<OurCalendarEvent[]>([]);
   const [memos, setMemos] = useState<OurCalendarMemo[]>([]);
@@ -34,6 +38,7 @@ export const CalendarTabScreen = () => {
   }, []);
 
   const goToPreviousMonth = () => {
+    setSelectedDateKey(null);
     setVisibleMonth((prev) => {
       let m = prev - 1;
       let y = visibleYear;
@@ -47,6 +52,7 @@ export const CalendarTabScreen = () => {
   };
 
   const goToNextMonth = () => {
+    setSelectedDateKey(null);
     setVisibleMonth((prev) => {
       let m = prev + 1;
       let y = visibleYear;
@@ -146,7 +152,13 @@ export const CalendarTabScreen = () => {
                     eventCount={context.events.length}
                     memoCount={context.memos.length}
                     externalHintCount={context.externalHints.length}
+                    scheduleLabel={getPrimaryScheduleLabel(context)}
+                    recordLabel={getRecordLabel(context)}
+                    recordTone={getRecordTone(context)}
                     onClick={() => setSelectedDateKey(dateKey)} 
+                    onRecordClick={() => {
+                      setSelectedDateKey(dateKey);
+                    }}
                   />
                 );
               })}
@@ -200,6 +212,15 @@ export const CalendarTabScreen = () => {
                      ))}
                    </div>
                  )}
+
+                 <button
+                   type="button"
+                   onClick={() => alert('기록 작성은 다음 단계에서 연결할게요.')}
+                   className="w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-ink-line text-sm font-bold text-ink-muted hover:bg-bg-app hover:text-ink transition-colors"
+                 >
+                   <PencilLine size={16} />
+                   기록 적기
+                 </button>
                </div>
             )}
             

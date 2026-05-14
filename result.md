@@ -1,39 +1,33 @@
 # 작업지시서 제목
-When We Meet Phase H-1R: Our Calendar UI 재구현, 공유 앨범 제거, 날짜 선택형 달력 기반 이미지 공유 구현
+When We Meet Phase H-1R+: Our Calendar 월간 셀 UX 재설계, 일정 1줄 + 기록 적기, 이미지 공유 방향 고정
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- `src/App.tsx`
-- `src/repositories/getOurCalendarRepository.ts` (신규)
+- `src/components/meeting/CalendarDayCell.tsx`
+- `src/utils/ourCalendar.ts`
 - `src/screens/host/CalendarTabScreen.tsx`
-- `src/screens/host/DatePickerScreen.tsx`
-- `src/components/calendar/OurCalendarShareCard.tsx` (신규)
-- `src/utils/shareImage.ts` (신규)
-- `src/screens/shared/SharedCalendarScreen.tsx` (삭제)
 - `task.md`
 - `result.md`
-- `package.json`
 
 ### 2. 주요 변경
 - App 라우팅에서 달력 앨범 방식인 `SharedCalendarScreen` 라우트(`calendar/shared/:token`)를 완전히 제거하고 파일 삭제했습니다.
-- `CalendarTabScreen`을 보라/인디고 공유 카드 레이아웃에서 벗어나 모서리가 둥근 월간 달력 기반(DatePickerScreen과 같은 디자인 톤 계열)을 사용하도록 전면 재구현했습니다.
-- 모임 이벤트, 달력 메모, 외부 힌트에 대한 마커 표시를 날짜 셀에 유지하고, 특정 일자를 선택했을 때 나타나는 Selected Date Detail Panel을 하단에 구축했습니다.
-- "공유"의 의미를 링크 중심의 앨범 공유에서 "사진으로 이미지 템플릿 카드 공유" 중심으로 변경, `OurCalendarShareCard`와 `html-to-image` 기반의 PNG 이미지 생성/공유 기능을 추가했습니다. Web Share API 기반 공유와 수동 다운로드 폴백을 동시 지원합니다.
-- `localOurCalendarRepository`를 컴포넌트들에서 직접 접근하던 것을 방지하고, 향후 백엔드 전환을 고려하여 `ourCalendarRepository` 팩토리를 통해 접근하도록 리팩터링했습니다.
+- `CalendarTabScreen`을 월간 달력 기반으로 완전히 전환하고, `CalendarDayCell`에 `scheduleLabel`, `recordLabel`을 표시할 수 있도록 고도화했습니다.
+- 특정 조건에 따라 `기록 보기`, `기록 적기`, `준비 메모`, `일정 참고` 등의 적절한 Record CTA를 부여하는 로직을 추가했습니다.
+- 선택 날짜 패널에서 사용자가 "기록 적기" 버튼을 누를 수 있도록 prototype 형태의 진입점을 추가했습니다 (실제 데이터 저장은 아직 되지 않음).
+- 이전 단계의 "사진으로 카드 공유" 기능을 그대로 유지하고, 달력 UX를 일정을 보고 메모하는 "우리 달력"의 본 목적에 부합하도록 재구성했습니다.
 
 ### 3. 빌드
-- npm install: `html-to-image` 패키지 성공적 설치 확인
+- npm install: 불필요
 - npm run lint: 통과
 - npm run build: 통과
 
 ### 4. 남은 이슈
-- 달력 메모와 이벤트의 저장 형태가 여전히 프론트엔드 모의 데이터(로컬) 상태이므로 DB 영속화가 진행되어야 합니다.
-- 실제 Google 등 외부의 Calendar 계정 연동(OAuth)은 아직 구현되지 않았습니다.
+- 달력의 "기록 적기"는 프로토타입 단계이며, 실제로 사용자 입력 폼과 DB 저장을 수행하는 로직이 개발되지 않았습니다. (Phase H-2에서 구축 예정). 
 
 ### 5. 다음 작업
-1. Phase F-4 / H-2 — Calendar/Meeting Backend Persistence
-2. 서버사이드 og-image, 카카오톡 서버 카드 등 외부 공유 시스템 강화
+1. Phase H-2 — Calendar Record Drawer & Persistence
+2. Phase F-4 / H-2 — Calendar/Meeting Backend Persistence
 3. Phase I — Local Content / Discovery
 
 ### 6. 검증 검색 결과
@@ -43,5 +37,7 @@ When We Meet Phase H-1R: Our Calendar UI 재구현, 공유 앨범 제거, 날짜
 - `localOurCalendarRepository` direct imports in screens: 없음
 - `html-to-image` in `package.json`: 존재함
 - `navigator.share` usage: `src/utils/shareImage.ts`에서 사용됨
-- CalendarTabScreen uses CalendarDayCell: 달력 렌더링에 정상 사용됨
-- CalendarTabScreen selected date detail: 선택한 달력의 날짜에 대해 이벤트/메모 상세 목록 보여주도록 구축됨
+- CalendarTabScreen uses CalendarDayCell: 적용되어 렌더링에 사용됨.
+- CalendarDayCell scheduleLabel: 추가되었으며 CalendarTabScreen에서 `getPrimaryScheduleLabel(context)`으로 전달.
+- CalendarDayCell recordLabel: 추가되었으며 CalendarTabScreen에서 `getRecordLabel(context)`으로 전달.
+- "기록 적기" references: `utils/ourCalendar.ts`와 `CalendarTabScreen.tsx`에 성공적으로 반영됨.

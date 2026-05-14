@@ -235,11 +235,34 @@ Completed:
 - [x] Remove purple/indigo album-style share card
 
 Not Completed:
-- [ ] Real backend persistence for calendar events
-- [ ] Real calendar image template editor
+- [ ] Real calendar record editor
+- [ ] Calendar record persistence
+- [ ] Backend calendar event/memo repository
 - [ ] Native Kakao share integration
-- [ ] Server-rendered OG calendar card
-- [ ] Calendar collaboration permission model
+- [ ] Server-rendered calendar card
+
+### Phase H-1R+ — Our Calendar Cell UX & Record CTA
+
+Reason:
+Calendar sharing was previously misread as a shared album/page.
+The product direction is image-based sharing and a monthly calendar where users can see schedules and write lightweight records.
+
+Completed:
+- [x] Remove shared calendar album route from active app routes
+- [x] Rebuild CalendarTabScreen around monthly calendar grid
+- [x] Add scheduleLabel to CalendarDayCell
+- [x] Add recordLabel / recordTone to CalendarDayCell
+- [x] Add "기록 적기" / "기록 보기" / "준비 메모" / "후보 메모" / "일정 참고" label logic
+- [x] Add selected date detail panel
+- [x] Keep image-based sharing direction
+- [x] Remove album-style link sharing from calendar MVP
+
+Not Completed:
+- [ ] Real calendar record editor
+- [ ] Calendar record persistence
+- [ ] Backend calendar event/memo repository
+- [ ] Native Kakao share integration
+- [ ] Server-rendered calendar card
 
 ## 11. Phase I — Local Content / Discovery
 ## 12. Phase J — Monetization
