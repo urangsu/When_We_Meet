@@ -1,58 +1,60 @@
 # 작업지시서 제목
-When We Meet Phase H-2 Mega: 달력 기록 CRUD, 모임 생성 연결, 초대장 컨텍스트 자동 반영, 이미지 공유 안정화
+When We Meet Phase H-3 Super Sprint: 우리 달력 기록 엔진, 모임 생성 컨텍스트, 추천 문구/장소/활동 자동 반영
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- `src/components/calendar/CalendarRecordDrawer.tsx` (기존 작업)
-- `src/screens/host/CalendarTabScreen.tsx`
-- `src/components/meeting/CalendarDayCell.tsx`
-- `src/repositories/ourCalendarRepository.ts`
-- `src/repositories/localOurCalendarRepository.ts`
 - `src/types/meeting.ts`
 - `src/state/CreateMeetingDraftContext.tsx`
-- `src/components/meeting/CalendarCandidatePicker.tsx`
 - `src/screens/host/DatePickerScreen.tsx`
+- `src/utils/calendarMemoRecommendations.ts` (신규 파일)
 - `src/screens/host/MeetingInfoScreen.tsx`
+- `src/screens/host/PlaceSetupScreen.tsx`
+- `src/screens/host/ActivitySetupScreen.tsx`
 - `src/screens/host/InvitePreviewScreen.tsx`
 - `src/utils/ourCalendar.ts`
 - `task.md`
 - `result.md`
 
 ### 2. 주요 변경
-- `CalendarRecordDrawer` 구현 및 달력 월간 뷰 `CalendarTabScreen` 연동 기능 확립.
-- `OurCalendarRepository` 및 `localOurCalendarRepository` (localStorage)를 통한 CRUD API 구현.
-- `CalendarDayCell` 구조를 `button` 내 `div`/`event.stopPropagation()`에서 분리된 `<div>` absolute z-index 오버레이 구조로 개선.
-- 이미지 공유 시 캡처되는 컴포넌트를 `opacity-0`가 아닌 화면 바깥(left-[-10000px])으로 보내 랜더링 및 사용자 클릭 미스 방지.
-- `CreateMeetingDraft` 타입에 `attachedCalendarMemoIds`, `attachedCalendarMemoNotes` 상태 추가 및 CreateMeetingDraftContext 연계.
-- 일시 결정 화면 (`DatePickerScreen`, `CalendarCandidatePicker`)에서 날짜 선택시 달력 메모 조회와 그 기록을 '이번 모임에 참고'할 수 있는 기능 추가.
-- `MeetingInfoScreen`에 추가한 메모의 내용(notes) 표시 및 태그 정보 기반 추천 문구(`getMemoSuggestionText`) 반영.
-- `InvitePreviewScreen`에 모임원들에게 '참고한 달력 기록'이라는 항목으로 메모 컨텍스트 요약 카드 표시 추가.
+- `CreateMeetingDraft` 타입에 `attachedCalendarMemoTags`, `attachedCalendarMemoDateKeys` 필드 추가 및 상태 연동.
+- 룰베이스의 로컬 달력 기록 기반 추천 유틸리티(`getCalendarMemoRecommendations`) 신규 추가. 한강, 카페, 식사 등 조건에 따른 장소/활동/초대 문구 힌트 반환.
+- `DatePickerScreen`에서 `attachedCalendarMemoTags`, `attachedCalendarMemoDateKeys` 업데이트 연동.
+- `MeetingInfoScreen`에 첨부된 달력 기록 표시 뷰 강화.
+- `PlaceSetupScreen`에서 달력 기록 기반 장소 힌트 칩셋 UI 제공 및 선택 기능 적용.
+- `ActivitySetupScreen`에서 달력 기록 기반 활동 힌트 영역 제공 및 custom input 연동.
+- `InvitePreviewScreen`에 달력 기록으로 추천된 초대 문구 목록 제공, 바로 클릭해서 모임 메시지에 덮어쓸 수 있도록 연계.
+- 기존의 임시 `getMemoSuggestionText` 제거 후 컨텍스트 기반 추천으로 완전 통합.
 
 ### 3. 빌드
-- npm run lint: 통과
-- npm run build: 통과
+- npm run lint: 통과 (코드 내 tsc --noEmit 에러 없음)
+- npm run build: 통과 (번들 생성 완료)
 
 ### 4. 남은 이슈
-- 달력 기록(Calendar Memo)은 여전히 브라우저의 `localStorage` 기반으로 돌아가는 상태이므로 실제 서버의 사용자 계정 연동이나 모임 간 공유에는 백엔드 작업이 수반되어야 합니다.
-- KakaoTalk 브라우저 연동 기능 및 서버에서 제공하는 OG Image 형태의 링크공유 지원 여부 확인(추후 G, H 단계).
+- 달력 기록(Calendar Memo)은 여전히 브라우저의 `localStorage` 기반.
+- 백엔드(Supabase 등) `calendar_memos` 테이블 구성 및 API 연결, 인증 정보 연동은 다음 단계에서 진행해야 함.
+- Native Kakao SDK를 통한 공유 카드, OG tag 구성 구현 대기.
 
 ### 5. 다음 작업
-1. Phase H-3 — Calendar Records Backend & Recommendation Layer (calendar_memos 스키마 생성 및 백엔드 Repositoy 이관, 추천 매핑)
+1. Phase H-4 — Calendar Records Backend & Privacy Model (calendar_memos 스키마, calendar_memo_links 연결, 백엔드 리포지토리 인터페이스 구성 방안 마련)
 2. Phase F-4 — Backend Repository Implementation
 3. Phase F-5 — Server-side Invite Validation (초대장/아이디 중복 검증 서버 연동)
 
 ### 6. 검증 검색 결과
-- `alert('기록 작성`: 발견되지 않음 (성공적으로 제거)
-- `CalendarRecordDrawer`: `src/components/calendar/CalendarRecordDrawer.tsx`, `src/screens/host/CalendarTabScreen.tsx` 등에서 존재
-- `createCalendarMemo`: `ourCalendarRepository` 인터페이스 및 `localOurCalendarRepository`에 정의/호출 성공
-- `updateCalendarMemo`: 포함됨 (수정 API)
-- `deleteCalendarMemo`: 포함됨 (삭제 API)
-- `localStorage calendar memo key`: `wwm:our-calendar:memos:v1` 사용 확인
-- `opacity-0 in share capture`: 없음 (성공적으로 코드에서 제거됨)
-- `calendar/shared` references: 없음
-- `SharedCalendarScreen` references: 없음
-- `localOurCalendarRepository` direct imports in screens: 직접 참조 없음 (`getOurCalendarRepository`를 통해 의존성 주입)
-- `attachedCalendarMemoIds`: `CreateMeetingDraft` 및 컴포넌트 렌더링 조건문에 원활히 추가 및 활용 중
-- `attachedCalendarMemoNotes`: 문구 추천 로직과 `MeetingInfoScreen`, `InvitePreviewScreen` 모두 확인
-- `memo suggestion helper`: `getMemoSuggestionText`가 `src/utils/ourCalendar.ts`에 추가되어 `MeetingInfoScreen.tsx`에서 추천 문구 제공
+- alert 기반 기록 적기: 검색 결과 발견되지 않음.
+- CalendarRecordDrawer: 존재하며 CRUD 이벤트 정상 연결 확정.
+- createCalendarMemo: `ourCalendarRepository` 인터페이스 및 `localOurCalendarRepository`에서 확인.
+- updateCalendarMemo: 포함.
+- deleteCalendarMemo: 포함.
+- localStorage calendar memo key: `wwm:our-calendar:memos:v1` 사용 확인됨.
+- opacity-0 in share capture: CalendarTabScreen에서 `opacity-0` 제거되어 화면 밖 `left-[-10000px]`로 숨기는 캡처 전용 DOM 확정됨.
+- calendar/shared references: 존재하지 않음.
+- SharedCalendarScreen references: 존재하지 않음.
+- localOurCalendarRepository direct imports in screens: 0건. (의존성 주입 패턴 준수)
+- attachedCalendarMemoIds: `CreateMeetingDraft`에서 사용 중.
+- attachedCalendarMemoNotes: 추천 엔진 및 `MeetingInfoScreen` 등에서 정상 표출.
+- attachedCalendarMemoTags: DatePickerScreen에서 추가하며 `Place`, `Activity` 파싱 등에 재료로 사용.
+- memo recommendation utility: `src/utils/calendarMemoRecommendations.ts`에 생성.
+- PlaceSetupScreen calendar memo hints: `placeRecommendations` 변수 및 UI 확인.
+- ActivitySetupScreen calendar memo hints: `activityRecommendations` 변수 및 UI 확인.
+- InvitePreviewScreen copy recommendations: `copyRecommendations` 변수 확인 및 클릭 시 `updateDraft({ hostMessage: item.label })` 호출부 확인.

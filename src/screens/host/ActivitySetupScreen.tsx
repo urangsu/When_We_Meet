@@ -8,12 +8,20 @@ import { activityOptions } from '../../config/activityOptions';
 import { Chip } from '../../components/Card';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import type { ActivityOptionId } from '../../types/meeting';
+import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommendations';
 
 export const ActivitySetupScreen = () => {
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selectedActivities, setSelectedActivities] = useState<ActivityOptionId[]>(draft.activityIds);
   const [customActivity, setCustomActivity] = useState(draft.customActivity || '');
+
+  const recommendations = getCalendarMemoRecommendations({
+    notes: draft.attachedCalendarMemoNotes,
+    tags: draft.attachedCalendarMemoTags,
+  });
+
+  const activityRecommendations = recommendations.filter((item) => item.type === 'activity');
 
   const toggleActivity = (id: ActivityOptionId) => {
     setSelectedActivities((prev) => 
@@ -58,6 +66,29 @@ export const ActivitySetupScreen = () => {
               </Chip>
             ))}
           </div>
+          
+          {activityRecommendations.length > 0 && (
+            <div className="bg-white border border-rose-light/50 rounded-2xl p-4 mt-2">
+              <p className="text-xs font-bold text-rose mb-3">달력 기록 기반 활동 힌트</p>
+              <div className="flex flex-wrap gap-2">
+                {activityRecommendations.map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => {
+                      setCustomActivity(item.label);
+                      setSelectedActivities((prev) =>
+                        prev.includes('custom') ? prev : [...prev, 'custom']
+                      );
+                    }}
+                    className="px-3 py-1.5 bg-rose text-white text-xs font-semibold rounded-full shadow-soft whitespace-nowrap"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {isCustomSelected && (

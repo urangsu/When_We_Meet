@@ -67,6 +67,12 @@ export const DatePickerScreen = () => {
       attachedCalendarMemoNotes: exists
         ? draft.attachedCalendarMemoNotes.filter((note) => note !== memo.body)
         : [...draft.attachedCalendarMemoNotes, memo.body],
+      attachedCalendarMemoTags: exists
+        ? draft.attachedCalendarMemoTags.filter((tag) => !memo.tags.includes(tag))
+        : Array.from(new Set([...draft.attachedCalendarMemoTags, ...memo.tags])),
+      attachedCalendarMemoDateKeys: exists
+        ? draft.attachedCalendarMemoDateKeys.filter((dateKey) => dateKey !== memo.dateKey)
+        : Array.from(new Set([...draft.attachedCalendarMemoDateKeys, memo.dateKey])),
     });
   };
 

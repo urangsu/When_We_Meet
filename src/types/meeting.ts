@@ -148,6 +148,8 @@ export interface CreateMeetingDraft {
   hostColorId: ProfileColorId;
   attachedCalendarMemoIds: string[];
   attachedCalendarMemoNotes: string[];
+  attachedCalendarMemoTags: string[];
+  attachedCalendarMemoDateKeys: string[];
 }
 
 export interface GuestResponseDraft {

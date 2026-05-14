@@ -28,6 +28,8 @@ const defaultDraft: CreateMeetingDraft = {
   hostColorId: 'white',
   attachedCalendarMemoIds: [],
   attachedCalendarMemoNotes: [],
+  attachedCalendarMemoTags: [],
+  attachedCalendarMemoDateKeys: [],
 };
 
 const initialDraft = readJson<CreateMeetingDraft>(CREATE_DRAFT_KEY, defaultDraft);

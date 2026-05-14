@@ -289,6 +289,32 @@ Not Completed:
 - [ ] Native Kakao share integration
 - [ ] Server-rendered calendar card
 
+### Phase H-3 Super Sprint — Calendar Records to Meeting Creation Engine
+
+Goal:
+Turn Our Calendar records into actionable meeting creation context.
+
+Completed:
+- [x] Add calendar record CRUD
+- [x] Persist calendar records locally
+- [x] Attach calendar records to meeting draft
+- [x] Show attached records in DatePickerScreen
+- [x] Show memo hints in MeetingInfoScreen
+- [x] Show place hints in PlaceSetupScreen
+- [x] Show activity hints in ActivitySetupScreen
+- [x] Show invite copy recommendations in InvitePreviewScreen
+- [x] Allow recommended invite copy to update hostMessage
+- [x] Keep recommendations rule-based and local
+- [x] Keep image sharing as card-based sharing
+
+Not Completed:
+- [ ] Backend calendar_memos table
+- [ ] Backend OurCalendarRepository
+- [ ] Multi-user calendar collaboration
+- [ ] Native Kakao image share
+- [ ] Server-rendered calendar card
+- [ ] LLM-powered recommendations
+
 ## 11. Phase I — Local Content / Discovery
 ## 12. Phase J — Monetization
 ## 13. Phase K — Global / i18n
@@ -682,8 +708,9 @@ Output:
    - Verify direct invite link reload
    - Prepare OG preview route
 
-4. Phase H-3 — Calendar Records Backend & Recommendation Layer
+4. Phase H-4 — Calendar Records Backend & Privacy Model
    - Add calendar_memos schema
+   - Add calendar_memo_links table for meeting references
    - Implement backend OurCalendarRepository
-   - Add memo-to-place/activity recommendation mapping
-   - Add calendar record privacy model
+   - Add privacy model for private/meeting_context/shared_calendar
+   - Add memo-to-place/activity analytics events

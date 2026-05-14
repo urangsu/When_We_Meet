@@ -7,12 +7,20 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 import { locationModeOptions } from '../../config/locationOptions';
 import type { LocationMode } from '../../types/meeting';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommendations';
 
 export const PlaceSetupScreen = () => {
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selectedMode, setSelectedMode] = useState<LocationMode>(draft.locationMode);
   const [fixedPlace, setFixedPlace] = useState(draft.fixedPlaceName || '');
+
+  const recommendations = getCalendarMemoRecommendations({
+    notes: draft.attachedCalendarMemoNotes,
+    tags: draft.attachedCalendarMemoTags,
+  });
+
+  const placeRecommendations = recommendations.filter((item) => item.type === 'place');
 
   const isValid =
     selectedMode === 'undecided' ||
@@ -78,6 +86,26 @@ export const PlaceSetupScreen = () => {
               placeholder="예) 성수동 조용한 카페"
               className="w-full p-4 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all"
             />
+            
+            {placeRecommendations.length > 0 && (
+              <div className="bg-white border border-rose-light/50 rounded-2xl p-4 mt-2">
+                <p className="text-xs font-bold text-rose mb-3">달력 기록 기반 장소 힌트</p>
+                <div className="flex flex-wrap gap-2">
+                  {placeRecommendations.map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => {
+                        setFixedPlace(item.label);
+                      }}
+                      className="px-3 py-1.5 bg-rose text-white text-xs font-semibold rounded-full shadow-soft whitespace-nowrap"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

@@ -13,6 +13,7 @@ import {
   getPlaceContext,
   getContextualInviteCopySuggestions,
 } from '../../config/contextualInviteCopy';
+import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommendations';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
@@ -40,6 +41,11 @@ export const InvitePreviewScreen = () => {
     hasEveningTime: dateContext.hasEveningTime,
     hasLunchTime: dateContext.hasLunchTime,
   });
+
+  const copyRecommendations = getCalendarMemoRecommendations({
+    notes: draft.attachedCalendarMemoNotes,
+    tags: draft.attachedCalendarMemoTags,
+  }).filter((item) => item.type === 'invite_copy');
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
@@ -128,24 +134,46 @@ export const InvitePreviewScreen = () => {
         </motion.div>
 
         {draft.attachedCalendarMemoNotes.length > 0 && (
-          <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-soft">
-            <div className="mb-3">
-              <p className="text-sm font-bold text-ink">참고한 달력 기록</p>
-              <p className="mt-1 text-xs text-ink-hint">
-                이런 분위기도 생각하고 있어요
+          <section className="bg-bg-app border border-ink-line rounded-2xl p-4 mt-2">
+            <p className="text-xs font-bold text-ink-muted mb-2">
+              이런 분위기도 생각하고 있어요
+            </p>
+            {draft.attachedCalendarMemoNotes.slice(0, 2).map((note, index) => (
+              <p key={index} className="text-sm text-ink line-clamp-2">
+                {note}
               </p>
-            </div>
-            <ul className="list-disc list-inside text-sm text-ink-muted flex flex-col gap-1">
-              {draft.attachedCalendarMemoNotes.map((note, idx) => (
-                <li key={idx}>{note}</li>
+            ))}
+          </section>
+        )}
+
+        {copyRecommendations.length > 0 && (
+          <section className="bg-white border border-ink-line rounded-2xl p-4 mt-2">
+            <p className="text-xs font-bold text-rose mb-3">달력 기록으로 추천한 초대 문구</p>
+            <div className="space-y-2">
+              {copyRecommendations.map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => updateDraft({ hostMessage: item.label })}
+                  className={`
+                    w-full text-left rounded-xl border p-3 transition-all
+                    ${draft.hostMessage === item.label
+                      ? 'border-rose bg-rose-light/20'
+                      : 'border-ink-line hover:bg-neutral-50'
+                    }
+                  `}
+                >
+                  <p className="text-sm font-bold text-ink">{item.label}</p>
+                  <p className="text-xs text-ink-muted mt-1">{item.reason}</p>
+                </button>
               ))}
-            </ul>
+            </div>
           </section>
         )}
 
         <section className="rounded-2xl border border-line bg-surface p-4 shadow-soft">
           <div className="mb-3">
-            <p className="text-sm font-bold text-ink">문구 바꿔보기</p>
+            <p className="text-sm font-bold text-ink">문구 맞춰보기</p>
             <p className="mt-1 text-xs text-ink-hint">
               만날 곳과 뭐 할지에 맞춰 가볍게 골라봤어요.
             </p>
