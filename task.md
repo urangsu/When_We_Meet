@@ -214,18 +214,24 @@ Removed:
 Reason:
 Calendar sharing should be image-card based, not shared album/page based.
 
-### Phase H-2 — Calendar Record Drawer & Local Persistence
+### Phase H-2 Mega — Calendar Records to Meeting Context
+
+Goal:
+Turn Our Calendar from a read-only calendar into a recordable planning layer that feeds meeting creation.
 
 Completed:
 - [x] Add CalendarRecordDrawer
-- [x] Add createCalendarMemo repository method
-- [x] Add updateCalendarMemo repository method
-- [x] Add deleteCalendarMemo repository method
+- [x] Add create/update/delete calendar memo repository methods
 - [x] Persist calendar memos in localStorage
-- [x] Connect "기록 적기" to drawer
+- [x] Connect "기록 적기" to actual drawer
 - [x] Connect "기록 보기" to edit existing memo
-- [x] Refresh calendar cell labels after save/delete
-- [x] Fix image share capture node visibility
+- [x] Refresh day-cell labels after save/delete
+- [x] Fix image share offscreen capture node
+- [x] Allow image share for empty selected dates
+- [x] Attach calendar memos to meeting draft
+- [x] Show attached calendar memo hints in MeetingInfoScreen
+- [x] Show attached calendar memo context in InvitePreviewScreen
+- [x] Add rule-based memo suggestion helper
 
 Not Completed:
 - [ ] Backend calendar_memos table
@@ -233,6 +239,7 @@ Not Completed:
 - [ ] Multi-user calendar collaboration
 - [ ] Native Kakao image share
 - [ ] Server-rendered calendar card
+- [ ] LLM-powered memo suggestions
 
 ### Phase H-1R — Our Calendar UI Rebuild & Image Share
 
@@ -675,8 +682,8 @@ Output:
    - Verify direct invite link reload
    - Prepare OG preview route
 
-4. Phase H-3 — Calendar Memo to Meeting Context
-   - Show saved calendar memos inside DatePickerScreen
-   - Let host attach memo to meeting draft
-   - Use memo tags for place/activity copy suggestions
-   - Prepare backend calendar_memos schema
+4. Phase H-3 — Calendar Records Backend & Recommendation Layer
+   - Add calendar_memos schema
+   - Implement backend OurCalendarRepository
+   - Add memo-to-place/activity recommendation mapping
+   - Add calendar record privacy model

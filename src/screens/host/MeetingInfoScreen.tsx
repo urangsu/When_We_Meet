@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, AlignLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -6,12 +6,24 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { baseHostMessageSuggestions } from '../../config/hostMessageSuggestions';
+import { ourCalendarRepository } from '../../repositories/getOurCalendarRepository';
+import type { OurCalendarMemo } from '../../types/calendar';
+import { getMemoSuggestionText } from '../../utils/ourCalendar';
 
 export const MeetingInfoScreen = () => {
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [name, setName] = useState(draft.title);
   const [message, setMessage] = useState(draft.hostMessage);
+  const [attachedMemos, setAttachedMemos] = useState<OurCalendarMemo[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (draft.attachedCalendarMemoIds.length > 0) {
+      ourCalendarRepository.getCalendarMemos().then((memos) => {
+        setAttachedMemos(memos.filter(memo => draft.attachedCalendarMemoIds.includes(memo.id)));
+      });
+    }
+  }, [draft.attachedCalendarMemoIds]);
 
   const isValid = name.trim().length > 0;
 
@@ -52,13 +64,33 @@ export const MeetingInfoScreen = () => {
             />
             <AlignLeft className="absolute top-4 left-4 text-ink-hint" size={20} />
           </div>
+
+          {draft.attachedCalendarMemoNotes.length > 0 && (
+            <div className="mt-2 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
+              <p className="text-xs font-bold text-ink mb-1">달력 기록에서 가져온 힌트</p>
+              <ul className="list-disc list-inside text-xs text-ink-muted">
+                {draft.attachedCalendarMemoNotes.map((note, index) => (
+                  <li key={index}>{note}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <p className="text-xs font-bold text-ink-muted mt-2 ml-1">문구가 고민되면 골라보세요</p>
           <div className="flex flex-wrap gap-2 mt-2">
+            {attachedMemos.length > 0 && (
+              <button
+                onClick={() => setMessage(getMemoSuggestionText(attachedMemos))}
+                className="px-3 py-1.5 bg-rose text-white text-xs font-semibold rounded-full shadow-soft whitespace-nowrap overflow-hidden text-ellipsis max-w-full"
+              >
+                {getMemoSuggestionText(attachedMemos)}
+              </button>
+            )}
             {baseHostMessageSuggestions.map((suggestion) => (
               <button
                 key={suggestion}
                 onClick={() => setMessage(suggestion)}
-                className="px-3 py-1.5 bg-surface text-ink text-xs font-semibold rounded-full border border-line shadow-soft"
+                className="px-3 py-1.5 bg-surface text-ink text-xs font-semibold rounded-full border border-line shadow-soft whitespace-nowrap overflow-hidden text-ellipsis max-w-[280px]"
               >
                 {suggestion}
               </button>

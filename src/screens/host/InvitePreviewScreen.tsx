@@ -127,6 +127,22 @@ export const InvitePreviewScreen = () => {
           </div>
         </motion.div>
 
+        {draft.attachedCalendarMemoNotes.length > 0 && (
+          <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-soft">
+            <div className="mb-3">
+              <p className="text-sm font-bold text-ink">참고한 달력 기록</p>
+              <p className="mt-1 text-xs text-ink-hint">
+                이런 분위기도 생각하고 있어요
+              </p>
+            </div>
+            <ul className="list-disc list-inside text-sm text-ink-muted flex flex-col gap-1">
+              {draft.attachedCalendarMemoNotes.map((note, idx) => (
+                <li key={idx}>{note}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section className="rounded-2xl border border-line bg-surface p-4 shadow-soft">
           <div className="mb-3">
             <p className="text-sm font-bold text-ink">문구 바꿔보기</p>

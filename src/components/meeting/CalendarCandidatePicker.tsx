@@ -19,6 +19,8 @@ interface CalendarCandidatePickerProps {
   calendarEvents?: OurCalendarEvent[];
   calendarMemos?: OurCalendarMemo[];
   externalHints?: ExternalCalendarHint[];
+  attachedMemoIds?: string[];
+  onToggleAttachMemo?: (memo: OurCalendarMemo) => void;
   onPreviousMonth?: () => void;
   onNextMonth?: () => void;
   onSubmit: (selectedDates: { day: number; label: string }[]) => void;
@@ -33,6 +35,8 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
   calendarEvents = [],
   calendarMemos = [],
   externalHints = [],
+  attachedMemoIds = [],
+  onToggleAttachMemo,
   onPreviousMonth,
   onNextMonth,
   onSubmit,
@@ -138,8 +142,19 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
                 <span className="text-xs font-bold text-rose">{month}월 {ctx.day}일</span>
                 {ctx.memos.map(memo => (
                   <div key={memo.id} className="bg-amber-50 rounded-xl p-3 border border-amber-200">
-                    <span className="text-xs font-bold text-ink">{memo.title}</span>
-                    <p className="text-xs text-ink-muted mt-1">{memo.body}</p>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-xs font-bold text-ink">{memo.title}</span>
+                      {onToggleAttachMemo && (
+                        <button 
+                          type="button" 
+                          onClick={() => onToggleAttachMemo(memo)}
+                          className={`text-[10px] font-bold px-2 py-1 rounded-full transition-colors ${attachedMemoIds.includes(memo.id) ? 'bg-ink text-white' : 'bg-white text-ink border border-ink-line hover:bg-neutral-50'}`}
+                        >
+                          {attachedMemoIds.includes(memo.id) ? '참고에서 빼기' : '이번 모임에 참고'}
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-xs text-ink-muted">{memo.body}</p>
                   </div>
                 ))}
                 {ctx.events.map(ev => (

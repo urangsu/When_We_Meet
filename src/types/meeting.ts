@@ -146,6 +146,8 @@ export interface CreateMeetingDraft {
   themeId: ThemeId;
   hostName: string;
   hostColorId: ProfileColorId;
+  attachedCalendarMemoIds: string[];
+  attachedCalendarMemoNotes: string[];
 }
 
 export interface GuestResponseDraft {

@@ -15,7 +15,7 @@ import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const DatePickerScreen = () => {
   const navigate = useNavigate();
-  const { updateDraft } = useCreateMeetingDraft();
+  const { draft, updateDraft } = useCreateMeetingDraft();
   
   const [visibleYear, setVisibleYear] = useState(2026);
   const [visibleMonth, setVisibleMonth] = useState(6);
@@ -57,6 +57,19 @@ export const DatePickerScreen = () => {
     navigate('/app/create/time');
   };
 
+  const toggleAttachMemo = (memo: OurCalendarMemo) => {
+    const exists = draft.attachedCalendarMemoIds.includes(memo.id);
+
+    updateDraft({
+      attachedCalendarMemoIds: exists
+        ? draft.attachedCalendarMemoIds.filter((id) => id !== memo.id)
+        : [...draft.attachedCalendarMemoIds, memo.id],
+      attachedCalendarMemoNotes: exists
+        ? draft.attachedCalendarMemoNotes.filter((note) => note !== memo.body)
+        : [...draft.attachedCalendarMemoNotes, memo.body],
+    });
+  };
+
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
       <header className="flex items-center gap-4 pt-2">
@@ -72,6 +85,8 @@ export const DatePickerScreen = () => {
         calendarEvents={calendarEvents}
         calendarMemos={calendarMemos}
         externalHints={externalHints}
+        attachedMemoIds={draft.attachedCalendarMemoIds}
+        onToggleAttachMemo={toggleAttachMemo}
         onPreviousMonth={goToPreviousMonth}
         onNextMonth={goToNextMonth}
         onSubmit={handleNext}
