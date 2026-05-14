@@ -13,6 +13,7 @@ import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage
 import { OurCalendarShareCard } from '../../components/calendar/OurCalendarShareCard';
 import { CalendarDayCell } from '../../components/meeting/CalendarDayCell';
 import { Button } from '../../components/Button';
+import { CalendarRecordDrawer } from '../../components/calendar/CalendarRecordDrawer';
 import type {
   ExternalCalendarHint,
   OurCalendarEvent,
@@ -28,6 +29,9 @@ export const CalendarTabScreen = () => {
   const [memos, setMemos] = useState<OurCalendarMemo[]>([]);
   const [externalHints, setExternalHints] = useState<ExternalCalendarHint[]>([]);
   const [shareState, setShareState] = useState<'idle' | 'creating' | 'shared' | 'downloaded' | 'failed'>('idle');
+
+  const [recordDrawerOpen, setRecordDrawerOpen] = useState(false);
+  const [editingMemo, setEditingMemo] = useState<OurCalendarMemo | null>(null);
 
   const shareCardRef = useRef<HTMLDivElement | null>(null);
 
@@ -81,7 +85,7 @@ export const CalendarTabScreen = () => {
     : null;
 
   const handleShareImage = async () => {
-    if (!shareCardRef.current || !selectedDateKey || !selectedContext) return;
+    if (!shareCardRef.current || !selectedDateKey) return;
 
     setShareState('creating');
 
@@ -96,6 +100,41 @@ export const CalendarTabScreen = () => {
     } catch {
       setShareState('failed');
     }
+  };
+
+  const openRecordDrawer = (dateKey: string, memo?: OurCalendarMemo) => {
+    setSelectedDateKey(dateKey);
+    setEditingMemo(memo || null);
+    setRecordDrawerOpen(true);
+  };
+
+  const handleSaveRecord = async (input: { title: string; body: string; tags: string[]; visibility: OurCalendarMemo['visibility'] }) => {
+    if (!selectedDateKey) return;
+
+    if (editingMemo) {
+      await ourCalendarRepository.updateCalendarMemo({
+        id: editingMemo.id,
+        ...input,
+      });
+    } else {
+      await ourCalendarRepository.createCalendarMemo({
+        dateKey: selectedDateKey,
+        ...input,
+      });
+    }
+
+    const nextMemos = await ourCalendarRepository.getCalendarMemos();
+    setMemos(nextMemos);
+    setRecordDrawerOpen(false);
+    setEditingMemo(null);
+  };
+
+  const handleDeleteRecord = async (memoId: string) => {
+    await ourCalendarRepository.deleteCalendarMemo(memoId);
+    const nextMemos = await ourCalendarRepository.getCalendarMemos();
+    setMemos(nextMemos);
+    setRecordDrawerOpen(false);
+    setEditingMemo(null);
   };
 
   return (
@@ -156,9 +195,7 @@ export const CalendarTabScreen = () => {
                     recordLabel={getRecordLabel(context)}
                     recordTone={getRecordTone(context)}
                     onClick={() => setSelectedDateKey(dateKey)} 
-                    onRecordClick={() => {
-                      setSelectedDateKey(dateKey);
-                    }}
+                    onRecordClick={() => openRecordDrawer(dateKey, context.memos[0])}
                   />
                 );
               })}
@@ -215,16 +252,16 @@ export const CalendarTabScreen = () => {
 
                  <button
                    type="button"
-                   onClick={() => alert('기록 작성은 다음 단계에서 연결할게요.')}
+                   onClick={() => openRecordDrawer(selectedDateKey, selectedContext?.memos[0])}
                    className="w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-ink-line text-sm font-bold text-ink-muted hover:bg-bg-app hover:text-ink transition-colors"
                  >
                    <PencilLine size={16} />
-                   기록 적기
+                   {selectedContext?.memos.length > 0 ? '기록 수정' : '기록 적기'}
                  </button>
                </div>
             )}
             
-            {selectedDateKey && (selectedContext?.events.length || selectedContext?.memos.length || selectedContext?.externalHints.length) ? (
+            {selectedDateKey && (
               <div className="mt-6 pt-4 border-t border-ink-line/50">
                 <Button onClick={handleShareImage} disabled={shareState === 'creating'}>
                   {shareState === 'creating' ? '사진 만드는 중...' : '선택한 날짜 사진으로 공유'}
@@ -233,11 +270,11 @@ export const CalendarTabScreen = () => {
                 {shareState === 'downloaded' && <p className="text-xs text-green-600 mt-2 text-center">사진 파일로 다운로드됐어요.</p>}
                 {shareState === 'failed' && <p className="text-xs text-rose mt-2 text-center">공유에 실패했어요. 다시 시도해주세요.</p>}
               </div>
-            ) : null}
+            )}
           </section>
 
           {/* Offscreen Share Card */}
-          <div className="absolute top-0 left-0 -z-50 opacity-0 pointer-events-none">
+          <div className="fixed left-[-10000px] top-0 pointer-events-none">
             <OurCalendarShareCard
               ref={shareCardRef}
               title="우리 달력 메모"
@@ -249,6 +286,18 @@ export const CalendarTabScreen = () => {
           </div>
         </div>
       </div>
+
+      <CalendarRecordDrawer
+        isOpen={recordDrawerOpen}
+        dateKey={selectedDateKey}
+        memo={editingMemo}
+        onClose={() => {
+          setRecordDrawerOpen(false);
+          setEditingMemo(null);
+        }}
+        onSave={handleSaveRecord}
+        onDelete={handleDeleteRecord}
+      />
     </ScreenShell>
   );
 };

@@ -195,26 +195,44 @@ Not Completed:
 - [ ] Calendar memo collaboration
 - [ ] Calendar share permission model
 
-### Phase H-1 — Our Calendar Repository & Shared Route
+### Phase H-1 — Our Calendar Repository & Shared Route (Deprecated Direction)
+
+Status:
+This phase introduced repository and a shared calendar route, but the shared album/page direction was later rejected.
+
+Kept:
+- [x] OurCalendarRepository interface
+- [x] localOurCalendarRepository
+- [x] Day-cell markers
+- [x] Month navigation
+
+Removed:
+- [x] Shared calendar album route removed from active App routes
+- [x] SharedCalendarScreen removed from active product direction
+- [x] Clipboard link sharing removed from calendar MVP
+
+Reason:
+Calendar sharing should be image-card based, not shared album/page based.
+
+### Phase H-2 — Calendar Record Drawer & Local Persistence
 
 Completed:
-- [x] Add OurCalendarRepository interface
-- [x] Add localOurCalendarRepository
-- [x] Remove direct mockOurCalendar imports from CalendarTabScreen
-- [x] Remove direct mockOurCalendar imports from DatePickerScreen
-- [x] Add shared calendar route
-- [x] Add SharedCalendarScreen
-- [x] Implement clipboard-based calendar share copy
-- [x] Add day-cell markers for events/memos/external hints
-- [x] Add month navigation to DatePickerScreen
+- [x] Add CalendarRecordDrawer
+- [x] Add createCalendarMemo repository method
+- [x] Add updateCalendarMemo repository method
+- [x] Add deleteCalendarMemo repository method
+- [x] Persist calendar memos in localStorage
+- [x] Connect "기록 적기" to drawer
+- [x] Connect "기록 보기" to edit existing memo
+- [x] Refresh calendar cell labels after save/delete
+- [x] Fix image share capture node visibility
 
 Not Completed:
-- [ ] Backend persistence for calendar events
-- [ ] Backend persistence for calendar memos
-- [ ] Backend persistence for calendar share links
-- [ ] Real calendar collaboration
-- [ ] Google Calendar OAuth
-- [ ] Device calendar permission
+- [ ] Backend calendar_memos table
+- [ ] Backend OurCalendarRepository
+- [ ] Multi-user calendar collaboration
+- [ ] Native Kakao image share
+- [ ] Server-rendered calendar card
 
 ### Phase H-1R — Our Calendar UI Rebuild & Image Share
 
@@ -657,8 +675,8 @@ Output:
    - Verify direct invite link reload
    - Prepare OG preview route
 
-4. Phase H-1 — Our Calendar Persistence
-   - Add calendar_events schema
-   - Add calendar_memos schema
-   - Add calendar_share_links schema
-   - Connect calendar memo context to meeting creation
+4. Phase H-3 — Calendar Memo to Meeting Context
+   - Show saved calendar memos inside DatePickerScreen
+   - Let host attach memo to meeting draft
+   - Use memo tags for place/activity copy suggestions
+   - Prepare backend calendar_memos schema

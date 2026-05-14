@@ -34,14 +34,17 @@ export const CalendarDayCell: React.FC<{
   };
 
   return (
-    <button
-      onClick={onClick}
+    <div
       className={`
-        relative aspect-square rounded-xl flex flex-col pt-1 text-sm font-bold transition-all overflow-hidden
-        ${isSelected ? 'bg-rose text-white shadow-md scale-105 z-10' : 'bg-transparent text-ink hover:bg-ivory'}
+        relative aspect-square rounded-xl transition-all overflow-hidden
+        ${isSelected ? 'bg-rose shadow-md scale-105 z-10' : 'bg-transparent hover:bg-ivory'}
       `}
     >
-      <div className="flex flex-col items-center justify-start h-full px-1 w-full">
+      <button
+        type="button"
+        onClick={onClick}
+        className={`absolute inset-0 flex flex-col pt-1 px-1 text-sm font-bold w-full h-full items-center justify-start ${isSelected ? 'text-white' : 'text-ink'}`}
+      >
         <div className="flex items-center gap-1">
           <span className="text-[11px] font-bold leading-none mt-0.5">{day}</span>
           {!isSelected && (
@@ -61,19 +64,20 @@ export const CalendarDayCell: React.FC<{
         ) : (
           <span className="mt-1 h-[12px]" />
         )}
+      </button>
 
-        {recordLabel && (
-          <div
-            onClick={(event) => {
-              event.stopPropagation();
-              onRecordClick?.() ?? onClick();
-            }}
-            className={`mt-0.5 w-full max-w-full truncate text-[9px] font-bold leading-tight ${recordToneColors[recordTone]}`}
-          >
-            {recordLabel}
-          </div>
-        )}
-      </div>
-    </button>
+      {recordLabel && (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onRecordClick?.() ?? onClick();
+          }}
+          className={`absolute bottom-1 left-1 right-1 px-0.5 max-w-full truncate text-[9px] font-bold leading-tight ${recordToneColors[recordTone]}`}
+        >
+          {recordLabel}
+        </button>
+      )}
+    </div>
   );
 };
