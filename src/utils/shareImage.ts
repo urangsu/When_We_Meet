@@ -16,7 +16,7 @@ export const createPngFileFromElement = async (
   return new File([blob], filename, { type: 'image/png' });
 };
 
-export const shareImageFile = async (file: File) => {
+export const shareImageFile = async (file: File, options?: { title?: string; text?: string; url?: string }) => {
   if (
     typeof navigator !== 'undefined' &&
     'canShare' in navigator &&
@@ -24,8 +24,9 @@ export const shareImageFile = async (file: File) => {
   ) {
     await navigator.share({
       files: [file],
-      title: '우리 달력',
-      text: '우리 달력에서 만든 약속 메모예요.',
+      title: options?.title || '우리 달력',
+      text: options?.text || '우리 달력에서 만든 약속 메모예요.',
+      url: options?.url,
     });
     return 'shared' as const;
   }

@@ -606,11 +606,49 @@ Output:
 
 ---
 
-## 22. Immediate Next Tasks
+## 22. Phase V — Invitation Motion & Viral Share Core
 
-### Product Reliability Track
+Goal:
+Make the invitation itself the product's strongest viral asset.
+
+Current Product Truth:
+When We Meet's strongest differentiator is not calendar records alone.
+The core strength is a short invitation-opening motion plus a polished response UI.
+
+Completed:
+- [x] Define invitation motion as P0 product signature
+- [x] Add static OG metadata
+- [x] Add invitation opening motion component
+- [x] Connect invitation motion to guest landing
+- [x] Add invitation motion preview to host preview
+- [x] Add invite share card / image share flow
+- [x] Add guest complete "create my own invite" CTA
+
+Not Completed:
+- [ ] Dynamic meeting-specific OG image
+- [ ] Kakao SDK share
+- [ ] Real backend invite/response sync
+- [ ] Invite video MP4 export
+- [ ] Native app share sheet polish
+
+---
+
+## P0 Launch Blockers
+
+1. Backend sync for guest responses
+2. Static OG tags and og.jpg
+3. Invite share card image export
+4. Guest complete → create my own invite CTA
+5. Home/Meetings mock data removal
+6. ConfirmedShare real share / .ics fallback
+
+**Note:** Our Calendar is a retention and data asset layer. Invitation Motion is the acquisition and viral layer. Do not position calendar records as the first marketing hook before invite motion is polished.
+
+## 23. Immediate Next Tasks
+
+### Product & Acquisition Track (P0)
 1. Phase F-4 — Backend Repository Implementation
-2. Phase F-5 — Server-side Invite Validation
+2. Phase V-1 — Invite Video/OG Polish
 3. Phase G-1 — BrowserRouter + Hosting Rewrite
 
 ### GTM Track
@@ -618,6 +656,6 @@ Output:
 2. Phase M-2 — App Onboarding Copy & Screens
 3. Phase M-3 — Share Card Template System
 
-### Calendar/Data Track
+### Retention & Calendar Track
 1. Phase H-4 — Calendar Records Backend & Privacy Model
 2. Phase H-5 — Memo Recommendation Refinement

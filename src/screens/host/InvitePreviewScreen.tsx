@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft, Share2, MapPin, Calendar, User, Clock, Bookmark } from 'lucide-react';
+import { ChevronLeft, Share2, MapPin, Calendar, User, Clock, Bookmark, PlayCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
@@ -14,10 +14,12 @@ import {
   getContextualInviteCopySuggestions,
 } from '../../config/contextualInviteCopy';
 import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommendations';
+import { InvitationOpeningMotion } from '../../components/invite/InvitationOpeningMotion';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
+  const [showMotionPreview, setShowMotionPreview] = useState(false);
   
   const selectedCategory = categoryOptions.find(c => c.id === draft.category);
   const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
@@ -46,6 +48,35 @@ export const InvitePreviewScreen = () => {
     notes: draft.attachedCalendarMemoNotes,
     tags: draft.attachedCalendarMemoTags,
   }).filter((item) => item.type === 'invite_copy');
+
+  const getPlaceLabel = () => {
+    if (draft.locationMode === 'fixed' && draft.fixedPlaceName) return draft.fixedPlaceName;
+    if (draft.locationMode === 'candidate_vote') return '친구들과 함께 결정';
+    return undefined;
+  };
+
+  const getActivityLabel = () => {
+    if (draft.activityMode === 'decided' && (draft.activityIds.length || draft.customActivity)) {
+      return draft.activityIds.length ? `${draft.activityIds.length}개의 후보` : draft.customActivity;
+    }
+    if (draft.activityMode === 'vote') return '친구들과 함께 결정';
+    return undefined;
+  };
+  
+  if (showMotionPreview) {
+    return (
+      <InvitationOpeningMotion
+        title={draft.title || '수민이의 생일 모임'}
+        hostName="수민"
+        message={draft.hostMessage || '같이 시간 맞춰볼까요?\n가능한 날짜와 하고 싶은 걸 가볍게 골라주세요.'}
+        dateLabel={draft.dateLabels.length ? `${draft.dateLabels.length}개의 날짜 후보` : undefined}
+        placeLabel={getPlaceLabel()}
+        activityLabel={getActivityLabel()}
+        preview
+        onComplete={() => setShowMotionPreview(false)}
+      />
+    );
+  }
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
@@ -55,6 +86,16 @@ export const InvitePreviewScreen = () => {
       </header>
 
       <div className="flex-1 overflow-y-auto no-scrollbar pb-10 gap-6 flex flex-col">
+        <div className="flex justify-between items-center px-1">
+          <p className="text-sm font-bold text-ink">게스트가 보게 될 초대장</p>
+          <button 
+            onClick={() => setShowMotionPreview(true)}
+            className="flex items-center gap-1.5 text-xs font-bold text-rose bg-rose-50 px-3 py-1.5 rounded-full hover:bg-rose-100 transition-colors"
+          >
+            <PlayCircle size={14} /> 모션 미리보기
+          </button>
+        </div>
+
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

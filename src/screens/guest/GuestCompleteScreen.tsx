@@ -139,10 +139,10 @@ export const GuestCompleteScreen = () => {
       <div className="w-full bg-cream border border-ink-line rounded-2xl p-5 flex flex-col items-center gap-3 mt-auto shadow-sm">
         <CalendarHeart size={28} className="text-rose" />
         <p className="font-bold text-sm text-ink text-center">
-          나도 친구들과의 약속을<br/>쉽게 잡고 싶다면?
+          친구에게 보낼 약속이 있다면,<br/>나도 예쁜 초대장을 만들어볼 수 있어요.
         </p>
-        <Button onClick={() => navigate('/app')} size="full" className="mt-1">
-          우리 언제 만나 시작하기
+        <Button onClick={() => navigate('/app/create/category')} size="full" className="mt-1">
+          나도 초대장 만들기
         </Button>
       </div>
     </ScreenShell>
