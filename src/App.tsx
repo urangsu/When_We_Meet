@@ -38,7 +38,6 @@ import { GuestDateVoteScreen } from './screens/guest/GuestDateVoteScreen';
 import { GuestPreferenceScreen } from './screens/guest/GuestPreferenceScreen';
 import { GuestPlacePreferenceScreen } from './screens/guest/GuestPlacePreferenceScreen';
 import { GuestCompleteScreen } from './screens/guest/GuestCompleteScreen';
-import { SharedCalendarScreen } from './screens/shared/SharedCalendarScreen';
 
 export default function App() {
   return (
@@ -48,9 +47,6 @@ export default function App() {
           <Routes>
             {/* Default redirect to Host App Home */}
             <Route path="/" element={<Navigate to="/app" replace />} />
-
-            {/* Shared Calendar */}
-            <Route path="/calendar/shared/:token" element={<SharedCalendarScreen />} />
 
             {/* Host App Flow */}
             <Route path="/app" element={<HostAppLayout />}>

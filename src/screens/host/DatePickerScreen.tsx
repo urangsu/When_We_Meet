@@ -3,7 +3,7 @@ import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { CalendarCandidatePicker } from '../../components/meeting/CalendarCandidatePicker';
 import { calendarProviders, busyDays } from '../../data/mockCalendar';
-import { localOurCalendarRepository } from '../../repositories/localOurCalendarRepository';
+import { ourCalendarRepository } from '../../repositories/getOurCalendarRepository';
 import type {
   ExternalCalendarHint,
   OurCalendarEvent,
@@ -24,9 +24,9 @@ export const DatePickerScreen = () => {
   const [externalHints, setExternalHints] = useState<ExternalCalendarHint[]>([]);
 
   useEffect(() => {
-    localOurCalendarRepository.getCalendarEvents().then(setCalendarEvents);
-    localOurCalendarRepository.getCalendarMemos().then(setCalendarMemos);
-    localOurCalendarRepository.getExternalHints().then(setExternalHints);
+    ourCalendarRepository.getCalendarEvents().then(setCalendarEvents);
+    ourCalendarRepository.getCalendarMemos().then(setCalendarMemos);
+    ourCalendarRepository.getExternalHints().then(setExternalHints);
   }, []);
 
   const goToPreviousMonth = () => {

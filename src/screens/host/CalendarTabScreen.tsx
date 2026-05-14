@@ -1,158 +1,234 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
-import { Calendar, Users, Copy, Link as LinkIcon, Info } from 'lucide-react';
-import { localOurCalendarRepository } from '../../repositories/localOurCalendarRepository';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ourCalendarRepository } from '../../repositories/getOurCalendarRepository';
+import { getMonthDays, getMonthStartOffset } from '../../utils/calendar';
+import { getCalendarContextByDateKey } from '../../utils/ourCalendar';
+import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage';
+import { OurCalendarShareCard } from '../../components/calendar/OurCalendarShareCard';
+import { CalendarDayCell } from '../../components/meeting/CalendarDayCell';
+import { Button } from '../../components/Button';
 import type {
   ExternalCalendarHint,
   OurCalendarEvent,
   OurCalendarMemo,
-  OurCalendarSpace,
 } from '../../types/calendar';
-import { Button } from '../../components/Button';
-
-const getMonthDay = (dateKey: string) => {
-  const parts = dateKey.split('-');
-  return {
-    month: `${parseInt(parts[1], 10)}월`,
-    day: `${parseInt(parts[2], 10)}`,
-  };
-};
 
 export const CalendarTabScreen = () => {
-  const [calendarSpace, setCalendarSpace] = useState<OurCalendarSpace | null>(null);
+  const today = new Date();
+  const [visibleYear, setVisibleYear] = useState(2026);
+  const [visibleMonth, setVisibleMonth] = useState(6);
+  const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null);
+
   const [events, setEvents] = useState<OurCalendarEvent[]>([]);
   const [memos, setMemos] = useState<OurCalendarMemo[]>([]);
   const [externalHints, setExternalHints] = useState<ExternalCalendarHint[]>([]);
-  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [shareState, setShareState] = useState<'idle' | 'creating' | 'shared' | 'downloaded' | 'failed'>('idle');
+
+  const shareCardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    localOurCalendarRepository.getCalendarSpace().then(setCalendarSpace);
-    localOurCalendarRepository.getCalendarEvents().then(setEvents);
-    localOurCalendarRepository.getCalendarMemos().then(setMemos);
-    localOurCalendarRepository.getExternalHints().then(setExternalHints);
+    ourCalendarRepository.getCalendarEvents().then(setEvents);
+    ourCalendarRepository.getCalendarMemos().then(setMemos);
+    ourCalendarRepository.getExternalHints().then(setExternalHints);
   }, []);
 
-  const calendarShareUrl = calendarSpace?.shareToken
-    ? `${window.location.origin}/#/calendar/shared/${calendarSpace.shareToken}`
-    : '';
+  const goToPreviousMonth = () => {
+    setVisibleMonth((prev) => {
+      let m = prev - 1;
+      let y = visibleYear;
+      if (m === 0) {
+        m = 12;
+        y -= 1;
+        setVisibleYear(y);
+      }
+      return m;
+    });
+  };
 
-  const copyShareLink = async () => {
-    if (!calendarShareUrl) return;
+  const goToNextMonth = () => {
+    setVisibleMonth((prev) => {
+      let m = prev + 1;
+      let y = visibleYear;
+      if (m === 13) {
+        m = 1;
+        y += 1;
+        setVisibleYear(y);
+      }
+      return m;
+    });
+  };
+
+  const daysInMonth = getMonthDays(visibleYear, visibleMonth);
+  const startOffset = getMonthStartOffset(visibleYear, visibleMonth);
+
+  const toDateKey = (d: number) =>
+    `${visibleYear}-${String(visibleMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+  const selectedContext = selectedDateKey
+    ? getCalendarContextByDateKey({
+        dateKey: selectedDateKey,
+        events,
+        memos,
+        externalHints,
+      })
+    : null;
+
+  const handleShareImage = async () => {
+    if (!shareCardRef.current || !selectedDateKey || !selectedContext) return;
+
+    setShareState('creating');
 
     try {
-      await navigator.clipboard.writeText(calendarShareUrl);
-      setCopyState('copied');
+      const file = await createPngFileFromElement(
+        shareCardRef.current,
+        `when-we-meet-calendar-${selectedDateKey}.png`
+      );
+
+      const result = await shareImageFile(file);
+      setShareState(result);
     } catch {
-      setCopyState('failed');
-      alert(`복사에 실패했어요. 아래 링크를 직접 복사해 주세요:\n${calendarShareUrl}`);
+      setShareState('failed');
     }
   };
 
   return (
     <ScreenShell withBottomNav className="bg-bg-app">
-      <header className="px-5 pt-8 pb-4">
-        <h1 className="text-2xl font-bold mb-2">우리 달력</h1>
-        <p className="text-ink-muted text-sm leading-relaxed">
-          약속 후보, 확정 모임, 메모를 한 곳에 모아요.
-        </p>
-      </header>
+      <div className="min-h-dvh pb-24">
+        <header className="px-5 pt-8 pb-4">
+          <h1 className="text-2xl font-bold mb-2">우리 달력</h1>
+          <p className="text-ink-muted text-sm leading-relaxed">
+            약속 후보, 모임, 메모를 한 곳에 모아요.
+          </p>
+        </header>
 
-      <div className="px-5 pb-6 flex flex-col gap-6">
-        {/* Shared Calendar Card */}
-        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-5 text-white shadow-md relative overflow-hidden">
-          <div className="relative z-10 flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">{calendarSpace?.title}</h2>
-              <div className="flex items-center gap-1.5 bg-white/20 px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
-                <Users size={12} />
-                <span>{calendarSpace?.memberCount}명 참여 중</span>
+        <div className="px-5 flex flex-col gap-6">
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-bold text-lg">{visibleYear}년 {visibleMonth}월</h3>
+              <div className="flex gap-4">
+                <button onClick={goToPreviousMonth} className="text-ink-hint hover:text-ink">
+                  <ChevronLeft size={20} />
+                </button>
+                <button onClick={goToNextMonth} className="text-ink-hint hover:text-ink">
+                  <ChevronRight size={20} />
+                </button>
               </div>
             </div>
-            <p className="text-white/80 text-sm mb-4">{calendarSpace?.description}</p>
-            <Button onClick={copyShareLink} variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 w-fit h-9 text-sm">
-              <Copy size={16} /> {copyState === 'copied' ? '복사 완료' : '공유 링크 복사'}
-            </Button>
-          </div>
-        </div>
 
-        {/* This Month Timeline */}
-        <section>
-           <h3 className="font-bold text-lg mb-3 pl-1">오늘/이번 달 모임 이벤트</h3>
-           <div className="bg-white rounded-2xl p-4 shadow-sm border border-ink-line/50 flex flex-col gap-4">
-              {events.map((event, index) => {
-                const { month, day } = getMonthDay(event.dateKey);
+            <div className="grid grid-cols-7 gap-y-4 gap-x-2 text-center text-sm">
+              {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
+                <div key={day} className="text-ink-hint font-medium">
+                  {day}
+                </div>
+              ))}
+              {Array.from({ length: startOffset }).map((_, i) => (
+                <div key={`empty-${i}`} />
+              ))}
+              {Array.from({ length: daysInMonth }).map((_, i) => {
+                const day = i + 1;
+                const dateKey = toDateKey(day);
+                const isSelected = selectedDateKey === dateKey;
+                
+                const context = getCalendarContextByDateKey({
+                  dateKey,
+                  events,
+                  memos,
+                  externalHints,
+                });
+
                 return (
-                  <React.Fragment key={event.id}>
-                    {index > 0 && <div className="border-t border-ink-line/50"></div>}
-                    <div className="flex gap-4 items-center">
-                      <div className="flex flex-col items-center justify-center bg-bg-app rounded-xl w-14 h-14 shrink-0">
-                        <span className={`text-xs font-bold ${event.type === 'confirmed_meeting' ? 'text-sky' : 'text-rose'}`}>{month}</span>
-                        <span className="text-xl font-bold text-ink">{day}</span>
-                      </div>
-                      <div className="flex flex-col gap-1 w-full">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-ink">{event.title}</span>
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${event.type === 'confirmed_meeting' ? 'bg-sky-100 text-sky-700' : 'bg-rose-100 text-rose-700'}`}>
-                            {event.type === 'confirmed_meeting' ? '확정' : '후보'}
-                          </span>
-                        </div>
-                        <span className="text-xs text-ink-hint">{event.timeLabel || '시간 미정'}</span>
-                      </div>
-                    </div>
-                  </React.Fragment>
+                  <CalendarDayCell 
+                    key={day} 
+                    day={day} 
+                    isSelected={isSelected} 
+                    busyCount={0} 
+                    eventCount={context.events.length}
+                    memoCount={context.memos.length}
+                    externalHintCount={context.externalHints.length}
+                    onClick={() => setSelectedDateKey(dateKey)} 
+                  />
                 );
               })}
-           </div>
-        </section>
-
-        {/* Calendar Memos */}
-        <section>
-          <h3 className="font-bold text-lg mb-3 pl-1 flex items-center justify-between">
-             달력 메모
-             <span className="text-[10px] font-bold text-rose bg-rose-50 px-2 py-1 rounded-full">모임 만들 때 참고됨</span>
-          </h3>
-          <div className="flex flex-col gap-3">
-            {memos.map((memo) => (
-              <div key={memo.id} className="bg-amber-50 border border-amber-200/50 rounded-2xl p-4">
-                 <div className="flex items-center justify-between mb-2">
-                   <h4 className="font-bold text-ink">{memo.title}</h4>
-                   <span className="text-[10px] text-amber-700 font-bold px-1.5 py-0.5 bg-amber-100 rounded-full">{memo.dateKey}</span>
-                 </div>
-                 <p className="text-sm text-ink-muted mb-3 leading-relaxed">{memo.body}</p>
-                 <div className="flex gap-1.5 flex-wrap">
-                   {memo.tags.map(tag => (
-                     <span key={tag} className="text-[10px] font-medium text-ink-hint bg-white border border-amber-200 px-2 py-0.5 rounded-full">#{tag}</span>
-                   ))}
-                 </div>
-              </div>
-            ))}
+            </div>
           </div>
-        </section>
 
-        {/* External Hints */}
-        <section>
-          <h3 className="font-bold text-lg mb-3 pl-1">외부 캘린더 힌트</h3>
-          <div className="bg-bg-app border border-ink-line rounded-2xl p-4 flex flex-col gap-3">
-             <div className="flex items-start gap-2">
-                <Info size={16} className="text-ink-hint mt-0.5 shrink-0" />
-                <p className="text-xs text-ink-muted leading-relaxed">
-                  외부 캘린더는 전체 일정을 가져오지 않고, 우리 달력에서 모임을 잡을 때 <strong>참고용 혼잡도 힌트</strong>로만 쓰여요.
-                </p>
-             </div>
-             {externalHints.map(hint => (
-               <div key={hint.id} className="bg-white rounded-xl p-3 border border-ink-line/50 flex flex-col gap-1">
-                 <div className="flex items-center gap-2">
-                   <span className="text-xs font-bold text-ink">{hint.dateKey}</span>
-                   <span className="text-xs text-ink-hint">{hint.timeLabel}</span>
-                 </div>
-                 <p className="text-sm font-bold text-ink">{hint.title}</p>
-                 <p className="text-xs text-ink-muted">{hint.note}</p>
+          <section className="bg-white border border-ink-line rounded-2xl p-5 shadow-sm">
+            <h3 className="font-bold text-lg mb-4">
+              {selectedDateKey ? `${visibleMonth}월 ${selectedDateKey.split('-')[2]}일의 기록` : '날짜를 선택해보세요'}
+            </h3>
+
+            {!selectedDateKey && (
+              <p className="text-sm text-ink-muted">달력에서 날짜를 누르면 모임과 메모를 볼 수 있어요.</p>
+            )}
+
+            {selectedDateKey && selectedContext && (
+               <div className="flex flex-col gap-4">
+                 {selectedContext.events.length === 0 && selectedContext.memos.length === 0 && selectedContext.externalHints.length === 0 && (
+                   <p className="text-sm text-ink-muted">아직 적어둔 기록이 없어요.</p>
+                 )}
+
+                 {selectedContext.events.length > 0 && (
+                   <div>
+                     {selectedContext.events.map(ev => (
+                        <div key={ev.id} className="flex flex-col gap-1 mb-2 last:mb-0 bg-white border border-ink-line p-3 rounded-xl">
+                          <p className="font-bold text-ink text-sm flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-rose inline-block" /> {ev.title}</p>
+                          <p className="text-xs text-ink-muted">{ev.type === 'confirmed_meeting' ? '확정된 모임' : '잡고 있는 모임'}</p>
+                        </div>
+                     ))}
+                   </div>
+                 )}
+
+                 {selectedContext.memos.length > 0 && (
+                   <div>
+                     {selectedContext.memos.map(memo => (
+                        <div key={memo.id} className="flex flex-col gap-1 mb-2 last:mb-0 bg-amber-50 border border-amber-200/50 p-3 rounded-xl">
+                          <p className="font-bold text-ink text-sm flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" /> {memo.title}</p>
+                          <p className="text-xs text-ink-muted">{memo.body}</p>
+                        </div>
+                     ))}
+                   </div>
+                 )}
+
+                 {selectedContext.externalHints.length > 0 && (
+                   <div>
+                     {selectedContext.externalHints.map(hint => (
+                        <div key={hint.id} className="flex flex-col gap-1 mb-2 last:mb-0 bg-bg-app border border-ink-line/50 p-3 rounded-xl">
+                          <p className="font-bold text-ink text-sm flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block" /> {hint.title}</p>
+                          <p className="text-xs text-ink-muted">{hint.note}</p>
+                        </div>
+                     ))}
+                   </div>
+                 )}
                </div>
-             ))}
-          </div>
-        </section>
+            )}
+            
+            {selectedDateKey && (selectedContext?.events.length || selectedContext?.memos.length || selectedContext?.externalHints.length) ? (
+              <div className="mt-6 pt-4 border-t border-ink-line/50">
+                <Button onClick={handleShareImage} disabled={shareState === 'creating'}>
+                  {shareState === 'creating' ? '사진 만드는 중...' : '선택한 날짜 사진으로 공유'}
+                </Button>
+                {shareState === 'shared' && <p className="text-xs text-green-600 mt-2 text-center">공유 창이 열렸어요.</p>}
+                {shareState === 'downloaded' && <p className="text-xs text-green-600 mt-2 text-center">사진 파일로 다운로드됐어요.</p>}
+                {shareState === 'failed' && <p className="text-xs text-rose mt-2 text-center">공유에 실패했어요. 다시 시도해주세요.</p>}
+              </div>
+            ) : null}
+          </section>
 
+          {/* Offscreen Share Card */}
+          <div className="absolute top-0 left-0 -z-50 opacity-0 pointer-events-none">
+            <OurCalendarShareCard
+              ref={shareCardRef}
+              title="우리 달력 메모"
+              dateLabel={selectedDateKey || ''}
+              events={selectedContext?.events || []}
+              memos={selectedContext?.memos || []}
+              externalHints={selectedContext?.externalHints || []}
+            />
+          </div>
+        </div>
       </div>
     </ScreenShell>
   );
 };
+

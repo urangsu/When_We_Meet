@@ -57,6 +57,9 @@ This is not real multi-user sync.
 - No real AI/LLM server endpoint
 - No i18n
 - No monetization system
+- Our Calendar image share is client-side only
+- Image share uses browser Web Share API when available and PNG download fallback otherwise
+- Shared calendar album route was intentionally removed from the MVP direction
 
 ---
 
@@ -212,6 +215,31 @@ Not Completed:
 - [ ] Real calendar collaboration
 - [ ] Google Calendar OAuth
 - [ ] Device calendar permission
+
+### Phase H-1R — Our Calendar UI Rebuild & Image Share
+
+Reason:
+The previous H-1 implementation misread "share" as a shared calendar album/page.
+The product intent is image-based sharing: users should be able to send a calendar/memo card as a picture through KakaoTalk, DM, or save it.
+
+Completed:
+- [x] Remove shared calendar album route from App
+- [x] Remove SharedCalendarScreen from active route
+- [x] Rebuild CalendarTabScreen around monthly calendar grid
+- [x] Align CalendarTabScreen with DatePicker calendar design language
+- [x] Add selected date detail panel
+- [x] Keep event/memo/external hint markers on day cells
+- [x] Add OurCalendarShareCard
+- [x] Add image generation utility
+- [x] Add image share/download fallback
+- [x] Remove purple/indigo album-style share card
+
+Not Completed:
+- [ ] Real backend persistence for calendar events
+- [ ] Real calendar image template editor
+- [ ] Native Kakao share integration
+- [ ] Server-rendered OG calendar card
+- [ ] Calendar collaboration permission model
 
 ## 11. Phase I — Local Content / Discovery
 ## 12. Phase J — Monetization
