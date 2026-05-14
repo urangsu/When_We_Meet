@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { Calendar, Users, Copy, Link as LinkIcon, Info } from 'lucide-react';
-import { 
-  mockOurCalendarEvents, 
-  mockOurCalendarMemos, 
-  mockExternalCalendarHints,
-  mockOurCalendarSpace 
-} from '../../data/mockOurCalendar';
+import { localOurCalendarRepository } from '../../repositories/localOurCalendarRepository';
+import type {
+  ExternalCalendarHint,
+  OurCalendarEvent,
+  OurCalendarMemo,
+  OurCalendarSpace,
+} from '../../types/calendar';
 import { Button } from '../../components/Button';
 
 const getMonthDay = (dateKey: string) => {
@@ -18,10 +19,33 @@ const getMonthDay = (dateKey: string) => {
 };
 
 export const CalendarTabScreen = () => {
-  const calendarShareUrl = `${window.location.origin}/#/calendar/shared/${mockOurCalendarSpace.shareToken}`;
+  const [calendarSpace, setCalendarSpace] = useState<OurCalendarSpace | null>(null);
+  const [events, setEvents] = useState<OurCalendarEvent[]>([]);
+  const [memos, setMemos] = useState<OurCalendarMemo[]>([]);
+  const [externalHints, setExternalHints] = useState<ExternalCalendarHint[]>([]);
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
 
-  const copyShareLink = () => {
-    alert(`복사되었습니다:\n${calendarShareUrl}`);
+  useEffect(() => {
+    localOurCalendarRepository.getCalendarSpace().then(setCalendarSpace);
+    localOurCalendarRepository.getCalendarEvents().then(setEvents);
+    localOurCalendarRepository.getCalendarMemos().then(setMemos);
+    localOurCalendarRepository.getExternalHints().then(setExternalHints);
+  }, []);
+
+  const calendarShareUrl = calendarSpace?.shareToken
+    ? `${window.location.origin}/#/calendar/shared/${calendarSpace.shareToken}`
+    : '';
+
+  const copyShareLink = async () => {
+    if (!calendarShareUrl) return;
+
+    try {
+      await navigator.clipboard.writeText(calendarShareUrl);
+      setCopyState('copied');
+    } catch {
+      setCopyState('failed');
+      alert(`복사에 실패했어요. 아래 링크를 직접 복사해 주세요:\n${calendarShareUrl}`);
+    }
   };
 
   return (
@@ -38,15 +62,15 @@ export const CalendarTabScreen = () => {
         <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-5 text-white shadow-md relative overflow-hidden">
           <div className="relative z-10 flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">{mockOurCalendarSpace.title}</h2>
+              <h2 className="text-lg font-bold">{calendarSpace?.title}</h2>
               <div className="flex items-center gap-1.5 bg-white/20 px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                 <Users size={12} />
-                <span>{mockOurCalendarSpace.memberCount}명 참여 중</span>
+                <span>{calendarSpace?.memberCount}명 참여 중</span>
               </div>
             </div>
-            <p className="text-white/80 text-sm mb-4">{mockOurCalendarSpace.description}</p>
+            <p className="text-white/80 text-sm mb-4">{calendarSpace?.description}</p>
             <Button onClick={copyShareLink} variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 w-fit h-9 text-sm">
-              <Copy size={16} /> 공유 링크 복사
+              <Copy size={16} /> {copyState === 'copied' ? '복사 완료' : '공유 링크 복사'}
             </Button>
           </div>
         </div>
@@ -55,7 +79,7 @@ export const CalendarTabScreen = () => {
         <section>
            <h3 className="font-bold text-lg mb-3 pl-1">오늘/이번 달 모임 이벤트</h3>
            <div className="bg-white rounded-2xl p-4 shadow-sm border border-ink-line/50 flex flex-col gap-4">
-              {mockOurCalendarEvents.map((event, index) => {
+              {events.map((event, index) => {
                 const { month, day } = getMonthDay(event.dateKey);
                 return (
                   <React.Fragment key={event.id}>
@@ -88,7 +112,7 @@ export const CalendarTabScreen = () => {
              <span className="text-[10px] font-bold text-rose bg-rose-50 px-2 py-1 rounded-full">모임 만들 때 참고됨</span>
           </h3>
           <div className="flex flex-col gap-3">
-            {mockOurCalendarMemos.map((memo) => (
+            {memos.map((memo) => (
               <div key={memo.id} className="bg-amber-50 border border-amber-200/50 rounded-2xl p-4">
                  <div className="flex items-center justify-between mb-2">
                    <h4 className="font-bold text-ink">{memo.title}</h4>
@@ -115,7 +139,7 @@ export const CalendarTabScreen = () => {
                   외부 캘린더는 전체 일정을 가져오지 않고, 우리 달력에서 모임을 잡을 때 <strong>참고용 혼잡도 힌트</strong>로만 쓰여요.
                 </p>
              </div>
-             {mockExternalCalendarHints.map(hint => (
+             {externalHints.map(hint => (
                <div key={hint.id} className="bg-white rounded-xl p-3 border border-ink-line/50 flex flex-col gap-1">
                  <div className="flex items-center gap-2">
                    <span className="text-xs font-bold text-ink">{hint.dateKey}</span>

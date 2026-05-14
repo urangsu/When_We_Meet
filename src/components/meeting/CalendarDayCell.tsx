@@ -1,14 +1,20 @@
 import React from 'react';
 
 export const CalendarDayCell: React.FC<{ 
-  day: number, 
-  isSelected: boolean, 
-  busyCount: number, 
-  onClick: () => void 
+  day: number;
+  isSelected: boolean;
+  busyCount: number;
+  eventCount?: number;
+  memoCount?: number;
+  externalHintCount?: number;
+  onClick: () => void;
 }> = ({ 
   day, 
   isSelected, 
   busyCount, 
+  eventCount = 0,
+  memoCount = 0,
+  externalHintCount = 0,
   onClick 
 }) => {
   return (
@@ -20,11 +26,12 @@ export const CalendarDayCell: React.FC<{
       `}
     >
       {day}
-      {!isSelected && busyCount > 0 && (
-        <div className="absolute bottom-1 flex gap-0.5">
-          {Array.from({ length: Math.min(busyCount, 3) }).map((_, i) => (
-            <div key={i} className={`w-1 h-1 rounded-full ${busyCount >= 2 ? 'bg-ink-hint opacity-50' : 'bg-ink-hint opacity-30'}`} />
-          ))}
+      {!isSelected && (
+        <div className="absolute bottom-1 flex gap-0.5 mt-1 items-center justify-center">
+          {busyCount > 0 && <span className="w-1 h-1 rounded-full bg-ink-hint opacity-40" />}
+          {eventCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-rose" />}
+          {memoCount > 0 && <span className="w-1 h-1 rounded-full bg-amber-400" />}
+          {externalHintCount > 0 && <span className="w-1 h-1 rounded-full bg-sky-400" />}
         </div>
       )}
     </button>

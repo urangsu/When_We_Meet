@@ -19,6 +19,8 @@ interface CalendarCandidatePickerProps {
   calendarEvents?: OurCalendarEvent[];
   calendarMemos?: OurCalendarMemo[];
   externalHints?: ExternalCalendarHint[];
+  onPreviousMonth?: () => void;
+  onNextMonth?: () => void;
   onSubmit: (selectedDates: { day: number; label: string }[]) => void;
   withBottomNav?: boolean;
 }
@@ -31,6 +33,8 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
   calendarEvents = [],
   calendarMemos = [],
   externalHints = [],
+  onPreviousMonth,
+  onNextMonth,
   onSubmit,
   withBottomNav = false,
 }) => {
@@ -40,6 +44,21 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
 
   const toDateKey = (d: number) =>
     `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+  const getContextCounts = (day: number) => {
+    const context = getCalendarContextByDateKey({
+      dateKey: toDateKey(day),
+      events: calendarEvents,
+      memos: calendarMemos,
+      externalHints,
+    });
+
+    return {
+      eventCount: context.events.length,
+      memoCount: context.memos.length,
+      externalHintCount: context.externalHints.length,
+    };
+  };
 
   const selectedContexts = selectedDates.map(day => {
     return {
@@ -59,8 +78,8 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg">{year}년 {month}월</h3>
           <div className="flex gap-4">
-            <button className="text-ink-hint hover:text-ink"><ChevronLeft size={20}/></button>
-            <button className="text-ink-hint hover:text-ink"><ChevronRight size={20}/></button>
+            <button onClick={onPreviousMonth} className="text-ink-hint hover:text-ink"><ChevronLeft size={20}/></button>
+            <button onClick={onNextMonth} className="text-ink-hint hover:text-ink"><ChevronRight size={20}/></button>
           </div>
         </div>
 
@@ -75,6 +94,7 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
             const day = i + 1;
             const isSelected = selectedDates.includes(day);
             const busyCount = getBusyCount(day);
+            const { eventCount, memoCount, externalHintCount } = getContextCounts(day);
 
             return (
               <CalendarDayCell 
@@ -82,6 +102,9 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
                 day={day} 
                 isSelected={isSelected} 
                 busyCount={busyCount} 
+                eventCount={eventCount}
+                memoCount={memoCount}
+                externalHintCount={externalHintCount}
                 onClick={() => toggleDate(day)} 
               />
             );

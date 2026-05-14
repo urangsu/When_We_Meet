@@ -185,13 +185,33 @@ Completed:
 - [x] Pass calendar memos into date candidate picker
 
 Not Completed:
-- [ ] Real shared calendar route
 - [ ] Backend persistence for calendar events/memos
 - [ ] Google Calendar OAuth
 - [ ] Device calendar permission
 - [ ] External event import policy
 - [ ] Calendar memo collaboration
 - [ ] Calendar share permission model
+
+### Phase H-1 — Our Calendar Repository & Shared Route
+
+Completed:
+- [x] Add OurCalendarRepository interface
+- [x] Add localOurCalendarRepository
+- [x] Remove direct mockOurCalendar imports from CalendarTabScreen
+- [x] Remove direct mockOurCalendar imports from DatePickerScreen
+- [x] Add shared calendar route
+- [x] Add SharedCalendarScreen
+- [x] Implement clipboard-based calendar share copy
+- [x] Add day-cell markers for events/memos/external hints
+- [x] Add month navigation to DatePickerScreen
+
+Not Completed:
+- [ ] Backend persistence for calendar events
+- [ ] Backend persistence for calendar memos
+- [ ] Backend persistence for calendar share links
+- [ ] Real calendar collaboration
+- [ ] Google Calendar OAuth
+- [ ] Device calendar permission
 
 ## 11. Phase I — Local Content / Discovery
 ## 12. Phase J — Monetization
