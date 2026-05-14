@@ -171,6 +171,30 @@ Policy:
 Our Calendar is a monthly planning calendar.
 It supports records, memo-based meeting context, image-card sharing, and rule-based recommendations.
 
+### Calendar Monthly Cell Rule
+Monthly calendar cells should stay lightweight.
+
+Rules:
+- Do not show default text like "기록 적기" in every empty date cell.
+- Show only date number and compact markers in the monthly grid.
+- Show event/memo/external hint details in the selected date detail panel.
+- Record creation/editing CTA belongs in the detail panel, not every date cell.
+- Calendar must feel calm and scannable, not like a dense text table.
+
+### Phase H-3.6 — Calendar Cell Minimal UX
+
+Completed:
+- [x] Remove default record text from monthly date cells
+- [x] Keep compact event/memo/external markers
+- [x] Keep record creation in selected date detail panel
+- [x] Add or keep marker legend
+- [x] Prevent monthly calendar from becoming a dense text grid
+
+Not Completed:
+- [ ] Backend calendar memo persistence
+- [ ] Native Kakao image share
+- [ ] Calendar memo privacy model
+
 ### Completed
 - [x] Our Calendar domain types
 - [x] Calendar record CRUD

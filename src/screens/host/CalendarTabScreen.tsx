@@ -5,9 +5,6 @@ import { ourCalendarRepository } from '../../repositories/getOurCalendarReposito
 import { getMonthDays, getMonthStartOffset } from '../../utils/calendar';
 import { 
   getCalendarContextByDateKey,
-  getPrimaryScheduleLabel,
-  getRecordLabel,
-  getRecordTone,
 } from '../../utils/ourCalendar';
 import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage';
 import { OurCalendarShareCard } from '../../components/calendar/OurCalendarShareCard';
@@ -191,14 +188,25 @@ export const CalendarTabScreen = () => {
                     eventCount={context.events.length}
                     memoCount={context.memos.length}
                     externalHintCount={context.externalHints.length}
-                    scheduleLabel={getPrimaryScheduleLabel(context)}
-                    recordLabel={getRecordLabel(context)}
-                    recordTone={getRecordTone(context)}
                     onClick={() => setSelectedDateKey(dateKey)} 
-                    onRecordClick={() => openRecordDrawer(dateKey, context.memos[0])}
                   />
                 );
               })}
+            </div>
+
+            <div className="flex items-center gap-3 text-[11px] text-ink-hint mt-4 pl-1">
+              <span className="inline-flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose" />
+                모임
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                기록
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                일정 힌트
+              </span>
             </div>
           </div>
 
@@ -232,7 +240,16 @@ export const CalendarTabScreen = () => {
                    <div>
                      {selectedContext.memos.map(memo => (
                         <div key={memo.id} className="flex flex-col gap-1 mb-2 last:mb-0 bg-amber-50 border border-amber-200/50 p-3 rounded-xl">
-                          <p className="font-bold text-ink text-sm flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" /> {memo.title}</p>
+                          <div className="flex items-center justify-between">
+                            <p className="font-bold text-ink text-sm flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" /> {memo.title}</p>
+                            <button
+                              type="button"
+                              onClick={() => openRecordDrawer(selectedDateKey, memo)}
+                              className="text-[11px] font-bold text-amber-600 hover:text-amber-800"
+                            >
+                              수정
+                            </button>
+                          </div>
                           <p className="text-xs text-ink-muted">{memo.body}</p>
                         </div>
                      ))}
@@ -252,11 +269,11 @@ export const CalendarTabScreen = () => {
 
                  <button
                    type="button"
-                   onClick={() => openRecordDrawer(selectedDateKey, selectedContext?.memos[0])}
+                   onClick={() => openRecordDrawer(selectedDateKey)}
                    className="w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-ink-line text-sm font-bold text-ink-muted hover:bg-bg-app hover:text-ink transition-colors"
                  >
                    <PencilLine size={16} />
-                   {selectedContext?.memos.length > 0 ? '기록 수정' : '기록 적기'}
+                   새 기록 적기
                  </button>
                </div>
             )}
