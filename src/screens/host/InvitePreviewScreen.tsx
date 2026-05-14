@@ -211,7 +211,7 @@ export const InvitePreviewScreen = () => {
         <div className="flex flex-col gap-3 w-full">
           <p className="text-center text-xs text-ink-hint">초대장을 보내기 전 마지막으로 확인해 주세요</p>
           <Button onClick={() => navigate('/app/create/share')} size="full">
-            <Share2 size={20}/> 링크 공유하기
+            <Share2 size={20}/> 초대장 공유
           </Button>
         </div>
       </BottomCTA>

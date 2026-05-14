@@ -96,9 +96,9 @@ export const ShareScreen = () => {
         <div className="flex items-center justify-between p-4 bg-surface-warm rounded-2xl">
           <span className="text-ink-hint font-mono text-sm truncate mr-4">whenwemeet.app{displayUrl}</span>
           <button onClick={() => {
-            navigator.clipboard.writeText(inviteUrl).then(() => alert("링크가 복사되었습니다."));
+            navigator.clipboard.writeText(inviteUrl).then(() => alert("초대장이 복사되었습니다."));
           }} className="text-primary font-bold flex items-center gap-2 text-sm shrink-0">
-            <Copy size={16} /> 복사
+            <Copy size={16} /> 초대장 복사
           </button>
         </div>
       </div>

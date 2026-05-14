@@ -166,154 +166,30 @@ Policy:
 - [ ] Prepare OG preview route
 
 ## 10. Phase H — Calendar / Map / Recommendation
-### Phase H-0 — Our Calendar Domain
 
-Goal:
-Build When We Meet's own calendar layer before treating external calendar integration as the product.
+### Current Direction
+Our Calendar is a monthly planning calendar.
+It supports records, memo-based meeting context, image-card sharing, and rule-based recommendations.
 
-Principle:
-Our Calendar is the primary product calendar.
-External Google/device calendar is a read-only context layer for busy hints, schedules, and optional notes.
+### Completed
+- [x] Our Calendar domain types
+- [x] Calendar record CRUD
+- [x] localStorage memo persistence
+- [x] Calendar memo attachment to meeting draft
+- [x] Rule-based memo recommendations
+- [x] Calendar image-card sharing
 
-Completed:
-- [x] Define OurCalendarEvent type
-- [x] Define OurCalendarMemo type
-- [x] Define OurCalendarSpace type
-- [x] Define OurCalendarShareLink type
-- [x] Define ExternalCalendarHint type
-- [x] Add mock Our Calendar data
-- [x] Update CalendarTabScreen to Our Calendar concept
-- [x] Show calendar memos
-- [x] Add prototype calendar share CTA
-- [x] Pass calendar memos into date candidate picker
+### Deprecated
+- [x] Shared calendar album/page direction
+- [x] /calendar/shared/:token as MVP sharing model
+- [x] Clipboard link sharing as calendar MVP sharing
 
-Not Completed:
-- [ ] Backend persistence for calendar events/memos
-- [ ] Google Calendar OAuth
-- [ ] Device calendar permission
-- [ ] External event import policy
-- [ ] Calendar memo collaboration
-- [ ] Calendar share permission model
-
-### Phase H-1 — Our Calendar Repository & Shared Route (Deprecated Direction)
-
-Status:
-This phase introduced repository and a shared calendar route, but the shared album/page direction was later rejected.
-
-Kept:
-- [x] OurCalendarRepository interface
-- [x] localOurCalendarRepository
-- [x] Day-cell markers
-- [x] Month navigation
-
-Removed:
-- [x] Shared calendar album route removed from active App routes
-- [x] SharedCalendarScreen removed from active product direction
-- [x] Clipboard link sharing removed from calendar MVP
-
-Reason:
-Calendar sharing should be image-card based, not shared album/page based.
-
-### Phase H-2 Mega — Calendar Records to Meeting Context
-
-Goal:
-Turn Our Calendar from a read-only calendar into a recordable planning layer that feeds meeting creation.
-
-Completed:
-- [x] Add CalendarRecordDrawer
-- [x] Add create/update/delete calendar memo repository methods
-- [x] Persist calendar memos in localStorage
-- [x] Connect "기록 적기" to actual drawer
-- [x] Connect "기록 보기" to edit existing memo
-- [x] Refresh day-cell labels after save/delete
-- [x] Fix image share offscreen capture node
-- [x] Allow image share for empty selected dates
-- [x] Attach calendar memos to meeting draft
-- [x] Show attached calendar memo hints in MeetingInfoScreen
-- [x] Show attached calendar memo context in InvitePreviewScreen
-- [x] Add rule-based memo suggestion helper
-
-Not Completed:
+### Next
 - [ ] Backend calendar_memos table
 - [ ] Backend OurCalendarRepository
-- [ ] Multi-user calendar collaboration
+- [ ] Calendar memo privacy model
 - [ ] Native Kakao image share
 - [ ] Server-rendered calendar card
-- [ ] LLM-powered memo suggestions
-
-### Phase H-1R — Our Calendar UI Rebuild & Image Share
-
-Reason:
-The previous H-1 implementation misread "share" as a shared calendar album/page.
-The product intent is image-based sharing: users should be able to send a calendar/memo card as a picture through KakaoTalk, DM, or save it.
-
-Completed:
-- [x] Remove shared calendar album route from App
-- [x] Remove SharedCalendarScreen from active route
-- [x] Rebuild CalendarTabScreen around monthly calendar grid
-- [x] Align CalendarTabScreen with DatePicker calendar design language
-- [x] Add selected date detail panel
-- [x] Keep event/memo/external hint markers on day cells
-- [x] Add OurCalendarShareCard
-- [x] Add image generation utility
-- [x] Add image share/download fallback
-- [x] Remove purple/indigo album-style share card
-
-Not Completed:
-- [ ] Real calendar record editor
-- [ ] Calendar record persistence
-- [ ] Backend calendar event/memo repository
-- [ ] Native Kakao share integration
-- [ ] Server-rendered calendar card
-
-### Phase H-1R+ — Our Calendar Cell UX & Record CTA
-
-Reason:
-Calendar sharing was previously misread as a shared album/page.
-The product direction is image-based sharing and a monthly calendar where users can see schedules and write lightweight records.
-
-Completed:
-- [x] Remove shared calendar album route from active app routes
-- [x] Rebuild CalendarTabScreen around monthly calendar grid
-- [x] Add scheduleLabel to CalendarDayCell
-- [x] Add recordLabel / recordTone to CalendarDayCell
-- [x] Add "기록 적기" / "기록 보기" / "준비 메모" / "후보 메모" / "일정 참고" label logic
-- [x] Add selected date detail panel
-- [x] Keep image-based sharing direction
-- [x] Remove album-style link sharing from calendar MVP
-
-Not Completed:
-- [ ] Real calendar record editor
-- [ ] Calendar record persistence
-- [ ] Backend calendar event/memo repository
-- [ ] Native Kakao share integration
-- [ ] Server-rendered calendar card
-
-### Phase H-3 Super Sprint — Calendar Records to Meeting Creation Engine
-
-Goal:
-Turn Our Calendar records into actionable meeting creation context.
-
-Completed:
-- [x] Add calendar record CRUD
-- [x] Persist calendar records locally
-- [x] Attach calendar records to meeting draft
-- [x] Show attached records in DatePickerScreen
-- [x] Show memo hints in MeetingInfoScreen
-- [x] Show place hints in PlaceSetupScreen
-- [x] Show activity hints in ActivitySetupScreen
-- [x] Show invite copy recommendations in InvitePreviewScreen
-- [x] Allow recommended invite copy to update hostMessage
-- [x] Keep recommendations rule-based and local
-- [x] Keep image sharing as card-based sharing
-
-Not Completed:
-- [ ] Backend calendar_memos table
-- [ ] Backend OurCalendarRepository
-- [ ] Multi-user calendar collaboration
-- [ ] Native Kakao image share
-- [ ] Server-rendered calendar card
-- [ ] LLM-powered recommendations
 
 ## 11. Phase I — Local Content / Discovery
 ## 12. Phase J — Monetization
@@ -343,7 +219,7 @@ Not Completed:
 
 ---
 
-## 14. Product Signature
+## 15. Product Signature
 When We Meet의 핵심 차별점:
 - 초대장을 받는 감각
 - 부담 없는 답장
@@ -351,7 +227,7 @@ When We Meet의 핵심 차별점:
 - 확정 후 기다림을 만드는 카드와 알림
 - 모임 데이터 기반 추천/콘텐츠/광고 확장성
 
-## 15. Data Asset Strategy
+## 16. Data Asset Strategy
 - 익명화/집계 데이터 기반 콘텐츠 및 추천 전략 수립
 
 ## Backend Choice
@@ -374,7 +250,7 @@ Firebase alternative:
 Decision:
 Use Supabase as the recommended backend for Phase F unless deployment constraints force Firebase.
 
-## 16. Data Model Draft
+## 17. Data Model Draft
 
 ### meetings
 
@@ -495,7 +371,7 @@ Fields:
 - attendance
 - created_at
 
-## 17. Invite Link Response Flow
+## 18. Invite Link Response Flow
 
 1. Host completes create flow.
 2. App creates meeting.
@@ -523,7 +399,7 @@ Prototype today:
 - There is no server validation.
 - There is no cross-device sync.
 
-## 18. Confirmed Plan Persistence Plan
+## 19. Confirmed Plan Persistence Plan
 
 Current:
 - ConfirmPlanScreen calls repository.confirmPlan.
@@ -545,7 +421,7 @@ Failure states:
 - Network error
 - Confirmed plan conflict
 
-## 19. Server-only AI Policy
+## 20. Server-only AI Policy
 
 Principle:
 AI copy/recommendation features must never expose API keys to the browser bundle.
@@ -572,7 +448,7 @@ Future:
 - Add request/response contract for contextual invite copy.
 - Keep rule-based invite copy as offline fallback.
 
-## 20. Dependency Audit
+## 21. Dependency Audit
 
 Current risk:
 - @google/genai appears in package dependencies.
@@ -706,39 +582,18 @@ Output:
 
 ---
 
-## 21. Immediate Next Tasks
+## 22. Immediate Next Tasks
 
+### Product Reliability Track
 1. Phase F-4 — Backend Repository Implementation
-   - Implement backendMeetingRepository.createMeetingWithInviteLink
-   - Implement backendMeetingRepository.getMeetingByInvite
-   - Implement backendMeetingRepository.getMeetingResponses
-   - Implement backendMeetingRepository.submitGuestResponse
-   - Implement backendMeetingRepository.confirmPlan
-   - Implement backendMeetingRepository.getConfirmedPlan
-   - Keep local repository as dev fallback
-
 2. Phase F-5 — Server-side Invite Validation
-   - Token hash validation
-   - expiresAt / isClosed / maxResponses enforcement
-   - idempotency key handling
-   - duplicateGuard strategy
-   - invalid / expired / closed invite states
-
 3. Phase G-1 — BrowserRouter + Hosting Rewrite
-   - Replace HashRouter with BrowserRouter
-   - Add Vercel rewrite config
-   - Verify direct invite link reload
-   - Prepare OG preview route
 
-4. Phase H-4 — Calendar Records Backend & Privacy Model
-   - Add calendar_memos schema
-   - Add calendar_memo_links table for meeting references
-   - Implement backend OurCalendarRepository
-   - Add privacy model for private/meeting_context/shared_calendar
-   - Add memo-to-place/activity analytics events
+### GTM Track
+1. Phase M-1 — Landing Page & App Store Asset Draft
+2. Phase M-2 — App Onboarding Copy & Screens
+3. Phase M-3 — Share Card Template System
 
-5. Phase M-1 — Landing Page & App Store Asset Draft
-   - Add landing page route or static page
-   - Create app store description
-   - Define screenshot captions
-   - Prepare social sharing copy
+### Calendar/Data Track
+1. Phase H-4 — Calendar Records Backend & Privacy Model
+2. Phase H-5 — Memo Recommendation Refinement

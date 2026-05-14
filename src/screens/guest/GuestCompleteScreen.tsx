@@ -86,7 +86,7 @@ export const GuestCompleteScreen = () => {
         </div>
         
         <div className="flex justify-between items-start gap-4">
-          <span className="text-sm font-medium text-ink-hint shrink-0">참석 여부</span>
+          <span className="text-sm font-medium text-ink-hint shrink-0">함께할 수 있나요?</span>
           <span className="text-sm font-bold text-ink text-right">
             {draft.attendance === 'yes' ? '갈게!' : draft.attendance === 'no' ? '못 가 서운해' : '아직 몰라'}
           </span>
