@@ -3,6 +3,11 @@ import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { CalendarCandidatePicker } from '../../components/meeting/CalendarCandidatePicker';
 import { calendarProviders, busyDays } from '../../data/mockCalendar';
+import {
+  mockOurCalendarEvents,
+  mockOurCalendarMemos,
+  mockExternalCalendarHints,
+} from '../../data/mockOurCalendar';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
@@ -36,6 +41,9 @@ export const DatePickerScreen = () => {
         month={visibleMonth}
         providers={calendarProviders}
         busyDays={busyDays}
+        calendarEvents={mockOurCalendarEvents}
+        calendarMemos={mockOurCalendarMemos}
+        externalHints={mockExternalCalendarHints}
         onSubmit={handleNext}
         withBottomNav
       />

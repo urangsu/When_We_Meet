@@ -7,7 +7,8 @@ import { CandidateDateChip } from './CandidateDateChip';
 import { CalendarProviderStatusRow } from './CalendarProviderStatusRow';
 import { useDateCandidatePicker } from '../../hooks/useDateCandidatePicker';
 import { getMonthDays, getMonthStartOffset } from '../../utils/calendar';
-import type { CalendarProvider, BusyDay } from '../../types/calendar';
+import type { CalendarProvider, BusyDay, OurCalendarEvent, OurCalendarMemo, ExternalCalendarHint } from '../../types/calendar';
+import { getCalendarContextByDateKey } from '../../utils/ourCalendar';
 import { BottomCTA } from '../layout/BottomCTA';
 
 interface CalendarCandidatePickerProps {
@@ -15,6 +16,9 @@ interface CalendarCandidatePickerProps {
   month: number;
   providers: CalendarProvider[];
   busyDays: BusyDay[];
+  calendarEvents?: OurCalendarEvent[];
+  calendarMemos?: OurCalendarMemo[];
+  externalHints?: ExternalCalendarHint[];
   onSubmit: (selectedDates: { day: number; label: string }[]) => void;
   withBottomNav?: boolean;
 }
@@ -24,12 +28,30 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
   month,
   providers,
   busyDays,
+  calendarEvents = [],
+  calendarMemos = [],
+  externalHints = [],
   onSubmit,
   withBottomNav = false,
 }) => {
   const { selectedDates, toggleDate, selectedDateLabels, getBusyCount } = useDateCandidatePicker(year, month, busyDays);
   const daysInMonth = getMonthDays(year, month);
   const startOffset = getMonthStartOffset(year, month);
+
+  const toDateKey = (d: number) =>
+    `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+  const selectedContexts = selectedDates.map(day => {
+    return {
+      day,
+      ...getCalendarContextByDateKey({
+        dateKey: toDateKey(day),
+        events: calendarEvents,
+        memos: calendarMemos,
+        externalHints,
+      })
+    };
+  }).filter(ctx => ctx.events.length > 0 || ctx.memos.length > 0 || ctx.externalHints.length > 0);
 
   return (
     <>
@@ -81,6 +103,39 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
               <CandidateDateChip key={day} date={label} onRemove={() => toggleDate(day)} />
             );
           })}
+        </div>
+      )}
+
+      {selectedDates.length > 0 && (
+        <div className="bg-white border border-ink-line rounded-2xl p-4 flex flex-col gap-3">
+          <h3 className="font-bold text-sm">선택한 날짜의 달력 메모</h3>
+          {selectedContexts.length > 0 ? (
+            selectedContexts.map(ctx => (
+              <div key={ctx.day} className="flex flex-col gap-2">
+                <span className="text-xs font-bold text-rose">{month}월 {ctx.day}일</span>
+                {ctx.memos.map(memo => (
+                  <div key={memo.id} className="bg-amber-50 rounded-xl p-3 border border-amber-200">
+                    <span className="text-xs font-bold text-ink">{memo.title}</span>
+                    <p className="text-xs text-ink-muted mt-1">{memo.body}</p>
+                  </div>
+                ))}
+                {ctx.events.map(ev => (
+                  <div key={ev.id} className="bg-sky-50 rounded-xl p-3 border border-sky-200">
+                    <span className="text-xs font-bold text-ink">{ev.title}</span>
+                    <p className="text-xs text-ink-muted mt-1">{ev.type === 'confirmed_meeting' ? '확정된 모임' : '다른 모임 후보'}</p>
+                  </div>
+                ))}
+                {ctx.externalHints.map(hint => (
+                  <div key={hint.id} className="bg-bg-app rounded-xl p-3 border border-ink-line">
+                    <span className="text-xs font-bold text-ink">{hint.title} (외부 캘린더)</span>
+                    <p className="text-xs text-ink-muted mt-1">{hint.note}</p>
+                  </div>
+                ))}
+              </div>
+            ))
+          ) : (
+            <p className="text-xs text-ink-muted">이 날짜에는 아직 메모가 없어요.</p>
+          )}
         </div>
       )}
 

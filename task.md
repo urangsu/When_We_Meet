@@ -50,7 +50,9 @@ This is not real multi-user sync.
 - No real Kakao SDK
 - No real Instagram DM automation
 - No real push notification
-- No real calendar integration
+- Our Calendar is currently mock/local prototype only
+- Calendar share URL is prototype only
+- External calendar integration is not implemented
 - No real map/GPS/place autocomplete
 - No real AI/LLM server endpoint
 - No i18n
@@ -161,6 +163,36 @@ Policy:
 - [ ] Prepare OG preview route
 
 ## 10. Phase H — Calendar / Map / Recommendation
+### Phase H-0 — Our Calendar Domain
+
+Goal:
+Build When We Meet's own calendar layer before treating external calendar integration as the product.
+
+Principle:
+Our Calendar is the primary product calendar.
+External Google/device calendar is a read-only context layer for busy hints, schedules, and optional notes.
+
+Completed:
+- [x] Define OurCalendarEvent type
+- [x] Define OurCalendarMemo type
+- [x] Define OurCalendarSpace type
+- [x] Define OurCalendarShareLink type
+- [x] Define ExternalCalendarHint type
+- [x] Add mock Our Calendar data
+- [x] Update CalendarTabScreen to Our Calendar concept
+- [x] Show calendar memos
+- [x] Add prototype calendar share CTA
+- [x] Pass calendar memos into date candidate picker
+
+Not Completed:
+- [ ] Real shared calendar route
+- [ ] Backend persistence for calendar events/memos
+- [ ] Google Calendar OAuth
+- [ ] Device calendar permission
+- [ ] External event import policy
+- [ ] Calendar memo collaboration
+- [ ] Calendar share permission model
+
 ## 11. Phase I — Local Content / Discovery
 ## 12. Phase J — Monetization
 ## 13. Phase K — Global / i18n
@@ -554,8 +586,8 @@ Output:
    - Verify direct invite link reload
    - Prepare OG preview route
 
-4. Phase H-1 — Calendar / Map / Recommendation Planning
-   - Calendar provider abstraction
-   - Place autocomplete strategy
-   - Location permission UX
-   - Recommendation API boundary
+4. Phase H-1 — Our Calendar Persistence
+   - Add calendar_events schema
+   - Add calendar_memos schema
+   - Add calendar_share_links schema
+   - Connect calendar memo context to meeting creation
