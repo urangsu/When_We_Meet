@@ -1,20 +1,23 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# When We Meet
 
-# Run and deploy your AI Studio app
+When We Meet은 친구와의 약속을 더 쉽게 만들고, 더 예쁘게 초대하고, 더 부담 없이 응답하게 하는 초대장 기반 모임 플랫폼입니다.
 
-This contains everything you need to run your app locally.
+## Product Direction
+- 초대장 기반 모임 만들기
+- 우리 달력 기록
+- 날짜/장소/활동/문구 추천
+- 부담 없는 게스트 응답
+- 사진 카드 공유
 
-View your app in AI Studio: https://ai.studio/apps/c7857179-a8a6-40db-8279-3d160c43b6d1
+## Current Prototype
+- React / Vite
+- localStorage repository bridge
+- Supabase client boundary 준비
+- Our Calendar local record prototype
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Not Production Yet
+- No real backend sync
+- No server-side invite validation
+- No real calendar OAuth
+- No Kakao SDK
+- No analytics SDK

@@ -78,9 +78,14 @@ export const DatePickerScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
-      <header className="flex items-center gap-4 pt-2">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
-        <h1 className="font-bold text-2xl">언제 만날까요?</h1>
+      <header className="flex flex-col gap-2 pt-2">
+        <div className="flex items-center gap-4">
+          <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
+          <h1 className="font-bold text-2xl">언제 만날까요?</h1>
+        </div>
+        <p className="text-ink-muted text-sm px-1">
+          가능한 날들을 가볍게 골라보세요.
+        </p>
       </header>
 
       <CalendarCandidatePicker 

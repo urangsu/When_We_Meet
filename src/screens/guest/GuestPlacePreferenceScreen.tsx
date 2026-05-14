@@ -108,7 +108,7 @@ export const GuestPlacePreferenceScreen = () => {
           onClick={handleNext} 
           size="full"
         >
-          다음
+          다음 · 마지막으로
         </Button>
       </BottomCTA>
     </ScreenShell>

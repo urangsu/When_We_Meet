@@ -1,7 +1,7 @@
 # When We Meet Development Roadmap
 
 ## 0. Product North Star
-When We Meet은 단순 날짜 투표 앱이 아니라, 친구들과 언제, 어디서, 몇 시에, 무엇을 할지까지 자연스럽게 정하는 모임 결정 플랫폼이다.
+When We Meet은 친구와의 약속을 더 쉽게 만들고, 더 예쁘게 초대하고, 더 부담 없이 응답하게 하는 초대장 기반 모임 플랫폼입니다.
 
 ---
 
@@ -318,6 +318,28 @@ Not Completed:
 ## 11. Phase I — Local Content / Discovery
 ## 12. Phase J — Monetization
 ## 13. Phase K — Global / i18n
+## 14. Phase M — Product Positioning & Marketing Foundation
+
+Goal:
+Make When We Meet understandable to PM, marketing, design, and engineering as one product.
+
+Completed:
+- [x] Add product positioning document
+- [x] Add marketing brief
+- [x] Add copy system
+- [x] Add growth strategy
+- [x] Add analytics taxonomy draft
+- [x] Update README product direction
+- [x] Audit app copy for positioning consistency
+- [x] Keep analytics/ad SDK out of product code
+
+Not Completed:
+- [ ] Real landing page
+- [ ] App Store screenshots
+- [ ] App Store description localization
+- [ ] Actual analytics SDK
+- [ ] Actual ad platform integration
+- [ ] Real SEO pages
 
 ---
 
@@ -714,3 +736,9 @@ Output:
    - Implement backend OurCalendarRepository
    - Add privacy model for private/meeting_context/shared_calendar
    - Add memo-to-place/activity analytics events
+
+5. Phase M-1 — Landing Page & App Store Asset Draft
+   - Add landing page route or static page
+   - Create app store description
+   - Define screenshot captions
+   - Prepare social sharing copy

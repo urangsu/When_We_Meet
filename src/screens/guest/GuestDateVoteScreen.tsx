@@ -49,7 +49,7 @@ export const GuestDateVoteScreen = () => {
 
       <div>
         <h1 className="font-bold text-2xl mb-2">언제가 좋으신가요?</h1>
-        <p className="text-ink-muted text-sm">가능한 날짜를 모두 골라주세요.</p>
+        <p className="text-ink-muted text-sm">가능한 날을 가볍게 골라주세요.</p>
       </div>
 
       <div className="flex flex-col gap-3 mt-4">
@@ -157,7 +157,7 @@ export const GuestDateVoteScreen = () => {
           onClick={handleNext} 
           size="full"
         >
-          다음으로
+          다음 · 만날 곳 고르기
         </Button>
       </BottomCTA>
     </ScreenShell>

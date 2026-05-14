@@ -1,60 +1,52 @@
 # 작업지시서 제목
-When We Meet Phase H-3 Super Sprint: 우리 달력 기록 엔진, 모임 생성 컨텍스트, 추천 문구/장소/활동 자동 반영
+When We Meet Phase M-0: 제품 포지셔닝, 마케팅 메시지, 카피 시스템, 성장 전략 기준문서 구축
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- `src/types/meeting.ts`
-- `src/state/CreateMeetingDraftContext.tsx`
-- `src/screens/host/DatePickerScreen.tsx`
-- `src/utils/calendarMemoRecommendations.ts` (신규 파일)
-- `src/screens/host/MeetingInfoScreen.tsx`
-- `src/screens/host/PlaceSetupScreen.tsx`
-- `src/screens/host/ActivitySetupScreen.tsx`
-- `src/screens/host/InvitePreviewScreen.tsx`
-- `src/utils/ourCalendar.ts`
 - `task.md`
-- `result.md`
+- `README.md` (신규 파일 및 수정)
+- `docs/product-positioning.md` (신규 파일)
+- `docs/marketing-brief.md` (신규 파일)
+- `docs/copy-system.md` (신규 파일)
+- `docs/growth-strategy.md` (신규 파일)
+- `docs/analytics-taxonomy.md` (신규 파일)
+- `src/screens/guest/GuestDateVoteScreen.tsx`
+- `src/screens/guest/GuestPlacePreferenceScreen.tsx`
+- `src/screens/host/DatePickerScreen.tsx`
 
 ### 2. 주요 변경
-- `CreateMeetingDraft` 타입에 `attachedCalendarMemoTags`, `attachedCalendarMemoDateKeys` 필드 추가 및 상태 연동.
-- 룰베이스의 로컬 달력 기록 기반 추천 유틸리티(`getCalendarMemoRecommendations`) 신규 추가. 한강, 카페, 식사 등 조건에 따른 장소/활동/초대 문구 힌트 반환.
-- `DatePickerScreen`에서 `attachedCalendarMemoTags`, `attachedCalendarMemoDateKeys` 업데이트 연동.
-- `MeetingInfoScreen`에 첨부된 달력 기록 표시 뷰 강화.
-- `PlaceSetupScreen`에서 달력 기록 기반 장소 힌트 칩셋 UI 제공 및 선택 기능 적용.
-- `ActivitySetupScreen`에서 달력 기록 기반 활동 힌트 영역 제공 및 custom input 연동.
-- `InvitePreviewScreen`에 달력 기록으로 추천된 초대 문구 목록 제공, 바로 클릭해서 모임 메시지에 덮어쓸 수 있도록 연계.
-- 기존의 임시 `getMemoSuggestionText` 제거 후 컨텍스트 기반 추천으로 완전 통합.
+- PM 및 마케팅 얼라인먼트를 위한 제품 포지셔닝(`docs/product-positioning.md`) 작성.
+- 메인 메시지와 서브 메시지, 코어 키워드 등을 정리하여 마케팅 포인트를 구축함 (`docs/marketing-brief.md`).
+- 앱 내부 카피 시스템의 기준을 명확하게 하고 "초대장", "우리 달력", "가볍게"와 같은 일관된 언어를 사용하기 위한 톤 가이드 작성 (`docs/copy-system.md`).
+- 향후 데이터 레이어 확장, 추천 엔진 강화 모델 및 마케팅 액션을 명문화한 성장/수익화 전략 문서 도출 (`docs/growth-strategy.md`).
+- 실제 SDK 연동 전 단계로써, 향후 이 프로젝트에서 사용될 Analytics Event 목록들을 사전 정의(`docs/analytics-taxonomy.md`).
+- 단조로운 날짜 투표 앱 대신 '모임 만들기 기반의 초대장 제작 앱'으로의 비전을 설명하는 README 포지셔닝 내용 업데이트.
+- Guest의 응답 강제성을 조금 더 부드럽게 완화하기 위해 `GuestDateVoteScreen`과 기타 참여 화면의 복잡성을 낮추는 방향으로 일부 문구 수정 및 버튼 CTA("다음 · 만날 곳 고르기", "다음 · 마지막으로") 구체화.
+- Host DatePickerScreen의 제목 하단에 부담을 낮추는 안내 문구("가능한 날들을 가볍게 골라보세요") 추가.
 
 ### 3. 빌드
-- npm run lint: 통과 (코드 내 tsc --noEmit 에러 없음)
-- npm run build: 통과 (번들 생성 완료)
+- npm run lint: 통과 (에러 없음)
+- npm run build: 통과 (성공)
 
 ### 4. 남은 이슈
-- 달력 기록(Calendar Memo)은 여전히 브라우저의 `localStorage` 기반.
-- 백엔드(Supabase 등) `calendar_memos` 테이블 구성 및 API 연결, 인증 정보 연동은 다음 단계에서 진행해야 함.
-- Native Kakao SDK를 통한 공유 카드, OG tag 구성 구현 대기.
+- 마케팅 문서 및 가이드는 작성 완료되었으나, 이를 실제 랜딩 페이지나 앱스토어 소개 이미지/설명글 캡처 등 실물 에셋으로는 아직 치환하지 않은 상태. (향후 단계로 이관)
 
 ### 5. 다음 작업
-1. Phase H-4 — Calendar Records Backend & Privacy Model (calendar_memos 스키마, calendar_memo_links 연결, 백엔드 리포지토리 인터페이스 구성 방안 마련)
-2. Phase F-4 — Backend Repository Implementation
-3. Phase F-5 — Server-side Invite Validation (초대장/아이디 중복 검증 서버 연동)
+1. Phase M-1 — Landing Page & App Store Asset Draft (가상 랜딩/마케팅 페이지 구성).
+2. Phase H-4 — Calendar Records Backend & Privacy Model (calendar_memos 스키마, calendar_memo_links 모델 등 백엔드 설계).
+3. Phase F-4 — Backend Repository Implementation.
 
 ### 6. 검증 검색 결과
-- alert 기반 기록 적기: 검색 결과 발견되지 않음.
-- CalendarRecordDrawer: 존재하며 CRUD 이벤트 정상 연결 확정.
-- createCalendarMemo: `ourCalendarRepository` 인터페이스 및 `localOurCalendarRepository`에서 확인.
-- updateCalendarMemo: 포함.
-- deleteCalendarMemo: 포함.
-- localStorage calendar memo key: `wwm:our-calendar:memos:v1` 사용 확인됨.
-- opacity-0 in share capture: CalendarTabScreen에서 `opacity-0` 제거되어 화면 밖 `left-[-10000px]`로 숨기는 캡처 전용 DOM 확정됨.
-- calendar/shared references: 존재하지 않음.
-- SharedCalendarScreen references: 존재하지 않음.
-- localOurCalendarRepository direct imports in screens: 0건. (의존성 주입 패턴 준수)
-- attachedCalendarMemoIds: `CreateMeetingDraft`에서 사용 중.
-- attachedCalendarMemoNotes: 추천 엔진 및 `MeetingInfoScreen` 등에서 정상 표출.
-- attachedCalendarMemoTags: DatePickerScreen에서 추가하며 `Place`, `Activity` 파싱 등에 재료로 사용.
-- memo recommendation utility: `src/utils/calendarMemoRecommendations.ts`에 생성.
-- PlaceSetupScreen calendar memo hints: `placeRecommendations` 변수 및 UI 확인.
-- ActivitySetupScreen calendar memo hints: `activityRecommendations` 변수 및 UI 확인.
-- InvitePreviewScreen copy recommendations: `copyRecommendations` 변수 확인 및 클릭 시 `updateDraft({ hostMessage: item.label })` 호출부 확인.
+- 날짜 투표 references: `task.md`와 `README.md`에서 부정적인 맥락(Not this) 위주로 확인됨. 앱 내에서는 최소한으로 노출.
+- 초대장 references: `InviteLandingScreen`, `ShareScreen`, `InvitePreviewScreen`, `HomeScreen`, `ReceivedInviteCard` 등 코어 경험 전반에 걸쳐 사용됨.
+- 우리 달력 references: `CalendarTabScreen`, `shareImage`, `OurCalendarShareCard` 등 주요 기능에 반영됨.
+- 기록 references: `OurCalendarShareCard`, `CalendarRecordDrawer`, `MeetingInfoScreen`, `CalendarTabScreen` 등에서 저장/조회 관련하여 활용.
+- 공유 references: `ShareScreen`, `ConfirmedShareScreen` 등 외부로의 연결고리에 위치함.
+- 추천 references: `PlaceSetupScreen`, `ActivitySetupScreen`, `InvitePreviewScreen`, `calendarMemoRecommendations.ts` 등에 적극 반영됨.
+- 준비 중 references: 모임 성격 튜닝 관련 `locationOptions`, `MyPageScreen`, `ConfirmedShareScreen`의 카톡 공유 영역 등에 남김.
+- alert references: "준비 중" 표시나 클립보드 복사 등 시스템 팝업 4건 외에 잘못된 용례는 없음.
+- When We Meet references: `task.md`, `OurCalendarShareCard`, `README.md` 및 생성한 `docs/` 내 여러 문서에서 브랜딩 네이밍으로 잘 쓰이고 있음.
+- react-example references: `package.json`에서 발견되지 않음 (`when-we-meet`으로 픽스 확인).
+- analytics SDK added: 코드 내에 실제 SDK 추가 코드를 심지 않았고 문서에만 정의함.
+- ad SDK added: 코드 내에 실제 SDK 추가 코드를 심지 않았고 문서에만 정의함.
