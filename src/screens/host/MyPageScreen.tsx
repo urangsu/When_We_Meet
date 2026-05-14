@@ -17,9 +17,9 @@ export const MyPageScreen = () => {
       <div className="px-5 pb-8 flex flex-col gap-6">
         {/* Profile Card */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line/50 flex items-center gap-4">
-          <InitialAvatar name="수민" colorId="black" size="lg" />
+          <InitialAvatar name="호스트" colorId="black" size="lg" />
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold">수민</h2>
+            <h2 className="text-xl font-bold">호스트</h2>
             <p className="text-sm text-ink-muted">초대장을 만드는 호스트</p>
           </div>
         </div>

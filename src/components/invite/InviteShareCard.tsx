@@ -10,13 +10,10 @@ export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(
   return (
     <div 
       ref={ref}
-      className="absolute left-[-9999px] top-[-9999px]"
+      className="w-[400px] h-[500px] bg-gradient-to-br from-[#FFF7F2] to-[#FFE9EE] flex flex-col items-center justify-center p-8 relative overflow-hidden"
+      style={{ fontFamily: "'Inter', sans-serif" }}
     >
-      <div 
-        className="w-[400px] h-[500px] bg-gradient-to-br from-[#FFF7F2] to-[#FFE9EE] flex flex-col items-center justify-center p-8 relative overflow-hidden"
-        style={{ fontFamily: "'Inter', sans-serif" }}
-      >
-        {/* Grain overlay */}
+      {/* Grain overlay */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
 
         <div className="bg-white rounded-3xl p-6 shadow-xl border border-rose-200/50 w-full z-10 flex flex-col items-center text-center">
@@ -66,7 +63,6 @@ export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(
             When We Meet
           </p>
         </div>
-      </div>
     </div>
   );
 });

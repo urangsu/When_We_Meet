@@ -30,15 +30,31 @@ export const ShareScreen = () => {
   const shareCardRef = useRef<HTMLDivElement>(null);
   const [isSharingImage, setIsSharingImage] = useState(false);
 
+  const createDraftFingerprint = () =>
+    JSON.stringify({
+      title: draft.title,
+      message: draft.hostMessage,
+      category: draft.category,
+      locationMode: draft.locationMode,
+      fixedPlaceName: draft.fixedPlaceName,
+      dateLabels: draft.dateLabels,
+      timeLabels: draft.timeLabels,
+      activityMode: draft.activityMode,
+      activityIds: draft.activityIds,
+      customActivity: draft.customActivity,
+      themeId: draft.themeId,
+    });
+
   useEffect(() => {
     if (createdRef.current) return;
     createdRef.current = true;
 
     const create = async () => {
       try {
-        const existing = readJson<LastCreatedShare | null>(SHARE_SESSION_KEY, null);
+        const existing = readJson<any>(SHARE_SESSION_KEY, null);
+        const draftFingerprint = createDraftFingerprint();
 
-        if (existing?.draftTitle === draft.title) {
+        if (existing?.draftFingerprint === draftFingerprint) {
           const nextUrl = getInviteShareUrl({
             meetingId: existing.meetingId,
             token: existing.inviteToken,
@@ -57,7 +73,7 @@ export const ShareScreen = () => {
         });
 
         writeJson(SHARE_SESSION_KEY, {
-          draftTitle: draft.title,
+          draftFingerprint,
           meetingId: result.meetingId,
           inviteToken: result.inviteToken,
         });
@@ -104,7 +120,9 @@ export const ShareScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6 items-center justify-center text-center p-5 pt-20 relative">
-      <InviteShareCard draft={draft} ref={shareCardRef} />
+      <div className="fixed left-[-10000px] top-0 pointer-events-none">
+        <InviteShareCard draft={draft} ref={shareCardRef} />
+      </div>
       
       <motion.div 
         initial={{ scale: 0.8, opacity: 0 }}

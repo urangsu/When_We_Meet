@@ -624,12 +624,23 @@ Completed:
 - [x] Add invite share card / image share flow
 - [x] Add guest complete "create my own invite" CTA
 
+### Phase V-0.5 — Invitation Motion / Share Polish
+
+Completed:
+- [x] Use absolute OG image URL
+- [x] Replace placeholder og.jpg with real static image
+- [x] Make InviteShareCard visible/reusable
+- [x] Add InvitePreviewScreen image export
+- [x] Move offscreen capture wrapper to screen level
+- [x] Apply themeId to invitation opening motion
+- [x] Remove hardcoded prototype fallback names from screens
+- [x] Replace draftTitle share session reuse with draftFingerprint
+
 Not Completed:
-- [ ] Dynamic meeting-specific OG image
+- [ ] Dynamic meeting-specific OG
 - [ ] Kakao SDK share
 - [ ] Real backend invite/response sync
-- [ ] Invite video MP4 export
-- [ ] Native app share sheet polish
+- [ ] MP4 invite video export
 
 ---
 

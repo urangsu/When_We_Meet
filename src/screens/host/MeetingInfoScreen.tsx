@@ -36,7 +36,7 @@ export const MeetingInfoScreen = () => {
           <input 
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="예) 수민이의 생일 모임"
+            placeholder="예) 새로운 만남"
             className="w-full p-4 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all"
           />
         </div>

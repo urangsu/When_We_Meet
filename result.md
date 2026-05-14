@@ -1,50 +1,52 @@
 # 작업지시서 제목
-When We Meet Phase V-0: 초대장 모션 경험, 짧은 영상형 UI, 카카오 공유 첫인상, P0 출시 루프 재정렬
+When We Meet Phase V-0.5: 초대장 모션/공유 마감, OG 실이미지, Preview Export, Share Session 안정화
 
 ## 작업 결과
 
 ### 1. 수정 파일
 - `index.html`
-- `src/components/invite/InvitationOpeningMotion.tsx` (신규)
-- `src/screens/guest/InviteLandingScreen.tsx`
-- `src/screens/host/InvitePreviewScreen.tsx`
-- `src/components/invite/InviteShareCard.tsx` (신규)
+- `public/og.jpg` (및 `og.svg` 템플릿)
+- `src/components/invite/InviteShareCard.tsx`
 - `src/screens/host/ShareScreen.tsx`
-- `src/utils/shareImage.ts`
-- `task.md`
-- `result.md`
+- `src/screens/host/InvitePreviewScreen.tsx`
+- `src/components/invite/InvitationOpeningMotion.tsx`
+- `src/screens/guest/InviteLandingScreen.tsx`
+- `src/screens/host/HomeScreen.tsx`
+- `src/screens/host/MyPageScreen.tsx`
+- `src/screens/host/MeetingInfoScreen.tsx`
 
 ### 2. 주요 변경
-- `index.html`에 When We Meet 전용 `<title>`과 OG 태그들을 추가하고 기본 React 문장을 제거했습니다.
-- 게스트 랜딩 화면(`InviteLandingScreen`) 진입 시 짧게 카드 형태로 스르륵 열리는 `InvitationOpeningMotion` 컴포넌트를 연동하여 감성적인 첫인상을 부여했습니다.
-- 호스트가 앱 내에서(`InvitePreviewScreen`) 초대장의 게스트 오프닝 모션을 미리 보기 할 수 있게 버튼을 추가했습니다.
-- `InvitePreviewScreen`/`ShareScreen`에 공유용 예쁜 이미지 템플릿(`InviteShareCard`)을 렌더링하고, 바로 `html-to-image`와 `navigator.share`를 통해 공유할 수 있는 핵심 CTA(초대장 사진으로 공유)를 최상단으로 올렸습니다. 링크 공유는 보조로 내렸습니다.
-- GuestCompleteScreen(초대 응답 완료) 하단에 "나도 초대장 만들기" CTA 버튼 및 문구를 안내 가이드에 맞춰 수정하고, `navigate('/app/create/category')` 경로로 이동하도록 변경하여 전환(바이럴) 루프를 강화했습니다.
-- `task.md`에서 달력(`Our Calendar`)을 잔존 및 데이터 확장용 후순위로 내리고, 초대장 모션/바이럴 공유 경험(Phase V)을 `P0 Acquisition Core`로 전진 배치하였습니다.
-- Mock 데이터 점검(`mockMeetings` 및 `mockReceivedInvites`) 결과 호스트 홈 화면에서 아직 노출되고 있어 이를 Task 문서의 P0 Launch Blocker에 제거 작업으로 등록했습니다.
+- `index.html` 내 `og:image` URL을 절대경로(`https://whenwemeet.app/og.jpg`)로 수정함.
+- `public/og.jpg` 파일을 Sharp를 이용해 1200x630 크기의 깔끔한 실제 이미지가 포함되도록 생성 및 교체.
+- `InviteShareCard` 컴포넌트 자체에 있던 `left-[-9999px]` `top-[-9999px]` 코드를 제거하여 언제든 visible하게 재사용할 수 있도록 변경함.
+- 대신 `ShareScreen`, `InvitePreviewScreen`의 상위 컴포넌트 레벨에서 `InviteShareCard`를 호출할 때 offscreen wrapper(`<div className="fixed left-[-10000px] top-0 pointer-events-none">`)로 감쌈.
+- `InvitePreviewScreen`에 "초대장 사진으로 미리 공유" CTA 버튼을 추가하여, 저장 전에도 미리 이미지를 생성(`createPngFileFromElement`)하고 공유(`shareImageFile`)할 수 있게 기능 추가 완료.
+- `InvitationOpeningMotion` 컴포넌트에 테마별 색상과 배경값을 정의(`themeStyles`)하고 `themeId`를 넘겨받아 동적으로 컬러와 그라데이션이 적용되도록 수정.
+- 코드 여러 곳에 남겨져있던 과도한 프로토타입 하드코딩("수민", "수민이의 생일 모임" 등)을 "새로운 초대장", "호스트" 등의 중립적인 이름으로 변경하여 실제 사용시 어색함 제거.
+- `ShareScreen`의 초대장 재사용 로직을 기존 `draftTitle` 단독 검사에서 전체 폼 데이트를 담은 `draftFingerprint` 검사로 변경해 동일 제목이더라도 내용이 다르면 새로운 토큰을 주도록 세션 재사용 규칙 강화.
 
 ### 3. 빌드
 - npm run lint: 통과 (오류 없음)
 - npm run build: 통과 (오류 없음)
 
 ### 4. 남은 이슈
-- OG 이미지의 경우 당장은 빈 `public/og.jpg`로 만들었고, 추후 미팅 다이나믹 이미지 생성 또는 완성도 있는 정적 에셋으로 대체가 필요합니다.
-- `navigator.share`의 경우 브라우저 및 안드로이드/IOS 간 공유 호환성(특히 카카오톡 등)이 다를 수 있어 Kakao Message API (Native Share) 도입이 추후 요구됩니다.
+- 개별 모임의 `og:image`를 동적으로 생성해내는 기능(`Dynamic meeting-specific OG`)은 아직 추가되지 않음.
+- 카카오톡 인앱 브라우저 및 메신저 등에서 `navigator.share`의 호환성 제약 때문에 완벽한 카드 형태를 위해서는 Kakao SDK 네이티브 공유 도입이 필요함.
 
 ### 5. 다음 작업
-1. Phase F-4 — Backend Repository Implementation
-2. Phase V-1 — Invite Video/OG Polish (동적 OG 이미지 및 완성도 높은 카카오 공유 링크 등)
+1. Phase V-1 — Invite Video/OG Polish (동적 OG 이미지 및 완성도 높은 카카오 공유 링크 등)
+2. Phase F-4 — Backend Repository Implementation
 3. Phase G-1 — BrowserRouter + Hosting Rewrite
 
 ### 6. 검증 검색 결과
-- My Google AI Studio App: 검색하여 `index.html` 내 기존 fallback 타이틀 제거, "When We Meet"으로 교체.
-- og:title: `index.html`에 meta property로 추가 확인.
-- og:image: `index.html`에 meta property로 추가 확인. `public/og.jpg` placeholder 생성.
-- InvitationOpeningMotion: src 내 사용처 검색. `InviteLandingScreen`과 `InvitePreviewScreen`에 연동.
-- InvitePreviewScreen motion preview: "모션 미리보기" 버튼 통해 `InvitationOpeningMotion` 컴포넌트 렌더링 구현.
-- invite share image/export: `html-to-image`로 이미지를 만들고 `ShareScreen`에서 메인 CTA로 "초대장 사진으로 공유" 버튼 연동. `InviteShareCard` 반영됨.
-- navigator.share: `shareImage.ts`가 `options` 객체를 받도록 확장하여 텍스트 및 URL이 시스템 공유 시트까지 전달되게 함.
-- GuestComplete create CTA: "우리 언제 만나 시작하기" 버튼을 "나도 초대장 만들기"로 변경하고 `/app/create/category`로 이동하게 적용 완료.
-- mockMeetings in screens: `HomeScreen` 등에서 더미데이터를 불러와 렌더링함을 확인, task.md 문서의 P0 blocker(목록 5번)로 기재.
-- mockReceivedInvites in screens: 동일하게 P0 blocker로 남겨둠.
-- notImplemented backend: `backendMeetingRepository.ts`는 모두 `notImplemented` 상태. 이 역시 Phase F-4 작업으로 넘김.
+- 수민 fallback: `MyPageScreen`, `HomeScreen` 등에서 "호스트" 문자열 등으로 교체됨. (`grep -R "수민" -n src` 확인 완료)
+- 생일 모임 fallback: `MeetingInfoScreen`, `InvitePreviewScreen`, `InviteLandingScreen` 등에서 "새로운 초대장", "새로운 만남"으로 교체됨.
+- InviteShareCard offscreen class: `InviteShareCard.tsx` 본문 내 `absolute left-[-9999px]` 코드 모두 제거됨.
+- og:image: `index.html`에 `https://whenwemeet.app/og.jpg` 절대경로로 설정 완료.
+- public/og.jpg: 1200x630 `sharp-cli` 생성본 저장 및 확인 리스트 도출됨.
+- InvitePreviewScreen image export: "초대장 사진으로 미리 공유" CTA 추가 완료.
+- createPngFileFromElement in InvitePreview: `InvitePreviewScreen.tsx` 내 사용됨.
+- shareImageFile in InvitePreview: `InvitePreviewScreen.tsx`에서 핸들러에 의해 동작.
+- themeId in InvitationOpeningMotion: props로 전달받아 `themeStyles` 딕셔너리로 동적 할당 완료.
+- draftTitle in ShareScreen: 조건문 조건 삭제로 재사용하지 않음.
+- draftFingerprint in ShareScreen: `createDraftFingerprint` 및 `SHARE_SESSION_KEY` 저장 객체에 추가되어 조건문으로 대체 동작 완료.

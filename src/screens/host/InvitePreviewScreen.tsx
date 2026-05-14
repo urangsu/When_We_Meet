@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, Share2, MapPin, Calendar, User, Clock, Bookmark, PlayCircle } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -15,11 +15,15 @@ import {
 } from '../../config/contextualInviteCopy';
 import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommendations';
 import { InvitationOpeningMotion } from '../../components/invite/InvitationOpeningMotion';
+import { InviteShareCard } from '../../components/invite/InviteShareCard';
+import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage';
 
 export const InvitePreviewScreen = () => {
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [showMotionPreview, setShowMotionPreview] = useState(false);
+  const shareCardRef = useRef<HTMLDivElement>(null);
+  const [isSharingImage, setIsSharingImage] = useState(false);
   
   const selectedCategory = categoryOptions.find(c => c.id === draft.category);
   const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
@@ -62,16 +66,40 @@ export const InvitePreviewScreen = () => {
     if (draft.activityMode === 'vote') return '친구들과 함께 결정';
     return undefined;
   };
+
+  const handleShareInviteImage = async () => {
+    if (!shareCardRef.current) return;
+
+    setIsSharingImage(true);
+
+    try {
+      const file = await createPngFileFromElement(
+        shareCardRef.current,
+        'when_we_meet_invite_preview.png'
+      );
+
+      await shareImageFile(file, {
+        title: draft.title || '새로운 초대장',
+        text: draft.hostMessage || '초대장을 확인해 주세요.',
+      });
+    } catch (error) {
+      console.error('Failed to share image', error);
+      alert('초대장 사진을 공유할 수 없어요.');
+    } finally {
+      setIsSharingImage(false);
+    }
+  };
   
   if (showMotionPreview) {
     return (
       <InvitationOpeningMotion
-        title={draft.title || '수민이의 생일 모임'}
-        hostName="수민"
+        title={draft.title || '새로운 초대장'}
+        hostName="호스트"
         message={draft.hostMessage || '같이 시간 맞춰볼까요?\n가능한 날짜와 하고 싶은 걸 가볍게 골라주세요.'}
         dateLabel={draft.dateLabels.length ? `${draft.dateLabels.length}개의 날짜 후보` : undefined}
         placeLabel={getPlaceLabel()}
         activityLabel={getActivityLabel()}
+        themeId={draft.themeId}
         preview
         onComplete={() => setShowMotionPreview(false)}
       />
@@ -80,6 +108,10 @@ export const InvitePreviewScreen = () => {
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
+      <div className="fixed left-[-10000px] top-0 pointer-events-none">
+        <InviteShareCard draft={draft} ref={shareCardRef} />
+      </div>
+
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">초대장 미리보기</h1>
@@ -112,7 +144,7 @@ export const InvitePreviewScreen = () => {
                   {categoryLabel} {draft.isRecurring ? '· 정기모임' : ''}
                 </span>
                 <h2 className="font-bold text-3xl leading-tight text-rose-deep">
-                  {draft.title || '수민이의 생일 모임'}
+                  {draft.title || '새로운 초대장'}
                 </h2>
               </div>
               <p className="text-lg font-medium text-ink/80 leading-relaxed max-w-[80%] whitespace-pre-wrap">
@@ -124,7 +156,7 @@ export const InvitePreviewScreen = () => {
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">
                   <User size={16} className="text-rose"/>
-                  <span>Host: 수민 (프로토타입)</span>
+                  <span>Host: 호스트</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm font-bold text-ink bg-white/60 backdrop-blur-sm self-start px-4 py-2 rounded-full shadow-sm">
                   <MapPin size={16} className="text-rose"/>
@@ -250,9 +282,12 @@ export const InvitePreviewScreen = () => {
 
       <BottomCTA withBottomNav>
         <div className="flex flex-col gap-3 w-full">
-          <p className="text-center text-xs text-ink-hint">초대장을 보내기 전 마지막으로 확인해 주세요</p>
+          <p className="text-center text-xs text-ink-hint">작성한 내용으로 초대장 이미지를 볼 수 있어요</p>
+          <Button onClick={handleShareInviteImage} disabled={isSharingImage} size="full" className="shadow-warm bg-rose-50 border border-rose-200 text-rose-deep hover:bg-rose-100">
+            {isSharingImage ? '이미지 생성 중...' : <><Share2 size={18}/> 초대장 사진으로 미리 공유</>}
+          </Button>
           <Button onClick={() => navigate('/app/create/share')} size="full">
-            <Share2 size={20}/> 초대장 공유
+            <Share2 size={20}/> 링크 만들기
           </Button>
         </div>
       </BottomCTA>

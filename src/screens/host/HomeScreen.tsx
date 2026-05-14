@@ -33,7 +33,7 @@ export const HomeScreen = () => {
           <CalendarCheck className="text-rose" size={28} strokeWidth={2.5} />
           <h1 className="font-bold text-2xl tracking-tight">우리 언제 만나?</h1>
         </div>
-        <p className="text-ink-muted text-lg font-medium mt-4">안녕하세요 수민님,<br/>새로운 모임을 만들어볼까요?</p>
+        <p className="text-ink-muted text-lg font-medium mt-4">안녕하세요 호스트님,<br/>새로운 모임을 만들어볼까요?</p>
       </header>
 
       {receivedInvites.length > 0 && (

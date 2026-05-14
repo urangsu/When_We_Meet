@@ -30,7 +30,7 @@ export const InviteLandingScreen = () => {
     return <ScreenShell className="items-center justify-center p-5 text-center">초대장이 유효하지 않아요.</ScreenShell>;
   }
 
-  const title = meeting?.title || '수민이의 생일 모임';
+  const title = meeting?.title || '새로운 초대장';
   const message = meeting?.hostMessage || '같이 시간 맞춰볼까요?\n가능한 날짜와 하고 싶은 걸 가볍게 골라주세요.';
   const dateLabel = meeting?.dateOptions?.length ? meeting.dateOptions.length + '개의 날짜 후보' : undefined;
   
