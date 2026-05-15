@@ -139,6 +139,42 @@ Not Completed:
 - [ ] Add response idempotency on server
 - [ ] Add maxResponses / expiresAt / isClosed enforcement
 
+### Phase F-4A — Backend Preflight
+
+Completed:
+- [x] Remove server-only dependencies from client package
+- [x] Add backend schema document
+- [x] Add Supabase schema SQL draft
+- [x] Add Supabase mapper skeleton
+- [x] Update backend repository error messages to F-4
+
+Not Completed:
+- [ ] Implement backendMeetingRepository queries
+- [ ] Add RLS policies
+- [ ] Add token hash validation
+- [ ] Add Edge Function validation
+- [ ] Add production duplicate guard
+
+### Phase F-4B — Backend Repository Query Implementation
+
+Next:
+- [ ] createMeetingWithInviteLink
+- [ ] getMeetingByInvite
+- [ ] submitGuestResponse
+- [ ] getMeetingResponses
+- [ ] confirmPlan
+- [ ] getConfirmedPlan
+- [ ] getMeetingById
+
+### Phase F-4C — Security / RLS / Token Validation
+
+Next:
+- [ ] token hash
+- [ ] expiresAt enforcement
+- [ ] isClosed enforcement
+- [ ] maxResponses enforcement
+- [ ] RLS policies
+
 ---
 
 ## Repository Mode
@@ -657,10 +693,11 @@ Not Completed:
 
 ## 23. Immediate Next Tasks
 
-### Product & Acquisition Track (P0)
-1. Phase F-4 — Backend Repository Implementation
-2. Phase V-1 — Invite Video/OG Polish
-3. Phase G-1 — BrowserRouter + Hosting Rewrite
+### Product Reliability Track
+1. Phase F-4A — Backend Preflight
+2. Phase F-4B — Supabase Repository Query Implementation
+3. Phase F-4C — RLS / Token Validation
+4. Phase G-1 — BrowserRouter + Hosting Rewrite
 
 ### GTM Track
 1. Phase M-1 — Landing Page & App Store Asset Draft

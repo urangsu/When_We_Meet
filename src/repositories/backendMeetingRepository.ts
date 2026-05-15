@@ -18,7 +18,7 @@ import { getSupabaseClient } from '../lib/supabaseClient';
 
 const notImplemented = async <T>(methodName: string): Promise<T> => {
   throw new Error(
-    `[backendMeetingRepository] ${methodName} is not implemented yet. Phase F-3 must provide the real backend adapter.`
+    `[backendMeetingRepository] ${methodName} is not implemented yet. Phase F-4 must provide the real Supabase adapter.`
   );
 };
 
