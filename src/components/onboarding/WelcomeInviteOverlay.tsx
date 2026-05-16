@@ -1,11 +1,35 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { Button } from '../Button';
-import { InvitationOpeningMotion } from '../invite/InvitationOpeningMotion';
 
 interface WelcomeInviteOverlayProps {
   onStartTutorial: () => void;
   onSkip: () => void;
 }
+
+const WelcomeEnvelopeIllustration = () => {
+    return (
+      <div className="relative w-[220px] h-[150px]">
+        <div className="absolute inset-x-0 bottom-0 h-[120px] rounded-b-3xl bg-white border border-rose/30 shadow-[0_18px_45px_rgba(180,85,95,0.16)]" />
+  
+        <svg viewBox="0 0 220 120" className="absolute inset-x-0 bottom-0 h-[120px] w-full z-20">
+          <path d="M6 8 L110 68 L214 8" fill="none" stroke="rgba(180,85,95,0.72)" strokeWidth="1.6" />
+          <path d="M6 114 L84 56" fill="none" stroke="rgba(180,85,95,0.34)" strokeWidth="1.6" />
+          <path d="M214 114 L136 56" fill="none" stroke="rgba(180,85,95,0.34)" strokeWidth="1.6" />
+        </svg>
+  
+        <motion.div
+          initial={{ rotateX: 0 }}
+          animate={{ rotateX: -16 }}
+          transition={{ duration: 1.2, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+          style={{ transformOrigin: 'top center', transformPerspective: 900 }}
+          className="absolute top-3 left-0 right-0 h-[68px] rounded-t-3xl bg-white border border-rose/30 z-30"
+        />
+  
+        <div className="absolute left-1/2 top-[72px] -ml-3 z-40 h-6 w-6 rounded-full bg-rose shadow-soft" />
+      </div>
+    );
+  };
 
 export const WelcomeInviteOverlay: React.FC<WelcomeInviteOverlayProps> = ({ onStartTutorial, onSkip }) => {
   return (
@@ -25,12 +49,7 @@ export const WelcomeInviteOverlay: React.FC<WelcomeInviteOverlayProps> = ({ onSt
           처음 받은 초대장
         </p>
 
-        {/* Envelope Illustration Placeholder */}
-        <div className="relative w-[180px] h-[120px] bg-white rounded-lg border border-rose/30 shadow-md">
-            <div className="absolute inset-0 flex items-center justify-center">
-                 <div className="w-12 h-12 bg-rose rounded-full opacity-20"></div>
-            </div>
-        </div>
+        <WelcomeEnvelopeIllustration />
 
         <div className="space-y-3">
           <h1 className="text-2xl font-bold text-ink">초대장이 도착했어요</h1>
@@ -38,7 +57,7 @@ export const WelcomeInviteOverlay: React.FC<WelcomeInviteOverlayProps> = ({ onSt
             When We Meet에 오신 걸 환영해요.<br />
             약속을 날짜만 묻지 않고,<br />
             언제, 어디서, 뭘 할지까지<br />
-            하나의 초대장으로 정리할 수 있어요.
+            하나의 초대장으로 정리해요.
           </p>
         </div>
       </div>

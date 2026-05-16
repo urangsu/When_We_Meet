@@ -26,10 +26,28 @@ export const ShareScreen = () => {
   const shareCardRef = useRef<HTMLDivElement>(null);
   const [isSharingImage, setIsSharingImage] = useState(false);
 
+  const noticeTimerRef = useRef<number | null>(null);
+
   const showNotice = (message: string) => {
     setNotice(message);
-    window.setTimeout(() => setNotice(null), 2400);
+
+    if (noticeTimerRef.current) {
+      window.clearTimeout(noticeTimerRef.current);
+    }
+
+    noticeTimerRef.current = window.setTimeout(() => {
+      setNotice(null);
+      noticeTimerRef.current = null;
+    }, 2400);
   };
+
+  useEffect(() => {
+    return () => {
+      if (noticeTimerRef.current) {
+        window.clearTimeout(noticeTimerRef.current);
+      }
+    };
+  }, []);
 
   const onFinishTutorial = () => {
     completeTutorial();
@@ -166,11 +184,14 @@ export const ShareScreen = () => {
         </Button>
         <div className="flex items-center justify-between p-4 bg-surface-warm rounded-2xl mt-2 border border-line">
           <span className="text-ink-hint font-mono text-[11px] truncate mr-4">{displayInviteUrl}</span>
-          <button onClick={() => {
-            navigator.clipboard.writeText(inviteUrl).then(() => {
-              onFinishTutorial();
-              showNotice("초대장 링크가 복사되었습니다.");
-            });
+          <button onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(inviteUrl);
+                onFinishTutorial();
+                showNotice("초대장 링크를 복사했어요.");
+              } catch {
+                showNotice("링크 복사에 실패했어요. 주소를 길게 눌러 복사해 주세요.");
+              }
           }} className="text-ink-muted hover:text-ink font-bold flex items-center gap-1.5 text-xs shrink-0 transition-colors">
             <Copy size={14} /> 링크 복사
           </button>

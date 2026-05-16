@@ -53,8 +53,14 @@ const envelopeThemeStyles = {
   },
 } as const;
 
-const ClassicOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({ title, hostName, themeId, onComplete }) => {
+const ClassicOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({ 
+  title, hostName, message, dateLabel, placeLabel, activityLabel, themeId, onComplete 
+}) => {
   const isDark = themeId === 'night';
+  const cardTextClass = isDark ? 'text-white' : 'text-ink';
+  const cardMutedTextClass = isDark ? 'text-white/70' : 'text-ink-muted';
+  const cardPanelClass = isDark ? 'bg-white/5 border-white/10' : 'bg-white/70 border-line';
+  
   return (
     <div className={`fixed inset-0 z-50 ${isDark ? 'bg-ink' : 'bg-surface'} flex items-center justify-center p-5 overflow-hidden`}>
       <motion.div
@@ -64,7 +70,16 @@ const ClassicOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({ title, h
         className={`w-full max-w-sm ${isDark ? 'bg-ink-muted' : 'bg-white'} rounded-[24px] shadow-xl p-8`}
       >
         <div className="flex flex-col items-center text-center space-y-4">
-             <h1 className={`font-bold text-2xl ${isDark ? 'text-white' : 'text-ink'} leading-tight`}>{title}</h1>
+             <h1 className={`font-bold text-2xl ${cardTextClass} leading-tight`}>{title}</h1>
+             {hostName && <p className={`text-sm ${cardMutedTextClass}`}>{hostName}님의 초대</p>}
+             {message && <p className={`text-sm ${cardMutedTextClass} italic`}>“{message}”</p>}
+             {(dateLabel || placeLabel || activityLabel) && (
+                <div className={`mt-2 w-full grid gap-1.5 rounded-2xl ${cardPanelClass} p-3 text-left`}>
+                    {dateLabel && <p className={`text-xs ${cardTextClass}`}>📅 {dateLabel}</p>}
+                    {placeLabel && <p className={`text-xs ${cardTextClass}`}>📍 {placeLabel}</p>}
+                    {activityLabel && <p className={`text-xs ${cardTextClass}`}>🎯 {activityLabel}</p>}
+                </div>
+             )}
              <Button onClick={() => onComplete?.()} className="mt-4">열어보기</Button>
         </div>
       </motion.div>
@@ -75,13 +90,22 @@ const ClassicOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({ title, h
 export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({
   title,
   hostName,
+  message,
+  dateLabel,
+  placeLabel,
+  activityLabel,
   themeId,
   preview,
   variant = 'envelope',
   onComplete
 }) => {
   const style = envelopeThemeStyles[(themeId as keyof typeof envelopeThemeStyles)] || envelopeThemeStyles.warm;
+  const isDark = themeId === 'night';
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+  const cardTextClass = isDark ? 'text-white' : 'text-ink';
+  const cardMutedTextClass = isDark ? 'text-white/70' : 'text-ink-muted';
+  const cardPanelClass = isDark ? 'bg-white/5 border-white/10' : 'bg-white/70 border-line';
 
   useEffect(() => {
     if (!preview) {
@@ -93,7 +117,7 @@ export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = (
   }, [preview, onComplete, prefersReducedMotion]);
 
   if (variant === 'classic') {
-    return <ClassicOpeningMotion title={title} hostName={hostName} themeId={themeId} onComplete={onComplete} />;
+    return <ClassicOpeningMotion title={title} hostName={hostName} message={message} dateLabel={dateLabel} placeLabel={placeLabel} activityLabel={activityLabel} themeId={themeId} onComplete={onComplete} />;
   }
 
   return (
@@ -107,8 +131,33 @@ export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = (
            className={`absolute left-6 right-6 bottom-10 z-10 ${style.card} rounded-3xl border border-line p-5 shadow-lg`}
         >
           <p className={`text-[10px] font-bold ${style.accent} uppercase tracking-wider`}>초대장이 도착했어요</p>
-          <h1 className="mt-2 text-xl font-bold text-ink leading-tight">{title}</h1>
-          {hostName && <p className="text-xs text-ink-muted mt-1">{hostName}님의 초대</p>}
+          <h1 className={`mt-2 text-xl font-bold ${cardTextClass} leading-tight`}>{title}</h1>
+          {hostName && <p className={`text-xs ${cardMutedTextClass} mt-1`}>{hostName}님의 초대</p>}
+          
+          {message && <p className={`mt-3 text-xs ${cardMutedTextClass} leading-relaxed line-clamp-3`}>“{message}”</p>}
+
+          {(dateLabel || placeLabel || activityLabel) && (
+            <div className={`mt-4 grid gap-1.5 rounded-2xl ${cardPanelClass} p-3 text-left`}>
+              {dateLabel && (
+                <div className="flex items-start justify-between gap-3">
+                  <span className="text-[10px] font-bold text-ink-hint shrink-0">언제</span>
+                  <span className={`text-[11px] font-semibold ${cardTextClass} text-right`}>{dateLabel}</span>
+                </div>
+              )}
+              {placeLabel && (
+                <div className="flex items-start justify-between gap-3">
+                  <span className="text-[10px] font-bold text-ink-hint shrink-0">어디서</span>
+                  <span className={`text-[11px] font-semibold ${cardTextClass} text-right`}>{placeLabel}</span>
+                </div>
+              )}
+              {activityLabel && (
+                <div className="flex items-start justify-between gap-3">
+                  <span className="text-[10px] font-bold text-ink-hint shrink-0">뭐 할까</span>
+                  <span className={`text-[11px] font-semibold ${cardTextClass} text-right`}>{activityLabel}</span>
+                </div>
+              )}
+            </div>
+          )}
         </motion.div>
 
         {/* 봉투 뒷면 */}
