@@ -7,6 +7,7 @@ import { BottomCTA } from '../../components/layout/BottomCTA';
 import { profileColorOptions } from '../../config/profileColorOptions';
 import type { ProfileColorId } from '../../types';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
+import { userProfileRepository } from '../../repositories/userProfileRepository';
 
 const profileOptions = [
   { id: 'my-photo', label: '내 사진', icon: Camera },
@@ -19,23 +20,29 @@ const profileOptions = [
 export const ProfileScreen = () => {
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
+  const userProfile = userProfileRepository.getProfile();
   
-  const [selected, setSelected] = useState('initial');
-  const [selectedColorId, setSelectedColorId] = useState<ProfileColorId>(draft.hostColorId || 'black');
+  const [selected, setSelected] = useState(userProfile.profileType);
+  const [selectedColorId, setSelectedColorId] = useState<ProfileColorId>(draft.hostColorId || (userProfile.colorId as ProfileColorId) || 'black');
 
   const selectedColor = profileColorOptions.find(c => c.id === selectedColorId) || profileColorOptions[1];
 
   const handleNext = () => {
-    updateDraft({ hostColorId: selectedColorId });
+    updateDraft({ 
+      hostColorId: selectedColorId,
+      hostName: draft.hostName || userProfile.displayName,
+    });
     navigate('/app/create/preview');
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-6">
+    <ScreenShell bottomInset="cta" className="gap-6">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">프로필을 선택해 주세요</h1>
       </header>
+
+      <p className="text-sm text-ink-hint pl-1">내 정보 기본값을 사용 중이에요.</p>
 
       <div className="flex flex-col items-center gap-6 py-4">
         {/* Avatar Preview */}
@@ -110,7 +117,7 @@ export const ProfileScreen = () => {
         ))}
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <Button onClick={handleNext} size="full">다음 · 초대장 확인하기</Button>
       </BottomCTA>
     </ScreenShell>

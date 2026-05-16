@@ -35,7 +35,7 @@ export const SignatureEnvelope = ({
       <motion.div
         initial={false}
         animate={{
-          opacity: opened ? 1 : 0,
+          opacity: opened ? 0.72 : 0,
           y: opened ? -6 : 8,
           scaleY: opened ? 1 : 0.96,
         }}
@@ -44,7 +44,7 @@ export const SignatureEnvelope = ({
           clipPath: 'polygon(0 100%, 50% 0, 100% 100%)',
         }}
         className="
-          absolute left-0 right-0 bottom-[166px] z-15 h-[92px]
+          absolute left-0 right-0 bottom-[154px] z-[15] h-[76px]
           bg-white border border-rose/15
           shadow-[0_12px_28px_rgba(80,55,45,0.06)]
         "
@@ -63,19 +63,19 @@ export const SignatureEnvelope = ({
       <motion.div
         initial={false}
         animate={{
-          y: opened ? -70 : 22,
+          y: opened ? -46 : 18,
           opacity: opened ? 1 : 0,
-          scale: opened ? 1 : 0.96,
+          scale: opened ? 1 : 0.98,
         }}
         transition={{
-          delay: opened ? 0.18 : 0,
-          duration: 0.54,
+          delay: opened ? 0.16 : 0,
+          duration: 0.42,
           ease: [0.22, 1, 0.36, 1],
         }}
         className="
-          absolute left-[42px] right-[42px] bottom-[86px] z-30
+          absolute left-[42px] right-[42px] bottom-[74px] z-30
           rounded-[18px] border border-rose/15 bg-[#FFFDF9]
-          p-4 shadow-[0_16px_38px_rgba(80,55,45,0.12)]
+          p-4 shadow-[0_14px_30px_rgba(80,55,45,0.10)]
         "
       >
         {isInvite ? (
@@ -116,8 +116,7 @@ export const SignatureEnvelope = ({
         initial={false}
         animate={{
           opacity: opened ? 0 : 1,
-          y: opened ? -18 : 0,
-          scale: opened ? 0.98 : 1,
+          scale: opened ? 0.99 : 1,
         }}
         transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
         style={{
@@ -151,20 +150,20 @@ export const SignatureEnvelope = ({
         <path
           d="M0 34 L165 92 L330 34"
           fill="none"
-          stroke="rgba(180,85,95,0.16)"
+          stroke="rgba(180,85,95,0.12)"
           strokeWidth="1"
         />
         <path
           d="M0 170 L165 92 L330 170"
           fill="none"
-          stroke="rgba(180,85,95,0.22)"
+          stroke="rgba(180,85,95,0.16)"
           strokeWidth="1"
         />
       </svg>
 
       <WaxSeal
         opened={opened}
-        className="absolute left-1/2 bottom-[86px] z-[80] -translate-x-1/2"
+        className="absolute left-1/2 bottom-[92px] z-[80] -translate-x-1/2"
       />
     </div>
   );

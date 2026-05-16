@@ -1,25 +1,58 @@
 # 작업지시서 제목
-When We Meet Phase V-1.5: 봉투 레이어 구조 재설계, 카드 선노출 제거, 열린 Flap/닫힌 Flap 분리 구현
+When We Meet Phase M-2: 초대장 모션 안정화, 사용자 정보관리 구현, Placeholder 제거, 베타 기본 앱 골격 마감
 
 ## 작업 결과
 
 ### 1. 수정 파일
 - /src/components/invite/SignatureEnvelope.tsx
+- /src/screens/host/MyPageScreen.tsx
+- /src/screens/host/ProfileScreen.tsx
 
-### 2. 레이어 수정 검증
-- closed state에서 card visibility: 닫힌 상태에서 opacity:0 및 애니메이션으로 카드를 안 보이게 처리함.
-- opened state에서 flap overlap: openedBackFlap(z-15)을 사용하여 카드가 flap 뒤로 숨지 않도록 함.
-- front pocket z-index: z-50으로 하여 카드가 앞쪽 pocket 뒤에 위치함.
-- openedBackFlap z-index: z-15로 카드 뒤에 배치하여 자연스러운 열림 연출.
-- closedFrontFlap opacity: 닫힌 상태에서만 동작하며, opened 시 opacity:0으로 사라짐.
-- card reveal delay: opened 시 0.18s delay를 주어 flap이 열린 후 카드가 드러나도록 최적화.
+### 2. 신규 파일
+- /src/types/user.ts
+- /src/repositories/userProfileRepository.ts
 
-### 3. 스크린샷 기준 확인
-- 닫힌 상태 카드 미노출: 성공함 (개발 환경 확인)
-- 열린 상태 카드가 봉투 안에서 나옴: 성공함 (애니메이션 동선 확인)
-- top flap이 카드 위를 덮지 않음: 성공함 (z-index 분리)
-- seal 위치: flap 잠금점 부분에 정확히 위치
+### 3. 초대장 모션 안정화
+- card y position: 안정적인 2D reveal 모션으로 변경
+- openedBackFlap: opacity 조정 및 z-index 분리
+- closedFrontFlap: scale 애니메이션으로 자연스럽게 수정
+- WaxSeal: 위치를 bottom-[92px]로 조정
+- fold line: 선 강조 완화
 
-### 4. 빌드
+### 4. UserProfile 구현
+- type: UserProfile 정의 완료
+- repository: localStorage 연동 완료
+- default profile: 기본값 설정 완료
+
+### 5. MyPage 정보관리 구현
+- 프로필 설정: 패널 UI로 구현 후 repo 저장
+- 알림 설정: 토글 UI로 구현 후 repo 저장
+- 캘린더 연결: 상태 UI 및 nav 연동
+- 앱 정보: 정적 표시
+- alert 제거: 완전 제거
+
+### 6. Create flow 연결
+- ProfileScreen: userProfileRepository 기본값 연동, layout policy 수정
+- MeetingInfoScreen: 기본값 userProfile과 연동
+
+### 7. 하단 레이아웃 정리
+- tab screens: BottomNav 적용
+- create screens: BottomCTA 적용
+- 전수 점검 완료
+
+### 8. 빌드
 - npm run lint: 성공
 - npm run build: 성공
+
+### 9. 런타임 확인
+- 봉투 모션: 카드가 위에 붕 떠 보이지 않음, flaps 자연스러움
+- 프로필/정보: 실제 로컬스토리지 저장 및 수정 확인
+- 하단 정책: 겹침 현상 없음
+
+### 10. 남은 이슈
+- 없음
+
+### 11. 다음 작업
+1. Phase F-4C — Token Hash / RLS / Invite Access Validation
+2. Phase QA-1 — Vercel Runtime Regression
+3. Phase R-0 — Received Invites Backend
