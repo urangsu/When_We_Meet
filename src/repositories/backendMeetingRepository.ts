@@ -37,6 +37,15 @@ const createToken = (): InviteToken => {
   return `t-${Date.now()}-${Math.random().toString(36).slice(2)}` as InviteToken;
 };
 
+const isUniqueViolation = (error: unknown) => {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code?: string }).code === '23505'
+  );
+};
+
 const throwIfError = (methodName: string, error: unknown): never => {
   console.error(`[backendMeetingRepository] ${methodName} failed`, error);
   throw new Error(`[backendMeetingRepository] ${methodName} failed.`);
@@ -74,6 +83,8 @@ export const backendMeetingRepository: MeetingRepository = {
     });
 
     if (inviteError) {
+      // Orphan cleanup
+      await supabase.from('meetings').delete().eq('id', meetingId);
       throwIfError('createMeetingWithInviteLink.invite_links.insert', inviteError);
     }
 
@@ -205,8 +216,29 @@ export const backendMeetingRepository: MeetingRepository = {
       .select()
       .single();
 
-    if (insertError || !insertedRow) {
+    if (insertError) {
+      if (isUniqueViolation(insertError)) {
+        const { data: duplicateRow, error: duplicateError } = await supabase
+          .from('meeting_responses')
+          .select('*')
+          .eq('meeting_id', input.meetingId)
+          .eq('idempotency_key', input.idempotencyKey)
+          .maybeSingle();
+
+        if (duplicateError || !duplicateRow) {
+          throwIfError('submitGuestResponse.duplicate.select', duplicateError);
+        }
+
+        return {
+          responseId: duplicateRow.id as ResponseId,
+          saved: false,
+        };
+      }
       throwIfError('submitGuestResponse.meeting_responses.insert', insertError);
+    }
+
+    if (!insertedRow) {
+      throw new Error('[backendMeetingRepository] Failed to insert response.');
     }
 
     return {
