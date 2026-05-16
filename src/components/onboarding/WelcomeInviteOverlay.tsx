@@ -1,58 +1,11 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
 import { Button } from '../Button';
+import { SignatureEnvelope } from '../invite/SignatureEnvelope';
 
 interface WelcomeInviteOverlayProps {
   onStartTutorial: () => void;
   onSkip: () => void;
 }
-
-const WelcomeEnvelopeIllustration = ({ opened }: { opened: boolean }) => {
-  return (
-    <div className="relative h-[190px] w-[280px]">
-      {/* inner card */}
-      <motion.div
-        initial={false}
-        animate={{
-          y: opened ? -34 : 22,
-          opacity: opened ? 1 : 0,
-          scale: opened ? 1 : 0.96,
-        }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute left-8 right-8 bottom-14 z-10 rounded-3xl border border-rose/15 bg-[#FFFDF9] p-4 shadow-soft"
-      >
-        <p className="text-[10px] font-bold text-rose">WELCOME</p>
-        <p className="mt-1 text-sm font-bold text-ink">우리의 첫 약속을<br />초대장으로</p>
-      </motion.div>
-
-      {/* envelope body */}
-      <div className="absolute inset-x-0 bottom-0 h-[140px] w-full rounded-b-3xl bg-white border border-rose/30 shadow-[0_18px_45px_rgba(180,85,95,0.16)]" />
-
-      {/* svg lines */}
-      <svg viewBox="0 0 280 190" className="absolute inset-0 h-full w-full z-20">
-        <path d="M6 8 L140 100 L274 8" fill="none" stroke="rgba(180,85,95,0.72)" strokeWidth="1.6" />
-        <path d="M6 182 L106 108" fill="none" stroke="rgba(180,85,95,0.34)" strokeWidth="1.6" />
-        <path d="M274 182 L174 108" fill="none" stroke="rgba(180,85,95,0.34)" strokeWidth="1.6" />
-      </svg>
-
-      {/* flap */}
-      <motion.div
-        initial={false}
-        animate={{ rotateX: opened ? -148 : 0 }}
-        transition={{ duration: 0.68, ease: [0.22, 1, 0.36, 1] }}
-        style={{ transformOrigin: 'top center', transformPerspective: 900 }}
-        className="absolute top-0 left-0 right-0 z-30 h-[98px] rounded-t-3xl bg-white border border-rose/30"
-      />
-
-      {/* seal */}
-      <motion.div
-        initial={false}
-        animate={{ opacity: opened ? 0 : 1, scale: opened ? 0.7 : 1 }}
-        className="absolute left-1/2 top-[88px] -ml-3 z-40 h-6 w-6 rounded-full bg-rose shadow-soft"
-      />
-    </div>
-  );
-};
 
 export const WelcomeInviteOverlay: React.FC<WelcomeInviteOverlayProps> = ({ onStartTutorial, onSkip }) => {
   const [isOpened, setIsOpened] = useState(false);
@@ -76,7 +29,11 @@ export const WelcomeInviteOverlay: React.FC<WelcomeInviteOverlayProps> = ({ onSt
             {isOpened ? 'When We Meet' : '처음 받은 초대장'}
           </p>
 
-          <WelcomeEnvelopeIllustration opened={isOpened} />
+          <SignatureEnvelope
+            opened={isOpened}
+            variant="welcome"
+            className="scale-[0.92] sm:scale-100"
+          />
 
           <div className="space-y-4">
             <h1 className="text-2xl font-bold text-ink">
