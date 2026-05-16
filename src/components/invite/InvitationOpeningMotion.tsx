@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Button } from '../Button';
-import { MailOpen } from 'lucide-react';
 
 type InvitationMotionVariant = 'envelope' | 'classic';
 
@@ -22,49 +21,66 @@ const envelopeThemeStyles = {
   warm: {
     background: 'bg-[#F7F3EC]',
     envelope: 'bg-white',
-    line: 'border-rose/40',
-    lineStrong: 'border-rose',
+    lineColor: 'rgba(180, 85, 95, 0.35)',
+    lineStrongColor: 'rgba(180, 85, 95, 0.72)',
     seal: 'bg-rose',
     shadow: 'shadow-[0_20px_60px_rgba(180,85,95,0.18)]',
     card: 'bg-[#FFFDF9]',
     accent: 'text-rose',
+    divider: 'bg-rose-200',
   },
   night: {
     background: 'bg-[#111111]',
     envelope: 'bg-[#F7F3EC]',
-    line: 'border-white/40',
-    lineStrong: 'border-white',
+    lineColor: 'rgba(255, 255, 255, 0.35)',
+    lineStrongColor: 'rgba(255, 255, 255, 0.72)',
     seal: 'bg-[#111111]',
     shadow: 'shadow-[0_20px_60px_rgba(0,0,0,0.35)]',
     card: 'bg-[#1F1F1F]',
     accent: 'text-white',
+    divider: 'bg-gray-700',
   },
   picnic: {
     background: 'bg-[#F6F1E7]',
     envelope: 'bg-white',
-    line: 'border-[#A2352B]/40',
-    lineStrong: 'border-[#A2352B]',
+    lineColor: 'rgba(162, 53, 43, 0.35)',
+    lineStrongColor: 'rgba(162, 53, 43, 0.72)',
     seal: 'bg-[#A2352B]',
     shadow: 'shadow-[0_20px_60px_rgba(162,53,43,0.16)]',
     card: 'bg-[#FFFDF7]',
     accent: 'text-[#A2352B]',
+    divider: 'bg-[#A2352B]/20',
   },
 } as const;
+
+const ClassicOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({ title, hostName, themeId, onComplete }) => {
+  const isDark = themeId === 'night';
+  return (
+    <div className={`fixed inset-0 z-50 ${isDark ? 'bg-ink' : 'bg-surface'} flex items-center justify-center p-5 overflow-hidden`}>
+      <motion.div
+        initial={{ y: 50, opacity: 0, rotateX: 15 }}
+        animate={{ y: 0, opacity: 1, rotateX: 0 }}
+        transition={{ duration: 0.8, type: 'spring', bounce: 0.4 }}
+        className={`w-full max-w-sm ${isDark ? 'bg-ink-muted' : 'bg-white'} rounded-[24px] shadow-xl p-8`}
+      >
+        <div className="flex flex-col items-center text-center space-y-4">
+             <h1 className={`font-bold text-2xl ${isDark ? 'text-white' : 'text-ink'} leading-tight`}>{title}</h1>
+             <Button onClick={() => onComplete?.()} className="mt-4">열어보기</Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
 export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({
   title,
   hostName,
-  message,
-  dateLabel,
-  placeLabel,
-  activityLabel,
   themeId,
   preview,
   variant = 'envelope',
   onComplete
 }) => {
   const style = envelopeThemeStyles[(themeId as keyof typeof envelopeThemeStyles)] || envelopeThemeStyles.warm;
-  const isDark = themeId === 'night';
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
   useEffect(() => {
@@ -77,15 +93,9 @@ export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = (
   }, [preview, onComplete, prefersReducedMotion]);
 
   if (variant === 'classic') {
-    return (
-       <div className={`fixed inset-0 z-50 ${isDark ? 'bg-ink' : 'bg-surface'} flex items-center justify-center p-5 overflow-hidden`}>
-          {/* Implement a simplified classic motion here if needed, or keeping it as it was if requested as fallback */}
-          <p>Classic opening motion</p>
-       </div>
-    );
+    return <ClassicOpeningMotion title={title} hostName={hostName} themeId={themeId} onComplete={onComplete} />;
   }
 
-  // Envelope Opening Motion
   return (
     <div className={`fixed inset-0 z-50 ${style.background} flex items-center justify-center p-6 overflow-hidden`}>
       <div className="relative w-[320px] h-[230px]">
@@ -106,9 +116,9 @@ export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = (
 
         {/* 봉투 앞면 좌우 삼각선 */}
         <svg viewBox="0 0 320 180" className="absolute inset-0 h-full w-full z-30 pointer-events-none">
-          <path d="M8 8 L160 100 L312 8" fill="none" className={style.lineStrong} strokeWidth="2" />
-          <path d="M8 172 L125 82" fill="none" className={style.line} strokeWidth="2" />
-          <path d="M312 172 L195 82" fill="none" className={style.line} strokeWidth="2" />
+          <path d="M8 8 L160 100 L312 8" fill="none" stroke={style.lineStrongColor} strokeWidth="2" />
+          <path d="M8 172 L125 82" fill="none" stroke={style.lineColor} strokeWidth="2" />
+          <path d="M312 172 L195 82" fill="none" stroke={style.lineColor} strokeWidth="2" />
         </svg>
 
         {/* flap */}

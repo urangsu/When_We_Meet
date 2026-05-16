@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Check, Copy, LayoutDashboard, Share2 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { Button } from '../../components/Button';
-import { getInviteShareUrl, getInviteHashPath } from '../../utils/shareUrls';
+import { getInviteShareUrl } from '../../utils/shareUrls';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { meetingRepository } from '../../repositories/getMeetingRepository';
 import { readJson, writeJson } from '../../repositories/localStorageAdapter';
@@ -15,21 +15,21 @@ import { completeTutorial, markWelcomeCompleted } from '../../utils/onboardingSt
 
 const SHARE_SESSION_KEY = 'wwm:last-created-share:v1';
 
-interface LastCreatedShare {
-  draftTitle: string;
-  meetingId: string;
-  inviteToken: string;
-}
-
 export const ShareScreen = () => {
   const navigate = useNavigate();
   const { draft } = useCreateMeetingDraft();
   const [shareState, setShareState] = useState<'loading' | 'ready' | 'failed'>('loading');
   const [inviteUrl, setInviteUrl] = useState('');
   const [meetingId, setMeetingId] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const createdRef = useRef(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
   const [isSharingImage, setIsSharingImage] = useState(false);
+
+  const showNotice = (message: string) => {
+    setNotice(message);
+    window.setTimeout(() => setNotice(null), 2400);
+  };
 
   const onFinishTutorial = () => {
     completeTutorial();
@@ -108,7 +108,7 @@ export const ShareScreen = () => {
       onFinishTutorial();
     } catch (error) {
       console.error('Failed to share image', error);
-      alert('초대장 사진을 공유할 수 없어요. 대신 초대장 링크를 복사했습니다.');
+      showNotice('초대장 사진 공유에 실패했어요. 대신 링크를 복사했습니다.');
       navigator.clipboard.writeText(inviteUrl);
       onFinishTutorial();
     } finally {
@@ -116,7 +116,7 @@ export const ShareScreen = () => {
     }
   };
 
-  const displayUrl = inviteUrl ? `/#/invite/${meetingId}/${'...'}` : getInviteHashPath({ demo: true });
+  const displayInviteUrl = inviteUrl.replace(/^https?:\/\//, '');
 
   if (shareState === 'loading') {
     return <ScreenShell className="items-center justify-center">초대장을 생성 중입니다...</ScreenShell>;
@@ -128,6 +128,18 @@ export const ShareScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6 items-center justify-center text-center p-5 pt-20 relative">
+      <AnimatePresence>
+      {notice && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 12 }}
+          className="fixed bottom-28 left-5 right-5 z-50 rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg"
+        >
+          {notice}
+        </motion.div>
+      )}
+      </AnimatePresence>
       <div className="fixed left-[-10000px] top-0 pointer-events-none">
         <InviteShareCard draft={draft} ref={shareCardRef} />
       </div>
@@ -153,11 +165,11 @@ export const ShareScreen = () => {
           {isSharingImage ? '이미지 생성 중...' : <><Share2 size={18}/> 초대장 사진으로 공유</>}
         </Button>
         <div className="flex items-center justify-between p-4 bg-surface-warm rounded-2xl mt-2 border border-line">
-          <span className="text-ink-hint font-mono text-[11px] truncate mr-4">whenwemeet.app{displayUrl}</span>
+          <span className="text-ink-hint font-mono text-[11px] truncate mr-4">{displayInviteUrl}</span>
           <button onClick={() => {
             navigator.clipboard.writeText(inviteUrl).then(() => {
               onFinishTutorial();
-              alert("초대장 링크가 복사되었습니다.");
+              showNotice("초대장 링크가 복사되었습니다.");
             });
           }} className="text-ink-muted hover:text-ink font-bold flex items-center gap-1.5 text-xs shrink-0 transition-colors">
             <Copy size={14} /> 링크 복사

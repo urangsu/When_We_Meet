@@ -1,94 +1,71 @@
-# 작업지시서 제목
-When We Meet Phase V-1.1 + O-0: V-1 실제 커밋 검증, 첫 접속 환영 초대장, 스킵 가능한 첫 초대장 튜토리얼
+# When We Meet Phase O-0.5: 온보딩 첫인상 폴리싱, Welcome Overlay 구조 정리, Home Empty State 강화, Alert 제거
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- src/screens/host/MeetingInfoScreen.tsx
 - src/components/invite/InvitationOpeningMotion.tsx
+- src/components/onboarding/WelcomeInviteOverlay.tsx
 - src/screens/host/HomeScreen.tsx
-- src/screens/host/CategoryScreen.tsx
-- src/screens/host/DatePickerScreen.tsx
-- src/screens/host/PlaceSetupScreen.tsx
-- src/screens/host/ActivitySetupScreen.tsx
-- src/screens/host/InvitePreviewScreen.tsx
 - src/screens/host/ShareScreen.tsx
 
-### 2. 신규 파일
-- src/utils/onboardingState.ts
-- src/components/onboarding/WelcomeInviteOverlay.tsx
-- src/components/onboarding/TutorialHint.tsx
-- src/hooks/useTutorialMode.ts
+### 2. Welcome overlay 구조 개선
+- 기존 문제: InvitationOpeningMotion(fixed)와 WelcomeInviteOverlay(fixed)가 중첩됨
+- 변경 내용: WelcomeInviteOverlay를 독립적인 전체 화면 컴포넌트로 재구현
+- 스킵 동작: 우상단 스킵 버튼 유지
+- 시작 CTA: 버튼 두 개로 분리 (첫 초대장 만들기, 스킵하기)
 
-### 3. V-1 실제 반영 검증
-- MeetingInfo direct write mode: 확인 완료
-- PencilLine: 반영 확인 완료
-- Recommendation mode: 반영 확인 완료
-- Envelope variant: 반영 확인 완료
-- Classic fallback: 반영 유지 확인
-- Reduced motion: 대응 확인
-- Main branch reflected: 확인 완료
+### 3. Envelope motion 수정
+- SVG line: 기존 CSS 클래스 기반 `border-*`에서 `stroke={style.lineColor}` / `stroke={style.lineStrongColor}`로 변경
+- classic fallback: `ClassicOpeningMotion`를 별도 컴포넌트로 구현하여 정상 표시되도록 수정
+- reduced motion: 기존 설정 유지됨
+- 추가 variant 보류: V-2로 보류
 
-### 4. 첫 접속 환영 초대장
-- 표시 조건: localStorage에 완료/스킵 기록이 없을 때
-- 스킵 동작: `markWelcomeSkipped` 후 overlay 닫기
-- 시작 CTA: `startTutorial` 후 create flow (tutorial mode)로 이동
-- 완료 저장 key: `wwm:onboarding:v1:welcome-completed`
-- 재방문 시 동작: overlay 노출 안 함
+### 4. Home empty state 개선
+- 기존 문제: 빈 화면 문구가 허무함
+- 개선 내용: 카드형 카드 컴포넌트로 "첫 초대장 만들기" 및 "1분 튜토리얼 보기" CTA 추가
 
-### 5. 첫 초대장 튜토리얼
-- 시작 경로: `/app/create/category?mode=tutorial`
-- tutorial state: `wwm:onboarding:v1:tutorial-active`
-- 적용 화면: 6단계의 create flow 화면들
-- 스킵 동작: 튜토리얼 전체 스킵 가능
-- 완료 처리: 마지막 단계에서 공유/복사 시 `completeTutorial` 호출
+### 5. ShareScreen 수정
+- alert 제거: 내장된 `alert()` 호출 제거
+- notice UI: `AnimatePresence` + `motion.div`를 사용한 toast notice 구현
+- 표시 URL: `replace(/^https?:\/\//, '')`를 사용하여 정규화
+- copy/share fallback: 복사 및 공유 성공/실패 시 toast notice 노출
 
-### 6. Home empty state 개선
-- HomeScreen 빈 화면일 때 안내 문구 및 튜토리얼 시작 버튼으로 교체 구현
-
-### 7. 실제 backend flow 영향
-- tutorial에서 fake/demo meeting 사용 여부: 아니오 (실제 meeting 생성)
-- ShareScreen에서 실제 invite 생성 여부: 네
-- VITE_REPOSITORY_MODE=backend 호환 여부: 확인 완료
-
-### 8. 빌드
+### 6. 빌드
 - npm run lint: 성공
 - npm run build: 성공
 
-### 9. 런타임 확인
-- 첫 방문 overlay: 동작 확인
-- 스킵: 동작 확인
-- 튜토리얼 시작: 동작 확인
-- create flow hint: 각 화면마다 확인
-- ShareScreen 완료 안내: 확인 완료
-- 재접속 시 overlay 미노출: 확인 완료
+### 7. 런타임 확인
+- 첫 방문 welcome: 중첩 레이어 없이 정상 동작
+- 스킵: 정상 동작
+- 튜토리얼 시작: 정상 동작
+- Home empty state: 새 CTA 카드 정상 노출
+- envelope line: 선이 명확하게 stroke로 표시됨
+- ShareScreen notice: alert 없이 상단 toast/notice 노출
+- 표시 URL: 정규화됨 (whenwm.vercel.app 형태로 표시)
 
-### 10. 보류한 모션/고도화 목록
+### 8. 보류 목록
 - Additional envelope variants: 보류
 - Theme-specific motion: 보류
 - MP4/GIF export: 보류
-- Dynamic OG animation: 보류
+- Dynamic OG: 보류
 - Kakao native share: 보류
 
-### 11. 남은 이슈
+### 9. 남은 이슈
 - 없음
 
-### 12. 다음 작업
-1. Phase O-1 — Onboarding Polish & First Invite Conversion
+### 10. 다음 작업
+1. Phase O-1 — First Invite Conversion Polish
 2. Phase V-2 — Invitation Template Variants
 3. Phase S-1 — Share Card Template System
 
-### 13. 검증 검색 결과
-- PencilLine: 확인 완료
-- 직접 쓰기: 확인 완료
-- 추천 문구: 확인 완료
-- MessageMode: 확인 완료
-- variant: 확인 완료
-- envelope: 확인 완료
-- MailOpen: 확인 완료
-- onboarding: 확인 완료
+### 11. 검증 검색 결과
+- Classic opening motion: 0 (구현 완료)
+- border-rose in invite svg: 0
+- lineStrong: 확인 완료
+- alert: 0 (제거 완료)
+- whenwemeet.app: 0 (제거 완료)
+- 아직 진행 중인 모임이 없어요: 0 (개선 완료)
+- WelcomeInviteOverlay: 확인 완료
+- InvitationOpeningMotion: 확인 완료
+- wwm:onboarding: 확인 완료
 - tutorial: 확인 완료
-- welcome: 확인 완료
-- localStorage: 확인 완료
-- /invite/demo: 확인 완료
-- mockReceivedInvites: 확인 완료

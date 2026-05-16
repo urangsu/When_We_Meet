@@ -119,7 +119,18 @@ export const HomeScreen = () => {
         
         <div className="flex flex-col gap-4">
           {meetings.length === 0 ? (
-            <p className="text-center text-ink-hint py-8">아직 진행 중인 모임이 없어요.</p>
+            <div className="bg-white rounded-2xl p-6 border border-line shadow-soft flex flex-col items-center text-center gap-4">
+              <h3 className="font-bold text-ink">첫 초대장을 만들어볼까요?</h3>
+              <p className="text-sm text-ink-muted leading-relaxed">
+                친구에게 보낼 약속이 있다면,<br />
+                날짜와 만날 곳, 하고 싶은 걸<br />
+                초대장으로 정리해보세요.
+              </p>
+              <div className="flex flex-col gap-2 w-full mt-2">
+                <Button onClick={() => navigate('/app/create/category')} size="full">첫 초대장 만들기</Button>
+                <Button onClick={() => { startTutorial(); navigate('/app/create/category?mode=tutorial'); }} variant="ghost" size="full">1분 튜토리얼 보기</Button>
+              </div>
+            </div>
           ) : (
             meetings.map((meeting) => (
               <MeetingSummaryCard 
