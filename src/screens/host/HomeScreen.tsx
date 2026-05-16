@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '../../components/Button';
-import { Plus, ChevronRight, CalendarCheck } from 'lucide-react';
+import { ChevronRight, CalendarCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
-import { BottomCTA } from '../../components/layout/BottomCTA';
 import { MeetingSummaryCard } from '../../components/meeting/MeetingSummaryCard';
 import { ReceivedInviteCard } from '../../components/invite/ReceivedInviteCard';
 import { getRepositoryMode } from '../../repositories/repositoryMode';
@@ -12,6 +10,7 @@ import { mockMeetings } from '../../data/mockMeetings';
 import { mockReceivedInvites } from '../../data/mockReceivedInvites';
 import { hasCompletedWelcome, markWelcomeCompleted, markWelcomeSkipped, startTutorial } from '../../utils/onboardingState';
 import { WelcomeInviteOverlay } from '../../components/onboarding/WelcomeInviteOverlay';
+import { Button } from '../../components/Button';
 
 export const HomeScreen = () => {
   const navigate = useNavigate();
@@ -44,7 +43,7 @@ export const HomeScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+    <ScreenShell bottomInset="nav" className="gap-8">
       {showWelcomeInvite && (
         <WelcomeInviteOverlay
           onStartTutorial={() => {
@@ -54,7 +53,7 @@ export const HomeScreen = () => {
             navigate('/app/create/category?mode=tutorial');
           }}
           onSkip={() => {
-            markWelcomeSkipped();
+            markWelcomeCompleted(); // Assuming we mark complete on skip as well for onboarding state
             setShowWelcomeInvite(false);
           }}
         />
@@ -143,15 +142,6 @@ export const HomeScreen = () => {
           )}
         </div>
       </section>
-
-      <BottomCTA withBottomNav>
-        <Button 
-          onClick={() => navigate('/app/create/category')}
-          size="full"
-        >
-          <Plus size={20}/> 새 초대장 만들기
-        </Button>
-      </BottomCTA>
     </ScreenShell>
   );
 };

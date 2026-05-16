@@ -1,71 +1,66 @@
 # 작업지시서 제목
-When We Meet Phase L-1: Desktop Layout 붕괴 수정, Create Flow 모바일 프레임 정렬, TutorialHint/BottomCTA/BottomNav 재배치
+When We Meet Phase L-1.1: 홈 하단 CTA 중복 제거, BottomNav 겹침 수정, 탭/생성 플로우 하단 정책 확정
 
 ## 작업 결과
 
 ### 1. 수정 파일
+- /src/screens/host/HomeScreen.tsx
 - /src/layouts/HostAppLayout.tsx
 - /src/components/layout/ScreenShell.tsx
-- /src/components/layout/BottomCTA.tsx
 - /src/components/onboarding/TutorialHint.tsx
+- /src/components/layout/BottomCTA.tsx
 - /src/screens/host/CategoryScreen.tsx
 - /src/screens/host/MeetingInfoScreen.tsx
 - /src/screens/host/PlaceSetupScreen.tsx
 
 ### 2. 기존 문제
-- TutorialHint viewport fixed: 브라우저 viewport를 기준으로 fixed되어 데스크톱에서 화면 전체 폭으로 퍼짐
-- BottomCTA/BottomNav stacking: 레이어들이 겹쳐서 UI가 깨짐
-- create flow withBottomNav: create flow에서도 nav가 보여 UI 공간 부족
-- desktop frame: 중앙 정렬되지 않음
+- Home fixed BottomCTA: 홈 화면 최하단에 BottomCTA가 고정되어 BottomNav와 겹침
+- Empty state CTA duplication: 홈 빈 화면 카드 속 버튼과 하단 고정 CTA가 중복됨
+- BottomNav overlap: 화면 하단 UI 레이아웃 충돌
+- ScreenShell bottom padding: 레이어별 패딩 계산 복잡
 
-### 3. HostAppLayout 수정
-- desktop app frame: 중앙 집중형 max-w-[430px] 프레임 적용
-- BottomNav 표시 조건: 루트 탭 화면에서만 보이도록 로직 수정
-- create flow 영향: create flow 화면에서 nav가 숨겨짐
+### 3. HomeScreen 수정
+- BottomCTA 컴포넌트 및 import 제거
+- ScreenShell bottomInset="nav" 적용 완료
+- 빈 홈 화면 카드 속 "첫 초대장 만들기" 버튼 유지
 
-### 4. ScreenShell 수정
-- bottomInset: 'none' | 'nav' | 'cta' | 'ctaWithHint' 설정으로 레이아웃 패딩 자동 계산
-- padding policy: 명확한 하단 여백 정책 확립
+### 4. Layout 정책
+- tab root screens: BottomNav 표시
+- create flow: BottomNav 숨김, 각 화면에 적절한 BottomCTA 사용
 
-### 5. TutorialHint 수정
-- inline default: fixed bottom에서 일반 inline 컴포넌트로 변경
-- floating optional: `placement` prop으로 선택 시에만 화면 프레임에 고정
+### 5. ScreenShell 수정
+- bottomInset Prop 추가: 'none' | 'nav' | 'cta' | 'ctaWithHint' 설정으로 레이아웃 패딩 자동 계산 로직 적용
 
-### 6. BottomCTA 수정
-- max width: 430px 앱 프레임폭에 맞춤
-- safe area: 하단 safe area 대응
-- withBottomNav 처리: Nav 대응 없이 단일 CTA 전용으로 간소화
+### 6. Create Flow 검색 결과
+- withBottomNav: create flow에서 모두 제거
+- hasBottomCTA: create flow에서 모두 제거
+- BottomCTA withBottomNav: create flow에서 모두 제거
 
-### 7. Create Flow 화면 수정 (Category, MeetingInfo, PlaceSetup)
-- 컴포넌트: `ScreenShell`, `BottomCTA`, `TutorialHint` 적용 완료
-
-### 8. 빌드
+### 7. 빌드
 - npm run lint: 성공
 - npm run build: 성공
 
-### 9. 런타임 확인
-- desktop 1365px /app/create/category: 앱 프레임 내부 중앙 정렬 확인
-- mobile 390px /app/create/category: 정상
-- /app BottomNav: 표시됨
-- /app/create/* BottomNav: 숨겨짐
-- CTA overflow: 없음
-- TutorialHint width: 앱 프레임 내부폭에 맞춤
+### 8. 런타임 확인
+- /app mobile: BottomNav만 노출, 클릭 영역 정상
+- /app desktop: 중앙 프레임 정렬, BottomNav 정상
+- empty state CTA clickable: 클릭 가능
+- BottomNav overlap: 완전 해결
+- /app/create/category: BottomNav 노출 안됨, BottomCTA만 노출
+- Mobile: /app/create/category 하단 safe area 확인
 
-### 10. 남은 이슈
+### 9. 남은 이슈
 - 없음
 
-### 11. 다음 작업
-1. Phase V-1.5 — Screenshot-Based Envelope Visual QA
-2. Phase G-1 — BrowserRouter + Vercel Rewrite Regression
-3. Phase S-1 — Share Card Template System
+### 10. 다음 작업
+1. Phase L-1.2 — Create Flow Layout Sweep
+2. Phase V-1.5 — Screenshot-Based Envelope Visual QA
+3. Phase G-1 — BrowserRouter + Vercel Rewrite Regression
 
-### 12. 검증 검색 결과
-- withBottomNav: 제거 및 수정됨
-- hasBottomCTA: 제거 및 수정됨
-- BottomCTA: 수정됨
-- TutorialHint: 수정됨
-- fixed bottom: 제거됨
-- bottom-20: 제거됨
-- left-4 right-4: 제거됨
-- max-w-md: 430px로 변경/확정됨
-- BottomNav: 로직 수정됨
+### 11. 검증 검색 결과
+- withBottomNav: 완전히 제거됨
+- hasBottomCTA: 완전히 제거됨
+- BottomCTA: 수정 후 정상 동작
+- bottom-[80px]: 홈 하단 고정값 제거됨
+- fixed bottom-0: BottomNav 전용으로 정리됨
+- 첫 초대장 만들기: 홈 empty 카드에 유지
+- 새 초대장 만들기: create flow 전용 CTA로 정리됨
