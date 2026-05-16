@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
-import { mockMeetings } from '../../data/mockMeetings';
 import { MeetingSummaryCard } from '../../components/meeting/MeetingSummaryCard';
 import { useNavigate } from 'react-router-dom';
+import { getRepositoryMode } from '../../repositories/repositoryMode';
+import { mockMeetings } from '../../data/mockMeetings';
+import type { MeetingRecord } from '../../types/meeting';
 
 type MeetingFilter = 'all' | 'ongoing' | 'waiting' | 'past';
 
 export const MeetingsScreen = () => {
   const [filter, setFilter] = useState<MeetingFilter>('all');
+  const [meetings, setMeetings] = useState<MeetingRecord[]>([]);
   const navigate = useNavigate();
 
-  const filteredMeetings = mockMeetings.filter((meeting) => {
+  useEffect(() => {
+    if (getRepositoryMode() !== 'backend') {
+      setMeetings(mockMeetings);
+    }
+  }, []);
+
+  const filteredMeetings = meetings.filter((meeting) => {
     if (filter === 'all') return true;
     return meeting.status === filter;
   });
@@ -69,7 +78,7 @@ export const MeetingsScreen = () => {
                 key={meeting.id} 
                 meeting={meeting} 
                 variant="list"
-                onOpen={() => navigate('/app/meetings/demo/dashboard')} 
+                onOpen={() => navigate(`/app/meetings/${meeting.id}/dashboard`)} 
               />
             ))
           )}

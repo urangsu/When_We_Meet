@@ -723,7 +723,9 @@ Not Completed:
 2. Phase F-4B — Supabase Repository Query Implementation
 3. Phase F-4C — RLS / Token Validation
 4. Phase G-0.7 — Vercel Runtime Verification
-5. Phase G-1 — BrowserRouter + Hosting Rewrite
+5. Phase G-0.8 — Vercel Runtime E2E
+6. Phase P-0 — Remove Beta-Blocking Mock/Demo Surfaces
+7. Phase G-1 — BrowserRouter + Hosting Rewrite
 
 ### GTM Track
 1. Phase M-1 — Landing Page & App Store Asset Draft

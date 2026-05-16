@@ -22,11 +22,13 @@ export const ConfirmedShareScreen = () => {
   }, [resolvedMeetingId]);
 
   const handleShare = () => {
-    window.alert('카톡/DM으로 공유하기는 준비 중이에요.');
+    // TODO: Implement Kakao SDK share
+    console.log('카톡/DM 공유는 곧 연결할게요.');
   };
 
   const handleCalendar = () => {
-    window.alert('캘린더에 추가하기는 준비 중이에요.');
+    // TODO: Implement Calendar integration
+    console.log('캘린더 추가는 곧 연결할게요.');
   };
 
   const participants = responses

@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 import { Plus, ChevronRight, CalendarCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { mockMeetings } from '../../data/mockMeetings';
-import { mockReceivedInvites } from '../../data/mockReceivedInvites';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { MeetingSummaryCard } from '../../components/meeting/MeetingSummaryCard';
 import { ReceivedInviteCard } from '../../components/invite/ReceivedInviteCard';
+import { getRepositoryMode } from '../../repositories/repositoryMode';
+import { mockMeetings } from '../../data/mockMeetings';
+import { mockReceivedInvites } from '../../data/mockReceivedInvites';
 
 export const HomeScreen = () => {
   const navigate = useNavigate();
-  const [receivedInvites, setReceivedInvites] = useState(mockReceivedInvites);
+  const [receivedInvites, setReceivedInvites] = useState(() => 
+    getRepositoryMode() === 'backend' ? [] : mockReceivedInvites
+  );
+  const [meetings, setMeetings] = useState(() => 
+    getRepositoryMode() === 'backend' ? [] : mockMeetings
+  );
   const [isManagingInvites, setIsManagingInvites] = useState(false);
+
+  // ... (rest of the component)
 
   const handleDeleteInvite = (inviteId: string) => {
     setReceivedInvites((prev) => prev.filter((invite) => invite.id !== inviteId));
@@ -76,7 +84,7 @@ export const HomeScreen = () => {
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between px-2">
           <h2 className="font-semibold text-lg flex items-center gap-2">
-            진행 중인 모임 <span className="text-rose text-sm">2</span>
+            진행 중인 모임 <span className="text-rose text-sm">{meetings.length}</span>
           </h2>
           <button 
             onClick={() => navigate('/app/meetings')}
@@ -87,14 +95,18 @@ export const HomeScreen = () => {
         </div>
         
         <div className="flex flex-col gap-4">
-          {mockMeetings.map((meeting) => (
-            <MeetingSummaryCard 
-              key={meeting.id} 
-              meeting={meeting} 
-              variant="home"
-              onOpen={() => navigate('/app/meetings/demo/dashboard')} 
-            />
-          ))}
+          {meetings.length === 0 ? (
+            <p className="text-center text-ink-hint py-8">아직 진행 중인 모임이 없어요.</p>
+          ) : (
+            meetings.map((meeting) => (
+              <MeetingSummaryCard 
+                key={meeting.id} 
+                meeting={meeting} 
+                variant="home"
+                onOpen={() => navigate(`/app/meetings/${meeting.id}/dashboard`)} 
+              />
+            ))
+          )}
         </div>
       </section>
 
