@@ -104,13 +104,12 @@ export const SignatureEnvelope = ({
         style={{ clipPath: 'polygon(0 100%, 50% 18%, 100% 100%)' }}
       />
 
-      {/* fold lines */}
+      {/* fold lines - removed central X fold, kept subtle edge lines if needed, but per request, remove the X-fold */}
       <svg className="absolute left-0 right-0 bottom-0 z-[55] h-[168px] w-full pointer-events-none" viewBox="0 0 320 168">
-        <path d="M0 0 L160 84 L320 0" fill="none" stroke="rgba(180,85,95,0.28)" strokeWidth="1.4" />
-        <path d="M0 168 L160 84 L320 168" fill="none" stroke="rgba(180,85,95,0.34)" strokeWidth="1.4" />
+        {/* Adjusted to be more subtle or removed if desired, let's keep only edges if needed */}
       </svg>
 
-      {/* seal */}
+      {/* seal - replaced div with an SVG-based embossed-looking seal */}
       <motion.div
         initial={false}
         animate={{
@@ -119,8 +118,14 @@ export const SignatureEnvelope = ({
           y: opened ? -10 : 0,
         }}
         transition={{ duration: 0.28 }}
-        className="absolute left-1/2 bottom-[92px] z-[70] h-7 w-7 -translate-x-1/2 rounded-full bg-rose shadow-[0_8px_20px_rgba(180,85,95,0.30)]"
-      />
+        className="absolute left-1/2 bottom-[92px] z-[70] h-10 w-10 -translate-x-1/2 rounded-full"
+      >
+        <svg viewBox="0 0 40 40" className="w-full h-full drop-shadow-md">
+            <circle cx="20" cy="20" r="19" fill="#B4555F" />
+            <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+            <path d="M20 10 L25 20 L20 30 L15 20 Z" fill="white" />
+        </svg>
+      </motion.div>
     </div>
   );
 };

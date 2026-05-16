@@ -101,20 +101,22 @@ export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = (
             themeId={themeId}
         />
 
-      {/* CTA */}
+      {/* CTA - constrained container */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: prefersReducedMotion ? 0 : 2.6, duration: 0.5 }}
-        className="absolute bottom-10 left-0 right-0 px-6 flex justify-center w-full"
+        className="absolute bottom-10 left-4 right-4 z-40 flex justify-center"
       >
-        <Button 
-          onClick={() => onComplete?.()} 
-          size="full"
-          className="max-w-sm shadow-lg shadow-rose-200"
-        >
-          초대장 열어보기
-        </Button>
+        <div className="w-full max-w-[360px]">
+          <Button 
+            onClick={() => onComplete?.()} 
+            size="full"
+            className="shadow-lg shadow-rose-200"
+          >
+            초대장 열어보기
+          </Button>
+        </div>
       </motion.div>
     </div>
   );
