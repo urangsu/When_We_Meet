@@ -1,63 +1,60 @@
 # 작업지시서 제목
-When We Meet Phase G-1: BrowserRouter 전환, Vercel Rewrite 설정, Clean Invite URL 마감
+When We Meet Phase O-0.7: 첫 접속 Welcome UX 전면 재정렬, 모바일 프레임 고정, CTA 폭 붕괴 수정
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- src/App.tsx
-- src/utils/shareUrls.ts
-- src/screens/host/InvitePreviewScreen.tsx
-- src/screens/host/ShareScreen.tsx
-- src/components/routing/HashRouteRedirect.tsx (신규)
-- vercel.json (신규)
+- src/components/onboarding/WelcomeInviteOverlay.tsx
 
-### 2. Router 전환
-- 기존: HashRouter
-- 변경: BrowserRouter
-- App route 영향: 영향 없음, 기존 route 구조 유지
+### 2. 문제 원인
+- full viewport layout: Welcome overlay의 전체 viewport 사용으로 데스크톱에서 어색함 발생
+- Button size="full": 버튼의 w-full 사용으로 데스크톱에서 과도하게 넓어짐
+- desktop max-width 부재: 프레임 제한 부재
+- envelope scale: 일러스트가 작고 평면적이었음
 
-### 3. Invite URL 변경
-- 기존 URL: /#/invite/:meetingId/:token
-- 신규 URL: /invite/:meetingId/:token
-- getInvitePath: getInviteHashPath를 getInvitePath로 리팩터링 후 호환성 유지
-- legacy hash redirect: HashRouteRedirect 컴포넌트를 통해 자동 리다이렉트 구현
+### 3. Welcome layout 수정
+- desktop frame: 중앙 집중형 모바일 앱 프레임(430px) 추가
+- mobile layout: 전체 화면에서 프레임 내 레이아웃으로 전환
+- CTA width: 360px 이하로 제한
+- skip position: 프레임 내 우상단으로 이동
 
-### 4. Vercel Rewrite
-- vercel.json: 모든 경로를 index.html로 rewrite하도록 설정 (SPA 모드)
-- direct entry support: 정상 동작 확인
-- refresh support: 정상 동작 확인
+### 4. Welcome interaction 수정
+- closed state: 봉투 일러스트+열기 버튼
+- opened state: 소개 문구 + 주요 CTA
+- open motion: 자연스러운 봉투 열림 인터랙션 구현
+- skip behavior: 일관되게 유지
 
-### 5. Alert/Share 안정화
-- InvitePreview alert 제거: notice toast 구현 완료
-- ShareScreen clipboard fallback: try-catch를 통한 안정적인 복사 처리 구현
+### 5. Envelope illustration 수정
+- size: 280x190으로 확대
+- flap: 열림/닫힘 RotateX 전환 적용
+- seal: 열림 시 투명도/크기 전환
+- inner card: 열림 시 부드러운 위치/크기 전환
+- infinite animation 제거: 제거 완료
 
 ### 6. 빌드
 - npm run lint: 성공
 - npm run build: 성공
 
 ### 7. 런타임 확인
-- /app direct: 정상
-- /invite/:meetingId/:token direct: 정상
-- old /#/invite link redirect: Router에 의해 정상 처리
-- refresh on invite page: 정상
-- share URL display: clean URL 표시 확인
-- Supabase guest load: 정상
+- desktop 1365px: 중앙 정렬 프레임 확인, CTA 폭 제어 정상
+- mobile 390px: safe area 및 반응형 레이아웃 정상 작동
+- CTA overflow: 해결됨
+- skip: 프레임 내 우상단에서 정상 작동
+- open state: 인터랙션 정상
+- reopened behavior: 정상 (상태 유지됨)
 
 ### 8. 남은 이슈
 - 없음
 
 ### 9. 다음 작업
-1. Phase F-4C — Token Hash / RLS / Invite Access Validation
-2. Phase R-0 — Received Invites Backend
-3. Phase QA-1 — Vercel Runtime Regression
+1. Phase G-1 — BrowserRouter + Vercel Rewrite
+2. Phase F-4C — Token Hash / RLS / Invite Access Validation
+3. Phase R-0 — Received Invites Backend
 
 ### 10. 검증 검색 결과
-- HashRouter: App.tsx에서 BrowserRouter로 교체 완료
-- BrowserRouter: App.tsx에서 사용 완료
-- #/invite: 코드에서 제거 완료
-- /#/invite: 코드에서 제거 완료
-- getInviteHashPath: getInvitePath로 리팩터링 완료
-- getInvitePath: shareUrls.ts에 구현 완료
-- alert: InvitePreviewScreen에서 제거 완료
-- navigator.clipboard.writeText: ShareScreen 안정화 완료
-- vercel.json: 생성 완료
+- WelcomeInviteOverlay: 수정 완료
+- size="full": CTA container로 폭 제어 이동
+- fixed inset-0: 중앙 집중 레이아웃으로 변경
+- repeat: Infinity: 제거 완료
+- 첫 초대장 만들어보기: 열린 상태에서 정상 노출
+- 스킵: 프레임 내 상단으로 이동
