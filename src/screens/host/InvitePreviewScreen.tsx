@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, Share2, MapPin, Calendar, User, Clock, Bookmark, PlayCircle } from 'lucide-react';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
@@ -27,6 +27,11 @@ export const InvitePreviewScreen = () => {
   const [showMotionPreview, setShowMotionPreview] = useState(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
   const [isSharingImage, setIsSharingImage] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const showNotice = (message: string) => {
+    setNotice(message);
+    window.setTimeout(() => setNotice(null), 2400);
+  };
   
   const selectedCategory = categoryOptions.find(c => c.id === draft.category);
   const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
@@ -87,7 +92,7 @@ export const InvitePreviewScreen = () => {
       });
     } catch (error) {
       console.error('Failed to share image', error);
-      alert('초대장 사진을 공유할 수 없어요.');
+      showNotice('초대장 사진 공유에 실패했어요. 링크 만들기로 계속 진행해 주세요.');
     } finally {
       setIsSharingImage(false);
     }
@@ -111,6 +116,18 @@ export const InvitePreviewScreen = () => {
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
+      <AnimatePresence>
+        {notice && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            className="fixed bottom-28 left-5 right-5 z-50 rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg"
+          >
+            {notice}
+          </motion.div>
+        )}
+      </AnimatePresence>
       {isTutorial && (
         <TutorialHint
           step="6/6"

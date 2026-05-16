@@ -126,8 +126,12 @@ export const ShareScreen = () => {
       onFinishTutorial();
     } catch (error) {
       console.error('Failed to share image', error);
-      showNotice('초대장 사진 공유에 실패했어요. 대신 링크를 복사했습니다.');
-      navigator.clipboard.writeText(inviteUrl);
+      try {
+        await navigator.clipboard.writeText(inviteUrl);
+        showNotice('초대장 사진 공유에 실패해서 링크를 복사했어요.');
+      } catch {
+        showNotice('초대장 사진 공유와 링크 복사에 실패했어요. 주소를 길게 눌러 복사해 주세요.');
+      }
       onFinishTutorial();
     } finally {
       setIsSharingImage(false);

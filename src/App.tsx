@@ -1,5 +1,6 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouteRedirect } from './components/routing/HashRouteRedirect';
 
 // Layouts
 import { HostAppLayout } from './layouts/HostAppLayout';
@@ -43,7 +44,8 @@ export default function App() {
   return (
     <CreateMeetingDraftProvider>
       <GuestResponseDraftProvider>
-        <HashRouter>
+        <BrowserRouter>
+          <HashRouteRedirect />
           <Routes>
             {/* Default redirect to Host App Home */}
             <Route path="/" element={<Navigate to="/app" replace />} />
@@ -93,7 +95,7 @@ export default function App() {
               <Route path=":meetingId/:token/complete" element={<GuestCompleteScreen />} />
             </Route>
           </Routes>
-        </HashRouter>
+        </BrowserRouter>
       </GuestResponseDraftProvider>
     </CreateMeetingDraftProvider>
   );
