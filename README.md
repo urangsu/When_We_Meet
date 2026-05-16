@@ -15,6 +15,35 @@ When We Meet은 친구와의 약속을 더 쉽게 만들고, 더 예쁘게 초�
 - Supabase client boundary 준비
 - Our Calendar local record prototype
 
+## Official Testing URL
+
+The current official testing URL is:
+
+https://whenwm.vercel.app
+
+### Vercel Environment Variables
+
+Set these variables in Vercel Project Settings → Environment Variables:
+
+```text
+VITE_REPOSITORY_MODE=backend
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+VITE_PUBLIC_APP_URL=https://whenwm.vercel.app
+```
+
+After changing Vercel environment variables, redeploy the production deployment.
+
+### Current Invite URL Format
+
+The app currently uses HashRouter.
+
+Invite links are generated as:
+
+https://whenwm.vercel.app/#/invite/:meetingId/:token
+
+Clean URLs without /#/ will be handled in Phase G-1.
+
 ## Not Production Yet
 - No real backend sync
 - No server-side invite validation
