@@ -32,7 +32,7 @@ export const MeetingInfoScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+    <ScreenShell bottomInset="cta" className="gap-6">
       {isTutorial && (
         <TutorialHint
           step="2/6"
@@ -147,7 +147,7 @@ export const MeetingInfoScreen = () => {
         </div>
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <Button 
           disabled={!isValid} 
           onClick={handleNext} 

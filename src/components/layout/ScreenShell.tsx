@@ -3,6 +3,7 @@ import React from 'react';
 interface ScreenShellProps {
   children: React.ReactNode;
   className?: string;
+  bottomInset?: 'none' | 'nav' | 'cta' | 'ctaWithHint';
   withBottomNav?: boolean;
   hasBottomCTA?: boolean;
 }
@@ -10,28 +11,29 @@ interface ScreenShellProps {
 export const ScreenShell: React.FC<ScreenShellProps> = ({
   children,
   className = '',
+  bottomInset,
   withBottomNav = false,
   hasBottomCTA = false,
 }) => {
-  // calculate pb depending on layout
-  let pbClass = 'pb-8'; // fallback padding
+  const resolvedBottomInset =
+    bottomInset ??
+    (withBottomNav && hasBottomCTA
+      ? 'ctaWithHint'
+      : withBottomNav
+        ? 'nav'
+        : hasBottomCTA
+          ? 'cta'
+          : 'none');
 
-  if (withBottomNav && hasBottomCTA) {
-    pbClass = 'pb-[160px]'; // approximated height for CTA + Nav
-  } else if (withBottomNav) {
-    pbClass = 'pb-[88px]'; // BOTTOM_NAV_HEIGHT
-  } else if (hasBottomCTA) {
-    pbClass = 'pb-[100px]'; // safe area + cta height
-  }
+  const pbClass = {
+    none: 'pb-8',
+    nav: 'pb-[96px]',
+    cta: 'pb-[120px]',
+    ctaWithHint: 'pb-[170px]',
+  }[resolvedBottomInset];
 
   return (
-    <div
-      className={`
-        flex flex-col min-h-[100dvh] px-5 pt-5
-        ${pbClass}
-        ${className}
-      `}
-    >
+    <div className={`flex min-h-[100dvh] flex-col px-5 pt-5 ${pbClass} ${className}`}>
       {children}
     </div>
   );

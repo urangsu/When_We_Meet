@@ -26,7 +26,7 @@ export const CategoryScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+    <ScreenShell bottomInset="cta" className="gap-6">
       {isTutorial && (
         <TutorialHint
           step="1/6"
@@ -69,7 +69,7 @@ export const CategoryScreen = () => {
         </button>
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <Button onClick={handleNext} size="full">시작하기</Button>
       </BottomCTA>
     </ScreenShell>
