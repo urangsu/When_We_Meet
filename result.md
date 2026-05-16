@@ -1,75 +1,94 @@
 # 작업지시서 제목
-When We Meet Phase P-0: Beta-Blocking Mock/Demo/Alert 제거, 실제 서비스처럼 보이는 테스트 버전 마감
+When We Meet Phase V-1.1 + O-0: V-1 실제 커밋 검증, 첫 접속 환영 초대장, 스킵 가능한 첫 초대장 튜토리얼
 
 ## 작업 결과
 
 ### 1. 수정 파일
+- src/screens/host/MeetingInfoScreen.tsx
+- src/components/invite/InvitationOpeningMotion.tsx
 - src/screens/host/HomeScreen.tsx
-- src/screens/host/MeetingsScreen.tsx
-- src/screens/host/ConfirmedShareScreen.tsx
-- task.md
-- result.md
+- src/screens/host/CategoryScreen.tsx
+- src/screens/host/DatePickerScreen.tsx
+- src/screens/host/PlaceSetupScreen.tsx
+- src/screens/host/ActivitySetupScreen.tsx
+- src/screens/host/InvitePreviewScreen.tsx
+- src/screens/host/ShareScreen.tsx
 
-### 2. 제거/격리한 요소
-- demo: Production 경로에서 demo route 격리 (App.tsx route 유지하되 CTA 제거)
-- mockMeetings: HomeScreen/MeetingsScreen에서 Backend mode일 경우 사용 중지 (Empty State 전환)
-- mockReceivedInvites: HomeScreen에서 사용 중지 (Empty State 전환)
-- mockResponses: DashboardScreen에서 실제 repository 데이터 사용으로 전환 중
-- alert: ConfirmedShareScreen의 placeholder alerts를 `console.log`로 대체
-- fallback names: mock data 유지(QA용), production flow에서는 사용하지 않음
+### 2. 신규 파일
+- src/utils/onboardingState.ts
+- src/components/onboarding/WelcomeInviteOverlay.tsx
+- src/components/onboarding/TutorialHint.tsx
+- src/hooks/useTutorialMode.ts
 
-### 3. Production UX 변경
-- Home: Backend mode일 경우, 빈 화면/Empty State 위주로 표시하며 실제 모임 데이터만 로드.
-- Meetings: Backend mode일 경우, 빈 화면/Empty State 표시.
-- Dashboard: URL param 기반 데이터 로드 및 Empty State 처리 강화.
-- Guest: Mock demo 경로 차단.
-- Share: `console.log`로 placeholder 전환 및 기능 준비 중 안내.
+### 3. V-1 실제 반영 검증
+- MeetingInfo direct write mode: 확인 완료
+- PencilLine: 반영 확인 완료
+- Recommendation mode: 반영 확인 완료
+- Envelope variant: 반영 확인 완료
+- Classic fallback: 반영 유지 확인
+- Reduced motion: 대응 확인
+- Main branch reflected: 확인 완료
 
-### 4. 빌드
-- npm run lint: 통과
-- npm run build: 통과
+### 4. 첫 접속 환영 초대장
+- 표시 조건: localStorage에 완료/스킵 기록이 없을 때
+- 스킵 동작: `markWelcomeSkipped` 후 overlay 닫기
+- 시작 CTA: `startTutorial` 후 create flow (tutorial mode)로 이동
+- 완료 저장 key: `wwm:onboarding:v1:welcome-completed`
+- 재방문 시 동작: overlay 노출 안 함
 
-### 5. Test/Demo/Mock Audit
-#### Removed from production flow
-- `mockMeetings` in HomeScreen
-- `mockReceivedInvites` in HomeScreen
-- `mockMeetings` in MeetingsScreen
-- `alert` for Kakao/Calendar share
+### 5. 첫 초대장 튜토리얼
+- 시작 경로: `/app/create/category?mode=tutorial`
+- tutorial state: `wwm:onboarding:v1:tutorial-active`
+- 적용 화면: 6단계의 create flow 화면들
+- 스킵 동작: 튜토리얼 전체 스킵 가능
+- 완료 처리: 마지막 단계에서 공유/복사 시 `completeTutorial` 호출
 
-#### Hidden behind demo mode
-- /#/invite/demo
-- /#/meetings/demo/* routes remained in App.tsx for QA
+### 6. Home empty state 개선
+- HomeScreen 빈 화면일 때 안내 문구 및 튜토리얼 시작 버튼으로 교체 구현
 
-#### Replaced with empty state
-- Meetings list when backend mode and no data
-- Received Invites list when backend mode and no data
+### 7. 실제 backend flow 영향
+- tutorial에서 fake/demo meeting 사용 여부: 아니오 (실제 meeting 생성)
+- ShareScreen에서 실제 invite 생성 여부: 네
+- VITE_REPOSITORY_MODE=backend 호환 여부: 확인 완료
 
-#### Replaced with soft notice
-- Share/Calendar action buttons now have TODO/console.log
+### 8. 빌드
+- npm run lint: 성공
+- npm run build: 성공
 
-#### Still remaining and why
-- API/Integration implementation TODOs (e.g., share) as they are heavy feature development (F-4C/G-1+)
+### 9. 런타임 확인
+- 첫 방문 overlay: 동작 확인
+- 스킵: 동작 확인
+- 튜토리얼 시작: 동작 확인
+- create flow hint: 각 화면마다 확인
+- ShareScreen 완료 안내: 확인 완료
+- 재접속 시 overlay 미노출: 확인 완료
 
-### 6. 남은 이슈
-- RLS/Token Validation(Phase F-4C) 미완료.
-- BrowserRouter Clean URL 미완료(Phase G-1).
+### 10. 보류한 모션/고도화 목록
+- Additional envelope variants: 보류
+- Theme-specific motion: 보류
+- MP4/GIF export: 보류
+- Dynamic OG animation: 보류
+- Kakao native share: 보류
 
-### 7. 다음 작업
-1. Phase G-1 — BrowserRouter + Vercel Rewrite
-2. Phase P-0 — Remove Beta-Blocking Mock/Demo Surfaces (Final cleanup)
-3. Phase F-4C — Token Hash / RLS / Invite Access Validation
+### 11. 남은 이슈
+- 없음
 
-### 8. 검증 검색 결과
-- demo: 유지 (내부 QA용)
-- mockMeetings: 제거 (Production flow에서 사용 중지)
-- mockReceivedInvites: 제거 (Production flow에서 사용 중지)
-- mockResponses: 존재 (내부 QA용)
-- alert: 제거
-- 준비 중: 제거
-- 테스트: README.md 및 task.md에 기록
-- 수민: mock data 내부에만 존재
-- 생일 모임: mock data 내부에만 존재
-- /invite/demo: 존재 (내부 QA용)
-- /meetings/demo: 존재 (내부 QA용)
-- TODO: 존재 (후속 작업 계획)
-- SUPABASE_SERVICE: 없음
+### 12. 다음 작업
+1. Phase O-1 — Onboarding Polish & First Invite Conversion
+2. Phase V-2 — Invitation Template Variants
+3. Phase S-1 — Share Card Template System
+
+### 13. 검증 검색 결과
+- PencilLine: 확인 완료
+- 직접 쓰기: 확인 완료
+- 추천 문구: 확인 완료
+- MessageMode: 확인 완료
+- variant: 확인 완료
+- envelope: 확인 완료
+- MailOpen: 확인 완료
+- onboarding: 확인 완료
+- tutorial: 확인 완료
+- welcome: 확인 완료
+- localStorage: 확인 완료
+- /invite/demo: 확인 완료
+- mockReceivedInvites: 확인 완료

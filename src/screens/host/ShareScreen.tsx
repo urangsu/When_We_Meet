@@ -11,6 +11,7 @@ import { meetingRepository } from '../../repositories/getMeetingRepository';
 import { readJson, writeJson } from '../../repositories/localStorageAdapter';
 import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage';
 import { InviteShareCard } from '../../components/invite/InviteShareCard';
+import { completeTutorial, markWelcomeCompleted } from '../../utils/onboardingState';
 
 const SHARE_SESSION_KEY = 'wwm:last-created-share:v1';
 
@@ -29,6 +30,11 @@ export const ShareScreen = () => {
   const createdRef = useRef(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
   const [isSharingImage, setIsSharingImage] = useState(false);
+
+  const onFinishTutorial = () => {
+    completeTutorial();
+    markWelcomeCompleted();
+  }
 
   const createDraftFingerprint = () =>
     JSON.stringify({
@@ -99,10 +105,12 @@ export const ShareScreen = () => {
         text: `${draft.hostMessage}\n\n초대장 열어보기:\n${inviteUrl}`,
         url: inviteUrl,
       });
+      onFinishTutorial();
     } catch (error) {
       console.error('Failed to share image', error);
       alert('초대장 사진을 공유할 수 없어요. 대신 초대장 링크를 복사했습니다.');
       navigator.clipboard.writeText(inviteUrl);
+      onFinishTutorial();
     } finally {
       setIsSharingImage(false);
     }
@@ -147,7 +155,10 @@ export const ShareScreen = () => {
         <div className="flex items-center justify-between p-4 bg-surface-warm rounded-2xl mt-2 border border-line">
           <span className="text-ink-hint font-mono text-[11px] truncate mr-4">whenwemeet.app{displayUrl}</span>
           <button onClick={() => {
-            navigator.clipboard.writeText(inviteUrl).then(() => alert("초대장 링크가 복사되었습니다."));
+            navigator.clipboard.writeText(inviteUrl).then(() => {
+              onFinishTutorial();
+              alert("초대장 링크가 복사되었습니다.");
+            });
           }} className="text-ink-muted hover:text-ink font-bold flex items-center gap-1.5 text-xs shrink-0 transition-colors">
             <Copy size={14} /> 링크 복사
           </button>

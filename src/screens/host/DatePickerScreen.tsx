@@ -10,10 +10,13 @@ import type {
   OurCalendarMemo,
 } from '../../types/calendar';
 import { ScreenShell } from '../../components/layout/ScreenShell';
+import { useTutorialMode } from '../../hooks/useTutorialMode';
+import { TutorialHint } from '../../components/onboarding/TutorialHint';
 
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 
 export const DatePickerScreen = () => {
+  const { isTutorial, skip } = useTutorialMode();
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
   
@@ -78,6 +81,14 @@ export const DatePickerScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
+      {isTutorial && (
+        <TutorialHint
+          step="3/6"
+          title="가능한 날을 골라요"
+          body="친구들이 고르기 쉽게 후보를 2~3개만 넣어도 충분해요."
+          onSkip={skip}
+        />
+      )}
       <header className="flex flex-col gap-2 pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>

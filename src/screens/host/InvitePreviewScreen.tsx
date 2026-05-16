@@ -17,8 +17,11 @@ import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommen
 import { InvitationOpeningMotion } from '../../components/invite/InvitationOpeningMotion';
 import { InviteShareCard } from '../../components/invite/InviteShareCard';
 import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage';
+import { useTutorialMode } from '../../hooks/useTutorialMode';
+import { TutorialHint } from '../../components/onboarding/TutorialHint';
 
 export const InvitePreviewScreen = () => {
+  const { isTutorial, skip } = useTutorialMode();
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [showMotionPreview, setShowMotionPreview] = useState(false);
@@ -108,6 +111,14 @@ export const InvitePreviewScreen = () => {
   
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-6">
+      {isTutorial && (
+        <TutorialHint
+          step="6/6"
+          title="초대장을 확인해요"
+          body="친구가 보게 될 첫인상이에요. 괜찮으면 공유로 넘어가요."
+          onSkip={skip}
+        />
+      )}
       <div className="fixed left-[-10000px] top-0 pointer-events-none">
         <InviteShareCard draft={draft} ref={shareCardRef} />
       </div>

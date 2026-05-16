@@ -8,8 +8,11 @@ import { locationModeOptions } from '../../config/locationOptions';
 import type { LocationMode } from '../../types/meeting';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommendations';
+import { useTutorialMode } from '../../hooks/useTutorialMode';
+import { TutorialHint } from '../../components/onboarding/TutorialHint';
 
 export const PlaceSetupScreen = () => {
+  const { isTutorial, skip } = useTutorialMode();
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selectedMode, setSelectedMode] = useState<LocationMode>(draft.locationMode);
@@ -37,6 +40,14 @@ export const PlaceSetupScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+      {isTutorial && (
+        <TutorialHint
+          step="4/6"
+          title="만날 곳을 정해요"
+          body="정해진 곳이 없어도 괜찮아요. 후보로 받아도 돼요."
+          onSkip={skip}
+        />
+      )}
       <header className="flex flex-col gap-2 pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>

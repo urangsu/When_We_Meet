@@ -7,8 +7,11 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import type { MeetingCategory } from '../../types';
+import { useTutorialMode } from '../../hooks/useTutorialMode';
+import { TutorialHint } from '../../components/onboarding/TutorialHint';
 
 export const CategoryScreen = () => {
+  const { isTutorial, skip } = useTutorialMode();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selected, setSelected] = useState<MeetingCategory>(draft.category);
   const [isRecurring, setIsRecurring] = useState(draft.isRecurring);
@@ -24,6 +27,14 @@ export const CategoryScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+      {isTutorial && (
+        <TutorialHint
+          step="1/6"
+          title="어떤 약속인가요?"
+          body="약속의 분위기를 고르면 초대장 톤이 자연스럽게 잡혀요."
+          onSkip={skip}
+        />
+      )}
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">어떤 모임을 만들까요?</h1>

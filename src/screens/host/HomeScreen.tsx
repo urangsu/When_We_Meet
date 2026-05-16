@@ -10,6 +10,8 @@ import { ReceivedInviteCard } from '../../components/invite/ReceivedInviteCard';
 import { getRepositoryMode } from '../../repositories/repositoryMode';
 import { mockMeetings } from '../../data/mockMeetings';
 import { mockReceivedInvites } from '../../data/mockReceivedInvites';
+import { hasCompletedWelcome, markWelcomeCompleted, markWelcomeSkipped, startTutorial } from '../../utils/onboardingState';
+import { WelcomeInviteOverlay } from '../../components/onboarding/WelcomeInviteOverlay';
 
 export const HomeScreen = () => {
   const navigate = useNavigate();
@@ -20,6 +22,13 @@ export const HomeScreen = () => {
     getRepositoryMode() === 'backend' ? [] : mockMeetings
   );
   const [isManagingInvites, setIsManagingInvites] = useState(false);
+  const [showWelcomeInvite, setShowWelcomeInvite] = useState(false);
+
+  useEffect(() => {
+    if (!hasCompletedWelcome()) {
+      setShowWelcomeInvite(true);
+    }
+  }, []);
 
   // ... (rest of the component)
 
@@ -36,6 +45,20 @@ export const HomeScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+      {showWelcomeInvite && (
+        <WelcomeInviteOverlay
+          onStartTutorial={() => {
+            markWelcomeCompleted();
+            startTutorial();
+            setShowWelcomeInvite(false);
+            navigate('/app/create/category?mode=tutorial');
+          }}
+          onSkip={() => {
+            markWelcomeSkipped();
+            setShowWelcomeInvite(false);
+          }}
+        />
+      )}
       <header className="flex flex-col gap-1 px-2 pt-4">
         <div className="flex items-center gap-2">
           <CalendarCheck className="text-rose" size={28} strokeWidth={2.5} />

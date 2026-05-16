@@ -9,8 +9,11 @@ import { Chip } from '../../components/Card';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import type { ActivityOptionId } from '../../types/meeting';
 import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommendations';
+import { useTutorialMode } from '../../hooks/useTutorialMode';
+import { TutorialHint } from '../../components/onboarding/TutorialHint';
 
 export const ActivitySetupScreen = () => {
+  const { isTutorial, skip } = useTutorialMode();
   const navigate = useNavigate();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selectedActivities, setSelectedActivities] = useState<ActivityOptionId[]>(draft.activityIds);
@@ -42,6 +45,14 @@ export const ActivitySetupScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+      {isTutorial && (
+        <TutorialHint
+          step="5/6"
+          title="만나서 뭐 할까요?"
+          body="식사, 카페, 산책처럼 가볍게 골라주세요."
+          onSkip={skip}
+        />
+      )}
       <header className="flex flex-col gap-2 pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>

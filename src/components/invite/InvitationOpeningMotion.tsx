@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Button } from '../Button';
 import { MailOpen } from 'lucide-react';
 
+type InvitationMotionVariant = 'envelope' | 'classic';
+
 interface InvitationOpeningMotionProps {
   title: string;
   hostName?: string;
@@ -12,33 +14,40 @@ interface InvitationOpeningMotionProps {
   activityLabel?: string;
   themeId?: string;
   preview?: boolean;
+  variant?: InvitationMotionVariant;
   onComplete?: () => void;
 }
 
-const themeStyles = {
+const envelopeThemeStyles = {
   warm: {
-    background: 'bg-[#F4F1EA]',
-    card: 'bg-white',
+    background: 'bg-[#F7F3EC]',
+    envelope: 'bg-white',
+    line: 'border-rose/40',
+    lineStrong: 'border-rose',
     seal: 'bg-rose',
+    shadow: 'shadow-[0_20px_60px_rgba(180,85,95,0.18)]',
+    card: 'bg-[#FFFDF9]',
     accent: 'text-rose',
-    bgGradient: 'from-rose-50',
-    divider: 'bg-rose-200',
   },
   night: {
     background: 'bg-[#111111]',
+    envelope: 'bg-[#F7F3EC]',
+    line: 'border-white/40',
+    lineStrong: 'border-white',
+    seal: 'bg-[#111111]',
+    shadow: 'shadow-[0_20px_60px_rgba(0,0,0,0.35)]',
     card: 'bg-[#1F1F1F]',
-    seal: 'bg-white',
-    accent: 'text-ink',
-    bgGradient: 'from-gray-800',
-    divider: 'bg-gray-700',
+    accent: 'text-white',
   },
   picnic: {
     background: 'bg-[#F6F1E7]',
-    card: 'bg-[#FFFDF7]',
+    envelope: 'bg-white',
+    line: 'border-[#A2352B]/40',
+    lineStrong: 'border-[#A2352B]',
     seal: 'bg-[#A2352B]',
+    shadow: 'shadow-[0_20px_60px_rgba(162,53,43,0.16)]',
+    card: 'bg-[#FFFDF7]',
     accent: 'text-[#A2352B]',
-    bgGradient: 'from-orange-50',
-    divider: 'bg-[#A2352B]/20',
   },
 } as const;
 
@@ -51,97 +60,80 @@ export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = (
   activityLabel,
   themeId,
   preview,
+  variant = 'envelope',
   onComplete
 }) => {
+  const style = envelopeThemeStyles[(themeId as keyof typeof envelopeThemeStyles)] || envelopeThemeStyles.warm;
+  const isDark = themeId === 'night';
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
   useEffect(() => {
     if (!preview) {
-      // Auto complete after 4 seconds to ensure guest can interact
       const timer = setTimeout(() => {
         onComplete?.();
-      }, 4000);
+      }, prefersReducedMotion ? 1000 : 4200);
       return () => clearTimeout(timer);
     }
-  }, [preview, onComplete]);
+  }, [preview, onComplete, prefersReducedMotion]);
 
-  const style = themeStyles[(themeId as keyof typeof themeStyles)] || themeStyles.warm;
-  const isDark = themeId === 'night';
+  if (variant === 'classic') {
+    return (
+       <div className={`fixed inset-0 z-50 ${isDark ? 'bg-ink' : 'bg-surface'} flex items-center justify-center p-5 overflow-hidden`}>
+          {/* Implement a simplified classic motion here if needed, or keeping it as it was if requested as fallback */}
+          <p>Classic opening motion</p>
+       </div>
+    );
+  }
 
+  // Envelope Opening Motion
   return (
-    <div className={`fixed inset-0 z-50 ${style.background} flex flex-col items-center justify-center p-5 overflow-hidden`}>
-      {/* Background decoration */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, ease: 'easeOut' }}
-        className={`absolute w-full h-[60%] top-0 left-0 bg-gradient-to-b ${style.bgGradient} to-transparent -z-10`}
-      />
-
-      {/* Main Card */}
-      <motion.div
-        initial={{ y: 50, opacity: 0, rotateX: 15 }}
-        animate={{ y: 0, opacity: 1, rotateX: 0 }}
-        transition={{ duration: 0.8, type: 'spring', bounce: 0.4 }}
-        className={`w-full max-w-sm ${style.card} rounded-[24px] shadow-xl p-8 relative overflow-hidden`}
-      >
-        {/* Envelope flap effect */}
-        <motion.div 
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{ duration: 0.5, delay: 1 }}
-          className={`absolute inset-0 ${style.seal} z-20 flex flex-col items-center justify-center rounded-[24px]`}
-        >
-          <MailOpen size={48} className={isDark ? 'text-ink' : 'text-white'} style={{ marginBottom: 16 }} />
-          <p className={`${isDark ? 'text-ink' : 'text-white'} font-bold text-lg`}>초대장이 도착했어요</p>
-        </motion.div>
-
-        {/* Content */}
+    <div className={`fixed inset-0 z-50 ${style.background} flex items-center justify-center p-6 overflow-hidden`}>
+      <div className="relative w-[320px] h-[230px]">
+        {/* 안쪽 초대장 카드 */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.2 }}
-          className="relative z-10 flex flex-col items-center text-center space-y-6"
+           initial={{ y: 80, opacity: 0, scale: 0.96 }}
+           animate={{ y: -52, opacity: 1, scale: 1 }}
+           transition={{ delay: prefersReducedMotion ? 0 : 1.05, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+           className={`absolute left-6 right-6 bottom-10 z-10 ${style.card} rounded-3xl border border-line p-5 shadow-lg`}
         >
-          <div>
-            <h1 className={`font-bold text-2xl ${isDark ? 'text-white' : 'text-ink'} leading-tight mb-2`}>{title}</h1>
-            {hostName && <p className={`${isDark ? 'text-white/60' : 'text-ink-muted'} text-sm`}>{hostName}님의 초대</p>}
-          </div>
-
-          <div className={`w-12 h-px ${style.divider}`} />
-
-          {message && (
-            <p className={`${isDark ? 'text-white/90' : 'text-ink'} text-base whitespace-pre-wrap leading-relaxed px-4`}>
-              "{message}"
-            </p>
-          )}
-
-          <div className={`w-full ${isDark ? 'bg-white/5 border-white/10' : 'bg-[#FAFAFA] border-ink-line'} rounded-xl p-4 flex flex-col gap-2 mt-4 border`}>
-            {dateLabel && (
-              <div className="flex flex-col">
-                <span className={`text-[10px] font-bold ${isDark ? 'text-white/40' : 'text-ink-hint'} uppercase`}>언제</span>
-                <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-ink'}`}>{dateLabel}</span>
-              </div>
-            )}
-            {placeLabel && (
-              <div className="flex flex-col">
-                <span className={`text-[10px] font-bold ${isDark ? 'text-white/40' : 'text-ink-hint'} uppercase`}>어디서</span>
-                <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-ink'}`}>{placeLabel}</span>
-              </div>
-            )}
-            {activityLabel && (
-              <div className="flex flex-col">
-                <span className={`text-[10px] font-bold ${isDark ? 'text-white/40' : 'text-ink-hint'} uppercase`}>뭐 할까</span>
-                <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-ink'}`}>{activityLabel}</span>
-              </div>
-            )}
-          </div>
+          <p className={`text-[10px] font-bold ${style.accent} uppercase tracking-wider`}>초대장이 도착했어요</p>
+          <h1 className="mt-2 text-xl font-bold text-ink leading-tight">{title}</h1>
+          {hostName && <p className="text-xs text-ink-muted mt-1">{hostName}님의 초대</p>}
         </motion.div>
-      </motion.div>
+
+        {/* 봉투 뒷면 */}
+        <div className={`absolute inset-x-0 bottom-0 h-[180px] rounded-b-3xl ${style.envelope} border border-rose/30 shadow`} />
+
+        {/* 봉투 앞면 좌우 삼각선 */}
+        <svg viewBox="0 0 320 180" className="absolute inset-0 h-full w-full z-30 pointer-events-none">
+          <path d="M8 8 L160 100 L312 8" fill="none" className={style.lineStrong} strokeWidth="2" />
+          <path d="M8 172 L125 82" fill="none" className={style.line} strokeWidth="2" />
+          <path d="M312 172 L195 82" fill="none" className={style.line} strokeWidth="2" />
+        </svg>
+
+        {/* flap */}
+        <motion.div
+          initial={{ rotateX: 0 }}
+          animate={{ rotateX: prefersReducedMotion ? 0 : -155 }}
+          transition={{ delay: prefersReducedMotion ? 0 : 0.7, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          style={{ transformOrigin: 'top center', transformPerspective: 900 }}
+          className={`absolute top-[10px] left-0 right-0 z-40 h-[100px] ${style.envelope} rounded-t-3xl border border-rose/30`}
+        />
+
+        {/* seal */}
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: prefersReducedMotion ? 0 : 0 }}
+          transition={{ delay: 0.7 }}
+          className={`absolute left-1/2 -ml-3 top-[85px] z-50 w-6 h-6 rounded-full ${style.seal}`}
+        />
+      </div>
 
       {/* CTA */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 2.5 }}
+        transition={{ delay: prefersReducedMotion ? 0 : 2.6, duration: 0.5 }}
         className="absolute bottom-10 left-0 right-0 px-6 flex justify-center w-full"
       >
         <Button 

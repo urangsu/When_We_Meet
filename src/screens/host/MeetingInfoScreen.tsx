@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft, AlignLeft } from 'lucide-react';
+import { ChevronLeft, AlignLeft, PencilLine, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { baseHostMessageSuggestions } from '../../config/hostMessageSuggestions';
+import { useTutorialMode } from '../../hooks/useTutorialMode';
+import { TutorialHint } from '../../components/onboarding/TutorialHint';
+
+type MessageMode = 'custom' | 'suggestion';
 
 export const MeetingInfoScreen = () => {
+  const { isTutorial, skip } = useTutorialMode();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [name, setName] = useState(draft.title);
   const [message, setMessage] = useState(draft.hostMessage);
+  const [messageMode, setMessageMode] = useState<MessageMode>(
+    draft.hostMessage ? 'custom' : 'suggestion'
+  );
   const navigate = useNavigate();
 
   const isValid = name.trim().length > 0;
@@ -25,6 +33,14 @@ export const MeetingInfoScreen = () => {
 
   return (
     <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+      {isTutorial && (
+        <TutorialHint
+          step="2/6"
+          title="초대장 첫 문장을 적어요"
+          body="짧게 적어도 괜찮아요. 친구가 부담 없이 답할 수 있으면 충분해요."
+          onSkip={skip}
+        />
+      )}
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">모임 정보를 알려주세요</h1>
@@ -43,15 +59,55 @@ export const MeetingInfoScreen = () => {
 
         <div className="flex flex-col gap-2">
           <label className="text-sm font-bold text-ink ml-1">한 줄 메시지</label>
+          
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setMessageMode('custom')}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
+                messageMode === 'custom'
+                  ? 'border-rose bg-rose text-white'
+                  : 'border-line bg-white text-ink-muted'
+              }`}
+            >
+              <PencilLine size={14} />
+              직접 쓰기
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMessageMode('suggestion')}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
+                messageMode === 'suggestion'
+                  ? 'border-rose bg-rose text-white'
+                  : 'border-line bg-white text-ink-muted'
+              }`}
+            >
+              <Sparkles size={14} />
+              추천 문구
+            </button>
+          </div>
+
           <div className="relative">
             <textarea 
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="직접 써도 되고, 아래 문구를 골라도 좋아요."
+              onChange={(e) => {
+                setMessage(e.target.value);
+                setMessageMode('custom');
+              }}
+              placeholder={
+                messageMode === 'custom'
+                  ? '예) 이번 주말, 같이 시간 맞춰볼까요?'
+                  : '추천 문구를 고르거나 직접 써도 좋아요.'
+              }
               className="w-full p-4 pl-12 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all min-h-[100px] resize-none"
             />
             <AlignLeft className="absolute top-4 left-4 text-ink-hint" size={20} />
           </div>
+          
+          <p className="text-[11px] text-ink-hint ml-1">
+            짧아도 괜찮아요. 친구가 부담 없이 답할 수 있는 말이면 충분해요.
+          </p>
 
           {draft.attachedCalendarMemoNotes.length > 0 && (
             <div className="bg-white border border-ink-line rounded-2xl p-4">
@@ -66,12 +122,15 @@ export const MeetingInfoScreen = () => {
             </div>
           )}
 
-          <p className="text-xs font-bold text-ink-muted mt-2 ml-1">문구가 고민되면 골라보세요</p>
+          <p className="text-xs font-bold text-ink-muted mt-2 ml-1">바로 써도 좋은 문구</p>
           <div className="flex flex-wrap gap-2 mt-2">
             {baseHostMessageSuggestions.map((suggestion) => (
               <button
                 key={suggestion}
-                onClick={() => setMessage(suggestion)}
+                onClick={() => {
+                  setMessage(suggestion);
+                  setMessageMode('suggestion');
+                }}
                 className="px-3 py-1.5 bg-surface text-ink text-xs font-semibold rounded-full border border-line shadow-soft whitespace-nowrap overflow-hidden text-ellipsis max-w-[280px]"
               >
                 {suggestion}
