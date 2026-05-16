@@ -40,7 +40,7 @@ Fields:
 - is_closed
 - expires_at
 - max_responses
-- duplicate_guard_mode
+- duplicate_guard_mode (none | nickname | browser | device)
 - created_at
 - updated_at
 
@@ -62,7 +62,7 @@ Fields:
 - place_suggestions
 - activity_preferences
 - message
-- idempotency_key
+- idempotency_key (used as the unique dimension for duplicate guard)
 - source
 - created_at
 - updated_at
@@ -74,7 +74,7 @@ Stores final host-confirmed plan.
 Fields:
 - id
 - meeting_id
-- date_label
+- date_label (nullable in DB for MVP resilience, but required by UI before host confirms)
 - time_label
 - place_name
 - activity_labels
@@ -82,3 +82,9 @@ Fields:
 - reason
 - created_at
 - updated_at
+
+## Security
+
+RLS policies are enabled on all tables.
+MVP RLS policies are permissive for prototype validation.
+Production must replace them with token-aware validation.

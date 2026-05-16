@@ -20,7 +20,7 @@ create table if not exists public.invite_links (
   is_closed boolean not null default false,
   expires_at timestamptz,
   max_responses integer,
-  duplicate_guard_mode text not null default 'idempotency_key',
+  duplicate_guard_mode text not null default 'none',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -46,7 +46,7 @@ create table if not exists public.meeting_responses (
 create table if not exists public.confirmed_plans (
   id uuid primary key default gen_random_uuid(),
   meeting_id uuid not null unique references public.meetings(id) on delete cascade,
-  date_label text not null,
+  date_label text,
   time_label text,
   place_name text,
   activity_labels jsonb not null default '[]'::jsonb,
@@ -61,3 +61,59 @@ alter table public.meetings enable row level security;
 alter table public.invite_links enable row level security;
 alter table public.meeting_responses enable row level security;
 alter table public.confirmed_plans enable row level security;
+
+-- MVP dev policies.
+-- These are intentionally permissive for prototype validation.
+-- Phase F-4C must replace them with token-aware policies / edge validation.
+
+create policy "meetings_select_all_mvp"
+on public.meetings
+for select
+using (true);
+
+create policy "meetings_insert_all_mvp"
+on public.meetings
+for insert
+with check (true);
+
+create policy "invite_links_select_all_mvp"
+on public.invite_links
+for select
+using (true);
+
+create policy "invite_links_insert_all_mvp"
+on public.invite_links
+for insert
+with check (true);
+
+create policy "meeting_responses_select_all_mvp"
+on public.meeting_responses
+for select
+using (true);
+
+create policy "meeting_responses_insert_all_mvp"
+on public.meeting_responses
+for insert
+with check (true);
+
+create policy "meeting_responses_update_all_mvp"
+on public.meeting_responses
+for update
+using (true)
+with check (true);
+
+create policy "confirmed_plans_select_all_mvp"
+on public.confirmed_plans
+for select
+using (true);
+
+create policy "confirmed_plans_insert_all_mvp"
+on public.confirmed_plans
+for insert
+with check (true);
+
+create policy "confirmed_plans_update_all_mvp"
+on public.confirmed_plans
+for update
+using (true)
+with check (true);

@@ -155,6 +155,21 @@ Not Completed:
 - [ ] Add Edge Function validation
 - [ ] Add production duplicate guard
 
+### Phase F-4A.5 — Backend Choice & Schema Reality Close
+
+Completed:
+- [x] Confirm Supabase as primary backend
+- [x] Define Cloudflare as edge/OG/image layer candidate
+- [x] Fix duplicate_guard_mode default
+- [x] Align confirmed_plans.date_label policy
+- [x] Add MVP RLS policies or explicit dev policy strategy
+- [x] Update backend docs with production token hash vs MVP raw token split
+
+Not Completed:
+- [ ] Implement backendMeetingRepository queries
+- [ ] Replace MVP RLS policies with token-aware policies
+- [ ] Implement Edge Function token validation
+
 ### Phase F-4B — Backend Repository Query Implementation
 
 Next:
@@ -301,14 +316,24 @@ Reason:
 - Row Level Security can later separate host access and guest link access.
 - Realtime can later update Host Dashboard as friends respond.
 - Edge Functions can later host server-only AI copy/recommendation endpoints.
+- Fastest path from localStorage prototype to real multi-user sync since current schema targets it.
+
+Edge/Image layer candidate: Cloudflare
+- Best suited for hosting with Cloudflare Pages, edge routing, dynamic OG images, invite image caching, and R2 storage for cards.
+- Future move could be Cloudflare Workers for token validation.
+- Cloudflare D1 is not the primary DB because it requires schema rewrite and doesn't natively map to Supabase RLS policies needed right away.
 
 Firebase alternative:
 - Good for realtime-first use cases.
 - Less natural for relational joins and unique constraints in this product.
 - Can work later if the product becomes chat/community-first.
 
+Neon alternative:
+- Strong Postgres but needs more manual assembly for auth/storage than Supabase.
+
 Decision:
-Use Supabase as the recommended backend for Phase F unless deployment constraints force Firebase.
+Use Supabase as the primary backend for Phase F.
+Cloudflare will serve as the host and edge logic.
 
 ## 17. Data Model Draft
 

@@ -54,7 +54,7 @@ export interface SupabaseMeetingResponseRow {
 export interface SupabaseConfirmedPlanRow {
   id: string;
   meeting_id: string;
-  date_label: string;
+  date_label: string | null;
   time_label: string | null;
   place_name: string | null;
   activity_labels: unknown;
@@ -106,7 +106,7 @@ export const toMeetingResponse = (row: SupabaseMeetingResponseRow): MeetingRespo
 export const toConfirmedPlan = (row: SupabaseConfirmedPlanRow): ConfirmedPlan => ({
   id: row.id as ConfirmedPlanId,
   meetingId: row.meeting_id as MeetingId,
-  dateLabel: row.date_label,
+  dateLabel: row.date_label || undefined,
   timeLabel: row.time_label || undefined,
   placeName: row.place_name || undefined,
   activityLabels: Array.isArray(row.activity_labels) ? row.activity_labels : [],
