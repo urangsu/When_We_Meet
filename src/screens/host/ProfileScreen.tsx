@@ -8,13 +8,13 @@ import { profileColorOptions } from '../../config/profileColorOptions';
 import type { ProfileColorId } from '../../types';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { userProfileRepository } from '../../repositories/userProfileRepository';
+import type { UserProfile } from '../../types/user';
 
 const profileOptions = [
   { id: 'my-photo', label: '내 사진', icon: Camera },
   { id: 'basic', label: '기본 프로필', icon: User },
   { id: 'initial', label: '이니셜', icon: Hash },
   { id: 'anon', label: '익명', icon: HelpCircle },
-  { id: 'recent', label: '최근 사용', icon: History },
 ];
 
 export const ProfileScreen = () => {
@@ -31,6 +31,7 @@ export const ProfileScreen = () => {
     updateDraft({ 
       hostColorId: selectedColorId,
       hostName: draft.hostName || userProfile.displayName,
+      hostProfileType: selected as UserProfile['profileType'],
     });
     navigate('/app/create/preview');
   };
@@ -54,7 +55,7 @@ export const ProfileScreen = () => {
             borderColor: selectedColor.border ?? 'transparent',
           }}
         >
-          {draft.hostName ? draft.hostName.charAt(0) : '수'}
+          {draft.hostName ? draft.hostName.charAt(0) : userProfile.displayName.charAt(0)}
         </div>
 
         {/* Color Picker */}

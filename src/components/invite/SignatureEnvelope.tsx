@@ -63,13 +63,13 @@ export const SignatureEnvelope = ({
       <motion.div
         initial={false}
         animate={{
-          y: opened ? -46 : 18,
+          y: opened ? -34 : 18,
           opacity: opened ? 1 : 0,
           scale: opened ? 1 : 0.98,
         }}
         transition={{
           delay: opened ? 0.16 : 0,
-          duration: 0.42,
+          duration: 0.54,
           ease: [0.22, 1, 0.36, 1],
         }}
         className="

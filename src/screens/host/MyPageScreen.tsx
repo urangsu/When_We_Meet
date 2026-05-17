@@ -97,43 +97,77 @@ export const MyPageScreen = () => {
 
       {/* Panels */}
       {activePanel && (
-        <div className="fixed inset-0 z-50 bg-bg-app p-5 animate-in slide-in-from-bottom-8">
-          <header className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold">
-              {activePanel === 'profile' && '프로필 설정'}
-              {activePanel === 'notifications' && '알림 설정'}
-              {activePanel === 'calendar' && '캘린더 연결'}
-              {activePanel === 'about' && '앱 정보'}
-            </h2>
-            <button onClick={() => setActivePanel(null)}><X /></button>
-          </header>
-          
-          {activePanel === 'profile' && (
-            <div className="flex flex-col gap-4">
-              <input 
-                value={draftName}
-                onChange={(e) => setDraftName(e.target.value)}
-                className="w-full p-4 rounded-xl border border-ink-line outline-none focus:border-rose"
-              />
-              <Button onClick={saveProfile} size="full">저장</Button>
-            </div>
-          )}
+        <div className="fixed inset-0 z-50 flex justify-center bg-bg-app animate-in slide-in-from-bottom-8">
+          <div className="w-full max-w-[430px] flex flex-col p-5">
+            <header className="flex items-center justify-between mb-8">
+              <h2 className="text-xl font-bold">
+                {activePanel === 'profile' && '프로필 설정'}
+                {activePanel === 'notifications' && '알림 설정'}
+                {activePanel === 'calendar' && '캘린더 연결'}
+                {activePanel === 'about' && '앱 정보'}
+              </h2>
+              <button onClick={() => setActivePanel(null)}><X /></button>
+            </header>
+            
+            {activePanel === 'profile' && (
+              <div className="flex flex-col gap-4">
+                <input 
+                  value={draftName}
+                  onChange={(e) => setDraftName(e.target.value)}
+                  className="w-full p-4 rounded-xl border border-ink-line outline-none focus:border-rose"
+                  placeholder="이름"
+                />
+                <Button onClick={saveProfile} size="full">저장</Button>
+              </div>
+            )}
 
-          {activePanel === 'calendar' && (
-             <div className="flex flex-col gap-4">
+            {activePanel === 'notifications' && (
+              <div className="flex flex-col gap-6">
+                {[
+                  { key: 'inviteResponses', label: '초대 응답 알림' },
+                  { key: 'confirmedMeetings', label: '모임 확정 알림' },
+                  { key: 'calendarReminders', label: '달력 리마인드' },
+                ].map(({ key, label }) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <span className="text-ink">{label}</span>
+                    <button
+                      onClick={() => {
+                        const next = userProfileRepository.updateProfile({
+                          notifications: {
+                            ...profile.notifications,
+                            [key]: !profile.notifications[key as keyof typeof profile.notifications],
+                          },
+                        });
+                        setProfile(next);
+                      }}
+                      className={`w-12 h-6 rounded-full transition-colors ${
+                        profile.notifications[key as keyof typeof profile.notifications] ? 'bg-rose' : 'bg-ink-line'
+                      }`}
+                    >
+                      <div className={`w-5 h-5 bg-white rounded-full transition-transform ${profile.notifications[key as keyof typeof profile.notifications] ? 'translate-x-6' : 'translate-x-1'}`} />
+                    </button>
+                  </div>
+                ))}
+                <p className="text-sm text-ink-hint">기기 알림 연동 전까지는 앱 안에서 확인할 수 있는 알림 설정으로 저장돼요.</p>
+              </div>
+            )}
+
+            {activePanel === 'calendar' && (
+              <div className="flex flex-col gap-4">
                 <p>우리 달력: {profile.calendar.ourCalendarEnabled ? '사용 중' : '사용 안 함'}</p>
                 <p>외부 캘린더: 준비 중</p>
                 <Button onClick={() => navigate('/app/calendar')} size="full">우리 달력 열기</Button>
-             </div>
-          )}
+              </div>
+            )}
 
-          {activePanel === 'about' && (
-            <div className="text-sm text-ink-muted">
-              <p>When We Meet</p>
-              <p>데이터 저장: 이 브라우저</p>
-              <p>버전: Beta MVP</p>
-            </div>
-          )}
+            {activePanel === 'about' && (
+              <div className="text-sm text-ink-muted flex flex-col gap-2">
+                <p>When We Meet</p>
+                <p>데이터 저장: 이 브라우저</p>
+                <p>버전: Beta MVP</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </ScreenShell>

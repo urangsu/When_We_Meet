@@ -6,6 +6,7 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { baseHostMessageSuggestions } from '../../config/hostMessageSuggestions';
+import { userProfileRepository } from '../../repositories/userProfileRepository';
 import { useTutorialMode } from '../../hooks/useTutorialMode';
 import { TutorialHint } from '../../components/onboarding/TutorialHint';
 
@@ -14,7 +15,9 @@ type MessageMode = 'custom' | 'suggestion';
 export const MeetingInfoScreen = () => {
   const { isTutorial, skip } = useTutorialMode();
   const { draft, updateDraft } = useCreateMeetingDraft();
+  const userProfile = userProfileRepository.getProfile();
   const [name, setName] = useState(draft.title);
+  const [hostName, setHostName] = useState(draft.hostName || userProfile.displayName);
   const [message, setMessage] = useState(draft.hostMessage);
   const [messageMode, setMessageMode] = useState<MessageMode>(
     draft.hostMessage ? 'custom' : 'suggestion'
@@ -27,6 +30,7 @@ export const MeetingInfoScreen = () => {
     updateDraft({
       title: name.trim(),
       hostMessage: message.trim(),
+      hostName: hostName,
     });
     navigate('/app/create/place');
   };
