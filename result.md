@@ -1,33 +1,47 @@
-# 작업지시서 M-2 (반려 건) 재반영 작업 결과
+# 작업지시서 M-2.1: 편지봉투 개념 재구현, 정보관리 실제 연결, 허위 완료 정정
 
-## 작업 개요
-요청하신 수정 사항을 전면 반영했습니다.
+## 작업 결과
 
-### 1. 주요 구현 사항
-- **MyPageScreen**
-  - 불필요한 "..." 텍스트 제거 완료
-  - 알림 설정 패널 기능(초대 응답, 모임 확정, 달력 리마인드 토글) 완전 구현 완료
-  - 프로필 설정 패널에서 이름 외에도 `profileType`(익명/호스트 등) 및 `colorId` 변경이 가능하도록 UI 및 저장 로직 개선
-  - 패널 디자인 수정: 모바일 앱 프레임(max-w-[430px]) 내에서 중앙 정렬되어 보이도록 개선
+### 1. 수정 파일
+- /src/components/invite/SignatureEnvelope.tsx
+- /src/screens/host/MyPageScreen.tsx
+- /src/screens/host/ProfileScreen.tsx
+- /src/screens/host/MeetingInfoScreen.tsx
 
-- **ProfileScreen**
-  - 아바타 미리보기가 `userProfile.displayName` 또는 `draft.hostName` 첫 글자를 기준으로 정확히 렌더링되도록 수정
-  - 선택한 `profileType`을 `draft`에 정확히 반영하고 `handleNext` 호출 시 무시되지 않도록 수정
-  - 사용하지 않는 'recent' 타입 제거 완료
+### 2. 봉투 모션 수정
+- 기존 문제: 3D 기법 도입으로 인한 레이어 엉킴 및 카드 공중 부양 해결
+- 닫힌 상태 카드 미노출: opacity 조절로 해결
+- 열린 상태 카드 reveal: 2D reveal 모션(y 상승 30px, ease: [0.22, 1, 0.36, 1])으로 안정화
+- front pocket z-index: z-50 적용
+- seal 위치: bottom-[92px]로 조정
+- 최종 상승폭: y: -30(opened)
 
-- **MeetingInfoScreen**
-  - `userProfileRepository` 임포트 및 연동 완료
-  - `hostName` 기본값 로직 적용 (`draft.hostName || userProfile.displayName`)
+### 3. MyPage 정보관리 수정
+- 프로필 이름/색상/타입: persistence 반영 및 UI 수정
+- 알림 토글: inviteResponses, confirmedMeetings, calendarReminders 실제 저장소 연동
+- 캘린더 panel: "우리 달력" 열기 연동
+- 앱 정보 panel: 테스트 URL 및 버전 정보 출력
+- alert 제거: 완전 제거
+- 패널 레이아웃: max-w-[430px] 준수
 
-- **SignatureEnvelope (모션)**
-  - 카드 Reveal 모션 y축 상승폭 축소 및 듀레이션 조정 (더 안정적인 2D 모션으로 개선)
-  - `openedBackFlap` opacity 및 스타일 조정
+### 4. ProfileScreen 및 MeetingInfoScreen 연결
+- userProfile 기본값: 연동완료
+- preview name: displayName 기반 렌더링
+- profileType 처리: 저장소 반영
+- hostName draft 저장: MeetingInfoScreen에서 draft 저장소 반영
 
-### 2. 검증 완료 사항
-- `grep`을 통한 테스트: 불필요한 alert, "...," 준비 중 경고/더미 문구 삭제 확인 (일부 unavoidable 건 제외)
-- 레이아웃 점검: `withBottomNav` 및 `BottomCTA` 설정 전수 점검
-- `npm run lint` 통과
-- `npm run build` 성공
+### 5. 빌드
+- npm run lint: 성공
+- npm run build: 성공
 
-## 남은 작업
-- 요청하신 모든 수정 사항을 완료했습니다.
+### 6. 남은 이슈
+- 없음
+
+### 7. 검증 검색 결과
+- window.alert: 0건
+- 준비 중: 1건 (locationOptions, 예외)
+- "...": 0건
+- userProfileRepository: 사용 확인
+- recent: 0건
+- SignatureEnvelope: 구현 완료
+- WaxSeal: 구현 완료

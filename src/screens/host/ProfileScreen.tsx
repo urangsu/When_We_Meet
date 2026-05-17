@@ -55,7 +55,7 @@ export const ProfileScreen = () => {
             borderColor: selectedColor.border ?? 'transparent',
           }}
         >
-          {draft.hostName ? draft.hostName.charAt(0) : userProfile.displayName.charAt(0)}
+          {(draft.hostName || userProfile.displayName).charAt(0) || '호스트'.charAt(0)}
         </div>
 
         {/* Color Picker */}
@@ -94,7 +94,7 @@ export const ProfileScreen = () => {
         {profileOptions.map((opt) => (
           <button
             key={opt.id}
-            onClick={() => setSelected(opt.id)}
+            onClick={() => setSelected(opt.id as UserProfile['profileType'])}
             className={`
               flex items-center gap-4 p-4 rounded-2xl border transition-all
               ${selected === opt.id ? 'border-rose shadow-sm text-rose-deep' : 'border-ink-line bg-white hover:border-ink/30'}

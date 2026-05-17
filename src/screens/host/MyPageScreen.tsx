@@ -26,7 +26,7 @@ export const MyPageScreen = () => {
       <header className="px-5 pt-8 pb-4">
         <h1 className="text-2xl font-bold mb-2">내 정보</h1>
       </header>
-...
+
       <div className="px-5 pb-8 flex flex-col gap-6">
         {/* Profile Card */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line/50 flex items-center gap-4">
@@ -97,8 +97,8 @@ export const MyPageScreen = () => {
 
       {/* Panels */}
       {activePanel && (
-        <div className="fixed inset-0 z-50 flex justify-center bg-bg-app animate-in slide-in-from-bottom-8">
-          <div className="w-full max-w-[430px] flex flex-col p-5">
+        <div className="fixed inset-0 z-50 flex justify-center bg-black/10 animate-in fade-in duration-200">
+          <div className="h-full w-full max-w-[430px] bg-bg-app p-5 shadow-2xl animate-in slide-in-from-bottom-8">
             <header className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-bold">
                 {activePanel === 'profile' && '프로필 설정'}
