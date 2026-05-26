@@ -11,6 +11,9 @@ import { OurCalendarShareCard } from '../../components/calendar/OurCalendarShare
 import { CalendarDayCell } from '../../components/meeting/CalendarDayCell';
 import { Button } from '../../components/Button';
 import { CalendarRecordDrawer } from '../../components/calendar/CalendarRecordDrawer';
+import { fetchGoogleCalendarEvents } from '../../lib/googleCalendar';
+import { initAuth } from '../../lib/auth';
+import { userProfileRepository } from '../../repositories/userProfileRepository';
 import type {
   ExternalCalendarHint,
   OurCalendarEvent,
@@ -18,14 +21,17 @@ import type {
 } from '../../types/calendar';
 
 export const CalendarTabScreen = () => {
-  const [visibleYear, setVisibleYear] = useState(2026);
-  const [visibleMonth, setVisibleMonth] = useState(6);
-  const [selectedDateKey, setSelectedDateKey] = useState<string | null>('2026-06-21');
+  const [visibleYear, setVisibleYear] = useState(new Date().getFullYear());
+  const [visibleMonth, setVisibleMonth] = useState(new Date().getMonth() + 1);
+  const [selectedDateKey, setSelectedDateKey] = useState<string | null>(
+    `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
+  );
 
   const [events, setEvents] = useState<OurCalendarEvent[]>([]);
   const [memos, setMemos] = useState<OurCalendarMemo[]>([]);
   const [externalHints, setExternalHints] = useState<ExternalCalendarHint[]>([]);
   const [shareState, setShareState] = useState<'idle' | 'creating' | 'shared' | 'downloaded' | 'failed'>('idle');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [recordDrawerOpen, setRecordDrawerOpen] = useState(false);
   const [editingMemo, setEditingMemo] = useState<OurCalendarMemo | null>(null);
@@ -33,10 +39,40 @@ export const CalendarTabScreen = () => {
   const shareCardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    // Initialize auth listener
+    const unsubscribe = initAuth(
+      (_user, _token) => setIsAuthenticated(true),
+      () => setIsAuthenticated(false)
+    );
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     ourCalendarRepository.getCalendarEvents().then(setEvents);
     ourCalendarRepository.getCalendarMemos().then(setMemos);
     ourCalendarRepository.getExternalHints().then(setExternalHints);
   }, []);
+
+  useEffect(() => {
+    const fetchGoogleEvents = async () => {
+      const profile = userProfileRepository.getProfile();
+      if (!isAuthenticated || profile.calendar.externalCalendarStatus !== 'connected') {
+        return;
+      }
+      
+      const timeMin = new Date(visibleYear, visibleMonth - 1, 1);
+      const timeMax = new Date(visibleYear, visibleMonth, 0, 23, 59, 59); // end of month
+      
+      const googleEvents = await fetchGoogleCalendarEvents(timeMin, timeMax);
+      
+      setExternalHints((prev) => {
+        const withoutGoogle = prev.filter(h => h.providerId !== 'google');
+        return [...withoutGoogle, ...googleEvents];
+      });
+    };
+
+    fetchGoogleEvents();
+  }, [visibleYear, visibleMonth, isAuthenticated]);
 
   const goToPreviousMonth = () => {
     setSelectedDateKey(null);

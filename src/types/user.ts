@@ -9,6 +9,6 @@ export interface UserProfile {
   };
   calendar: {
     ourCalendarEnabled: boolean;
-    externalCalendarStatus: 'not_connected' | 'coming_soon';
+    externalCalendarStatus: 'not_connected' | 'coming_soon' | 'connected';
   };
 }
