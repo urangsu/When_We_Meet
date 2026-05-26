@@ -53,6 +53,52 @@ const ClassicOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({
 };
 // ...
 
+const VideoGreetingMotion: React.FC<InvitationOpeningMotionProps> = ({
+  preview,
+  onComplete,
+}) => {
+  useEffect(() => {
+    if (!preview) {
+      const timer = setTimeout(() => {
+        onComplete?.();
+      }, 8000); // 8 seconds video intro
+      return () => clearTimeout(timer);
+    }
+  }, [preview, onComplete]);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black flex items-center justify-center overflow-hidden">
+      <video 
+        src="/invite-video.mp4" 
+        autoPlay 
+        playsInline 
+        muted 
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        onError={(e) => {
+          // Fallback to a placeholder video if the local file is missing or invalid
+          e.currentTarget.src = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4";
+        }}
+      />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2, duration: 1 }}
+        className="absolute bottom-10 left-4 right-4 z-40 flex justify-center"
+      >
+        <div className="w-full max-w-[360px]">
+          <Button 
+            onClick={() => onComplete?.()} 
+            size="full"
+            className="shadow-lg shadow-black/50 bg-white/20 text-white border-white/50 backdrop-blur-sm hover:bg-white/30"
+          >
+            건너뛰기
+          </Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = ({
   title,
   hostName,
@@ -71,7 +117,7 @@ export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = (
   useEffect(() => {
     const openTimer = setTimeout(() => setOpened(true), prefersReducedMotion ? 80 : 650);
     
-    if (!preview) {
+    if (!preview && themeId !== 'prince') {
       const timer = setTimeout(() => {
         onComplete?.();
       }, prefersReducedMotion ? 1000 : 4200);
@@ -82,7 +128,11 @@ export const InvitationOpeningMotion: React.FC<InvitationOpeningMotionProps> = (
     } else {
         return () => clearTimeout(openTimer);
     }
-  }, [preview, onComplete, prefersReducedMotion]);
+  }, [preview, onComplete, prefersReducedMotion, themeId]);
+
+  if (themeId === 'prince') {
+    return <VideoGreetingMotion preview={preview} onComplete={onComplete} title={title} />;
+  }
 
   if (variant === 'classic') {
     return <ClassicOpeningMotion title={title} hostName={hostName} message={message} dateLabel={dateLabel} placeLabel={placeLabel} activityLabel={activityLabel} themeId={themeId} onComplete={onComplete} />;

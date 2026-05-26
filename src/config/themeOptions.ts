@@ -38,4 +38,11 @@ export const themeOptions: ThemeOption[] = [
     description: '깔끔하고 캐주얼한 무드',
     icon: Briefcase 
   },
+  {
+    id: 'prince',
+    label: '백마탄 왕자님',
+    lines: ['백마탄', '왕자님'],
+    description: '특별한 영상 인트로',
+    icon: Sparkles
+  },
 ];

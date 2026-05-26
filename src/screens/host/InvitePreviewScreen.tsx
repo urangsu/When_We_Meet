@@ -90,7 +90,11 @@ export const InvitePreviewScreen = () => {
         title: draft.title || '새로운 초대장',
         text: draft.hostMessage || '초대장을 확인해 주세요.',
       });
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.name === 'AbortError' || String(error).toLowerCase().includes('cancel') || String(error).toLowerCase().includes('abort')) {
+        // User canceled sharing, ignore the error
+        return;
+      }
       console.error('Failed to share image', error);
       showNotice('초대장 사진 공유에 실패했어요. 링크 만들기로 계속 진행해 주세요.');
     } finally {

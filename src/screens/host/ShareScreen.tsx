@@ -124,7 +124,11 @@ export const ShareScreen = () => {
         url: inviteUrl,
       });
       onFinishTutorial();
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.name === 'AbortError' || String(error).toLowerCase().includes('cancel') || String(error).toLowerCase().includes('abort')) {
+        // User canceled sharing, ignore the error
+        return;
+      }
       console.error('Failed to share image', error);
       try {
         await navigator.clipboard.writeText(inviteUrl);

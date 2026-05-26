@@ -6,7 +6,7 @@ export type MeetingCategory =
   | 'info'
   | 'self';
 
-export type ThemeId = 'calendar-kiss' | 'invite-spark' | 'brunch-letter' | 'office-escape';
+export type ThemeId = 'calendar-kiss' | 'invite-spark' | 'brunch-letter' | 'office-escape' | 'prince';
 export type ProfileColorId = 'white' | 'black' | 'pink' | 'skyblue' | 'beige' | 'red' | 'gray';
 
 export type { AttendanceStatus } from './types/meeting';
