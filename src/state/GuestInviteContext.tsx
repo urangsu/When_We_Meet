@@ -37,7 +37,7 @@ export const GuestInviteProvider = ({ children }: { children: React.ReactNode })
     let mounted = true;
     setLoadState('loading');
 
-    meetingRepository.getMeetingByInvite(meetingId, token).then((result) => {
+    meetingRepository.getMeetingByInvite(meetingId, token).then(async (result) => {
       if (!mounted) return;
 
       if (!result) {
@@ -50,6 +50,18 @@ export const GuestInviteProvider = ({ children }: { children: React.ReactNode })
       setMeeting(result.meeting);
       setInviteLink(result.inviteLink);
       setLoadState('ready');
+
+      const { receivedInviteRegistry } = await import('../repositories/receivedInviteRegistry');
+      const existing = receivedInviteRegistry.list().find((e) => e.meetingId === meetingId);
+      receivedInviteRegistry.upsert({
+        meetingId,
+        token: token,
+        title: result.meeting.title,
+        hostName: result.meeting.hostName || undefined,
+        message: result.meeting.hostMessage,
+        openedAt: existing?.openedAt ?? new Date().toISOString(),
+        lastViewedAt: new Date().toISOString(),
+      });
     });
 
     return () => {

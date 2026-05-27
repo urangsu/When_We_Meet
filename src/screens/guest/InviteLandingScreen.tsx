@@ -27,7 +27,32 @@ export const InviteLandingScreen = () => {
   }
 
   if (loadState === 'invalid') {
-    return <ScreenShell className="items-center justify-center p-5 text-center">초대장이 유효하지 않아요.</ScreenShell>;
+    return (
+      <ScreenShell className="items-center justify-center p-5 bg-bg-app">
+        <div className="w-full max-w-sm rounded-[24px] p-8 flex flex-col items-center text-center shadow-soft relative overflow-hidden bg-white mt-12 mb-auto border border-line">
+          <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center mb-6 border border-line">
+            <span className="text-3xl">📭</span>
+          </div>
+          <h2 className="font-bold text-xl leading-tight text-ink mb-4">
+            초대장을 열 수 없어요
+          </h2>
+          <div className="flex flex-col gap-2 text-sm text-ink-muted text-left w-full bg-slate-50 p-4 rounded-xl">
+            <span className="font-bold text-ink-hint text-xs mb-1">가능한 이유:</span>
+            <p>• 링크가 일부 잘못 복사되었거나</p>
+            <p>• 초대장이 만료되었거나</p>
+            <p>• 호스트가 초대장을 닫았어요.</p>
+          </div>
+          <p className="text-sm font-medium text-ink-hint mt-6">
+            다시 링크를 확인하시거나,<br/>초대한 사람에게 새 링크를 요청해 주세요.
+          </p>
+        </div>
+        <div className="w-full mt-auto justify-end pb-8">
+          <Button onClick={() => navigate('/app')} size="full" variant="outline" className="bg-white">
+            홈으로 가기
+          </Button>
+        </div>
+      </ScreenShell>
+    );
   }
 
   const title = meeting?.title || '새로운 초대장';

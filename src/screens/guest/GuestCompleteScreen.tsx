@@ -46,6 +46,11 @@ export const GuestCompleteScreen = () => {
           },
         });
         setSubmitState('submitted');
+        
+        if (meetingId && meetingId !== 'demo') {
+          const { receivedInviteRegistry } = await import('../../repositories/receivedInviteRegistry');
+          receivedInviteRegistry.markResponded(meetingId);
+        }
       } catch {
         setSubmitState('failed');
       }

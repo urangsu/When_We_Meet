@@ -73,10 +73,13 @@ export const backendMeetingRepository: MeetingRepository = {
     }
 
     const meetingId = meetingRow.id as MeetingId;
+    const { hashInviteToken } = await import('../utils/tokenHash');
+    const tokenHash = await hashInviteToken(inviteToken);
 
     const { error: inviteError } = await supabase.from('invite_links').insert({
       meeting_id: meetingId,
-      token_plain_for_local_mvp_only: inviteToken,
+      token_plain_for_local_mvp_only: inviteToken, // kept for migration compatibility
+      token_hash: tokenHash,
       access_mode: 'link_anyone',
       is_closed: false,
       duplicate_guard_mode: 'none',
@@ -100,12 +103,14 @@ export const backendMeetingRepository: MeetingRepository = {
     token: InviteToken
   ): Promise<{ meeting: MeetingRecord; inviteLink: InviteLink } | null> {
     const supabase = getClientOrThrow();
+    const { hashInviteToken } = await import('../utils/tokenHash');
+    const tokenHash = await hashInviteToken(token);
 
     const { data: inviteRow, error: inviteError } = await supabase
       .from('invite_links')
       .select('*')
       .eq('meeting_id', meetingId)
-      .eq('token_plain_for_local_mvp_only', token)
+      .eq('token_hash', tokenHash)
       .maybeSingle();
 
     if (inviteError) {
@@ -198,12 +203,15 @@ export const backendMeetingRepository: MeetingRepository = {
     }
 
     const response = input.response;
+    const { hashInviteToken } = await import('../utils/tokenHash');
+    const tokenHash = await hashInviteToken(input.inviteToken);
 
     const { data: insertedRow, error: insertError } = await supabase
       .from('meeting_responses')
       .insert({
         meeting_id: input.meetingId,
-        invite_token_plain_for_local_mvp_only: input.inviteToken,
+        invite_token_plain_for_local_mvp_only: input.inviteToken, // kept for migration compatibility
+        invite_token_hash: tokenHash,
         guest_name: response.nickname || '',
         attendance: response.attendance,
         date_votes: response.dateLabels || [],

@@ -16,11 +16,11 @@ import { meetingRepository } from '../../repositories/getMeetingRepository';
 import { userProfileRepository } from '../../repositories/userProfileRepository';
 import type { MeetingRecord } from '../../types/meeting';
 
+import { receivedInviteRegistry, ReceivedInviteEntry } from '../../repositories/receivedInviteRegistry';
+
 export const HomeScreen = () => {
   const navigate = useNavigate();
-  const [receivedInvites, setReceivedInvites] = useState(() => 
-    getRepositoryMode() === 'backend' ? [] : mockReceivedInvites
-  );
+  const [receivedInvites, setReceivedInvites] = useState<ReceivedInviteEntry[]>([]);
   const [meetings, setMeetings] = useState<MeetingRecord[]>([]);
   const [isManagingInvites, setIsManagingInvites] = useState(false);
   const [showWelcomeInvite, setShowWelcomeInvite] = useState(false);
@@ -32,6 +32,7 @@ export const HomeScreen = () => {
     if (!hasCompletedWelcome()) {
       setShowWelcomeInvite(true);
     }
+    setReceivedInvites(receivedInviteRegistry.list());
     
     // Load created meetings
     const loadMeetings = async () => {
@@ -52,15 +53,13 @@ export const HomeScreen = () => {
 
   // ... (rest of the component)
 
-  const handleDeleteInvite = (inviteId: string) => {
-    setReceivedInvites((prev) => prev.filter((invite) => invite.id !== inviteId));
+  const handleDeleteInvite = (meetingId: string) => {
+    receivedInviteRegistry.remove(meetingId);
+    setReceivedInvites((prev) => prev.filter((invite) => invite.meetingId !== meetingId));
   };
 
-  const handleOpenInvite = (inviteId: string) => {
-    // Prototype only: real read/unread status will be persisted after DB integration.
-    setTimeout(() => {
-      navigate('/invite/demo');
-    }, 200);
+  const handleOpenInvite = (meetingId: string, token: string) => {
+    navigate(`/invite/${meetingId}/${token}`);
   };
 
   return (
@@ -148,7 +147,7 @@ export const HomeScreen = () => {
             <AnimatePresence initial={false}>
               {receivedInvites.map((invite) => (
                 <motion.div
-                  key={invite.id}
+                  key={invite.meetingId}
                   initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                   animate={{ opacity: 1, height: 'auto', marginBottom: 12 }}
                   exit={{ opacity: 0, height: 0, marginBottom: 0, x: -40 }}

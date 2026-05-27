@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { CalendarCheck, Minus } from 'lucide-react';
-import type { ReceivedInvite } from '../../data/mockReceivedInvites';
+import type { ReceivedInviteEntry } from '../../repositories/receivedInviteRegistry';
 
 interface ReceivedInviteCardProps {
-  invite: ReceivedInvite;
+  invite: ReceivedInviteEntry;
   isManaging: boolean;
-  onOpen: (inviteId: string) => void;
-  onDelete: (inviteId: string) => void;
+  onOpen: (meetingId: string, token: string) => void;
+  onDelete: (meetingId: string) => void;
 }
 
 export const ReceivedInviteCard = ({
@@ -16,11 +16,11 @@ export const ReceivedInviteCard = ({
   onOpen,
   onDelete,
 }: ReceivedInviteCardProps) => {
-  const isUnopened = invite.status === 'unopened';
+  const isUnopened = !invite.respondedAt;
 
   const handleClick = () => {
     if (isManaging) return;
-    onOpen(invite.id);
+    onOpen(invite.meetingId, invite.token);
   };
 
   return (
@@ -30,7 +30,7 @@ export const ReceivedInviteCard = ({
           initial={{ opacity: 0, scale: 0.8, x: -10 }}
           animate={{ opacity: 1, scale: 1, x: 0 }}
           exit={{ opacity: 0, scale: 0.8, x: -10 }}
-          onClick={() => onDelete(invite.id)}
+          onClick={() => onDelete(invite.meetingId)}
           className="absolute left-0 z-10 p-2"
         >
           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-soft">
@@ -58,10 +58,10 @@ export const ReceivedInviteCard = ({
 
               <div className="flex min-w-0 flex-col gap-1">
                 <p className="text-xs font-bold text-primary-deep truncate">
-                  {invite.fromName}님이 초대장을 보냈어요
+                  {invite.hostName ? `${invite.hostName}님이 초대장을 보냈어요` : '새로운 초대장이 도착했어요'}
                 </p>
                 <p className="text-sm font-bold text-ink truncate">
-                  아직 열지 않은 초대장
+                  {invite.title || '아직 열지 않은 초대장'}
                 </p>
                 <p className="text-xs text-ink-hint truncate">
                   눌러서 확인하기
@@ -72,11 +72,11 @@ export const ReceivedInviteCard = ({
         ) : (
           <div className="bg-surface border border-line rounded-2xl p-5 shadow-soft flex justify-between items-center h-[104px]">
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-bold text-ink-hint">{invite.fromName}님이 보낸 초대장</span>
+              <span className="text-xs font-bold text-ink-hint">{invite.hostName ? `${invite.hostName}님이 보낸 초대장` : '확인한 초대장'}</span>
               <h3 className="font-bold text-lg text-ink truncate max-w-[200px]">{invite.title}</h3>
             </div>
             <div className="text-xs text-ink-hint font-medium">
-              {invite.receivedAt}
+              {new Date(invite.lastViewedAt).toLocaleDateString()}
             </div>
           </div>
         )}

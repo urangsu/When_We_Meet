@@ -20,6 +20,10 @@ export const MyPageScreen = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(() => userProfileRepository.getProfile());
   const [activePanel, setActivePanel] = useState<null | 'profile' | 'notifications' | 'calendar' | 'about'>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    message: string;
+    action: () => void;
+  } | null>(null);
   
   // profile panel drafts
   const [draftName, setDraftName] = useState(profile.displayName);
@@ -113,7 +117,7 @@ export const MyPageScreen = () => {
       {/* Panels */}
       {activePanel && (
         <div className="fixed inset-0 z-50 flex justify-center bg-black/10 animate-in fade-in duration-200">
-          <div className="h-full w-full max-w-[430px] bg-bg-app p-5 shadow-2xl animate-in slide-in-from-bottom-8">
+          <div className="h-full w-full max-w-[430px] bg-bg-app p-5 shadow-2xl animate-in slide-in-from-bottom-8 overflow-y-auto">
             <header className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-bold">
                 {activePanel === 'profile' && '프로필 설정'}
@@ -255,12 +259,93 @@ export const MyPageScreen = () => {
             )}
 
             {activePanel === 'about' && (
-              <div className="text-sm text-ink-muted flex flex-col gap-2">
-                <p>When We Meet</p>
-                <p>데이터 저장: 이 브라우저</p>
-                <p>버전: Beta MVP</p>
+              <div className="flex flex-col gap-6 text-sm">
+                <div className="flex flex-col gap-2 p-4 bg-white rounded-xl border border-ink-line">
+                  <h3 className="font-bold text-ink mb-1">데이터 저장 방식</h3>
+                  <div className="flex flex-col gap-1 text-ink-muted">
+                    <p>• <span className="font-semibold">초대장/응답:</span> Supabase 클라우드</p>
+                    <p>• <span className="font-semibold">내 설정/받은 초대장 기록/작성 중 초대장:</span> 이 브라우저</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <h3 className="font-bold text-ink pl-1">데이터 관리 (초기화)</h3>
+                  
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => {
+                        setConfirmDialog({
+                          message: '작성 중이던 초대장 정보가 모두 사라집니다. 초기화할까요?',
+                          action: () => {
+                            window.localStorage.removeItem('wwm:create-draft:v1');
+                            setConfirmDialog(null);
+                          }
+                        });
+                      }}
+                      className="w-full text-left p-4 bg-white rounded-xl border border-line text-ink hover:border-rose transition-colors"
+                    >
+                      <div className="font-semibold">작성 중 초대장 초기화</div>
+                      <div className="text-xs text-ink-hint mt-0.5">만들다가 임시 저장된 초대장 삭제</div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setConfirmDialog({
+                          message: '홈 화면의 받은 초대장 기록이 모두 사라집니다. (원래 초대장 링크를 누르면 다시 볼 수 있습니다) 삭제할까요?',
+                          action: () => {
+                            window.localStorage.removeItem('wwm:received-invites:v1');
+                            setConfirmDialog(null);
+                          }
+                        });
+                      }}
+                      className="w-full text-left p-4 bg-white rounded-xl border border-line text-ink hover:border-rose transition-colors"
+                    >
+                      <div className="font-semibold">받은 초대장 기록 삭제</div>
+                      <div className="text-xs text-ink-hint mt-0.5">내가 받은 친구들의 초대장 열람 기록 삭제</div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setConfirmDialog({
+                          message: '내 이름, 프로필 등 설정이 모두 초기화됩니다. 완전히 초기화할까요?',
+                          action: () => {
+                            window.localStorage.removeItem('wwm:user-profile:v1');
+                            window.location.reload();
+                          }
+                        });
+                      }}
+                      className="w-full text-left p-4 bg-white rounded-xl border border-line text-ink hover:border-rose transition-colors"
+                    >
+                      <div className="font-semibold">내 정보 초기화</div>
+                      <div className="text-xs text-ink-hint mt-0.5">프로필, 이름, 설정 초기화</div>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-8 text-center text-xs text-ink-hint">
+                  <p>When We Meet Beta MVP</p>
+                </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* Dialog Overlay */}
+      {confirmDialog && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-5 bg-black/40 animate-in fade-in duration-200">
+          <div className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl animate-in zoom-in-95">
+            <h3 className="font-bold text-lg text-ink mb-2">정말 삭제할까요?</h3>
+            <p className="text-sm text-ink-muted mb-6 leading-relaxed">
+              {confirmDialog.message}
+            </p>
+            <div className="flex gap-2 w-full">
+              <Button onClick={() => setConfirmDialog(null)} variant="outline" className="flex-1">
+                취소
+              </Button>
+              <Button onClick={confirmDialog.action} className="flex-1 bg-rose text-white border-rose-deep">
+                삭제하기
+              </Button>
+            </div>
           </div>
         </div>
       )}

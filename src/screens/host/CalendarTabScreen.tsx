@@ -12,6 +12,7 @@ import { CalendarDayCell } from '../../components/meeting/CalendarDayCell';
 import { Button } from '../../components/Button';
 import { CalendarRecordDrawer } from '../../components/calendar/CalendarRecordDrawer';
 import { fetchGoogleCalendarEvents } from '../../lib/googleCalendar';
+import { featureFlags } from '../../config/featureFlags';
 import { initAuth } from '../../lib/auth';
 import { userProfileRepository } from '../../repositories/userProfileRepository';
 import type {
@@ -55,6 +56,8 @@ export const CalendarTabScreen = () => {
 
   useEffect(() => {
     const fetchGoogleEvents = async () => {
+      if (!featureFlags.externalCalendar) return;
+
       const profile = userProfileRepository.getProfile();
       if (!isAuthenticated || profile.calendar.externalCalendarStatus !== 'connected') {
         return;
