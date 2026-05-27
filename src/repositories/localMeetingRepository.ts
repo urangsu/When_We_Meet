@@ -59,7 +59,7 @@ export const localMeetingRepository: MeetingRepository = {
     const links = readJson<InviteLink[]>(INVITE_LINKS_KEY, []);
     writeJson(INVITE_LINKS_KEY, [...links, inviteLink]);
 
-    return { meetingId, inviteToken, inviteUrlPath: `/#/invite/${meetingId}/${inviteToken}` };
+    return { meetingId, inviteToken, inviteUrlPath: `/invite/${meetingId}/${inviteToken}` };
   },
 
   async getMeetingByInvite(meetingId: MeetingId, token: InviteToken) {

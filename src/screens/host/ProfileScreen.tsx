@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft, Check, Camera, User, Hash, HelpCircle, History } from 'lucide-react';
+import { ChevronLeft, Check, Camera, User, Hash, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
@@ -28,6 +28,12 @@ export const ProfileScreen = () => {
   const selectedColor = profileColorOptions.find(c => c.id === selectedColorId) || profileColorOptions[1];
 
   const handleNext = () => {
+    // Optionally save these preference as latest profile
+    userProfileRepository.updateProfile({
+      profileType: selected as UserProfile['profileType'],
+      colorId: selectedColorId,
+    });
+    
     updateDraft({ 
       hostColorId: selectedColorId,
       hostName: draft.hostName || userProfile.displayName,

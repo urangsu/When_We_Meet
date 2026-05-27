@@ -30,7 +30,7 @@ export const MeetingInfoScreen = () => {
     updateDraft({
       title: name.trim(),
       hostMessage: message.trim(),
-      hostName: hostName,
+      hostName: draft.hostName || userProfile.displayName,
     });
     navigate('/app/create/place');
   };

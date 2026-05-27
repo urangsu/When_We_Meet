@@ -1,12 +1,27 @@
 import React, { forwardRef } from 'react';
-import { MapPin, Calendar, Clock, Smile } from 'lucide-react';
+import { MapPin, Calendar, Clock, Smile, Target } from 'lucide-react';
 import { CreateMeetingDraft } from '../../types/meeting';
+import { activityOptions } from '../../config/activityOptions';
 
 interface InviteShareCardProps {
   draft: CreateMeetingDraft;
 }
 
 export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(({ draft }, ref) => {
+  const getActivityLabel = () => {
+    if (draft.activityMode === 'custom' && draft.customActivity) return draft.customActivity;
+    if (draft.activityMode === 'select' && draft.activityIds.length > 0) {
+      if (draft.activityIds.length === 1) {
+          const act = activityOptions.find(a => a.id === draft.activityIds[0]);
+          return act ? act.label : '활동 투표 예정';
+      }
+      return '활동 후보 투표 예정';
+    }
+    return '';
+  };
+
+  const activityLabel = getActivityLabel();
+
   return (
     <div 
       ref={ref}
@@ -48,6 +63,12 @@ export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(
                       : '어디서든 좋아요'}
                 </span>
               </div>
+              {activityLabel && (
+                <div className="flex items-center gap-2 text-sm">
+                  <Target size={16} className="text-rose shrink-0" />
+                  <span className="font-bold text-ink">{activityLabel}</span>
+                </div>
+              )}
               {draft.timeMode === 'fixed' && draft.timeLabels.length > 0 && (
                 <div className="flex items-center gap-2 text-sm">
                   <Clock size={16} className="text-rose shrink-0" />
@@ -58,7 +79,8 @@ export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(
           </div>
         </div>
 
-        <div className="mt-8 z-10">
+        <div className="mt-6 z-10 text-center">
+          <p className="text-ink-muted font-bold text-sm mb-1">링크를 눌러 초대장을 확인하세요!</p>
           <p className="text-xs font-bold text-rose/60 tracking-widest uppercase">
             When We Meet
           </p>

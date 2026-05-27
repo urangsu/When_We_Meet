@@ -153,7 +153,7 @@ export const ShareScreen = () => {
   }
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-6 items-center justify-center text-center p-5 pt-20 relative">
+    <ScreenShell bottomInset="cta" className="gap-6 items-center justify-center text-center p-5 pt-20 relative">
       <AnimatePresence>
       {notice && (
         <motion.div
@@ -206,7 +206,7 @@ export const ShareScreen = () => {
         </div>
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <Button onClick={() => navigate(`/app/meetings/${meetingId}/dashboard`)} size="full" variant="outline">
           <LayoutDashboard size={20}/> 응답 현황 보기
         </Button>

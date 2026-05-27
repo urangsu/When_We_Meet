@@ -91,7 +91,7 @@ export const backendMeetingRepository: MeetingRepository = {
     return {
       meetingId,
       inviteToken,
-      inviteUrlPath: `/#/invite/${meetingId}/${inviteToken}`,
+      inviteUrlPath: `/invite/${meetingId}/${inviteToken}`,
     };
   },
 
