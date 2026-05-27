@@ -34,4 +34,5 @@ export interface OurCalendarRepository {
   createCalendarMemo(input: CreateCalendarMemoInput): Promise<OurCalendarMemo>;
   updateCalendarMemo(input: UpdateCalendarMemoInput): Promise<OurCalendarMemo>;
   deleteCalendarMemo(id: string): Promise<void>;
+  createCalendarEvent(input: Omit<OurCalendarEvent, 'id' | 'source'>): Promise<OurCalendarEvent>;
 }

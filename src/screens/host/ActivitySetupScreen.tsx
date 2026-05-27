@@ -44,7 +44,7 @@ export const ActivitySetupScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+    <ScreenShell bottomInset="cta" className="gap-8">
       {isTutorial && (
         <TutorialHint
           step="5/6"
@@ -115,7 +115,7 @@ export const ActivitySetupScreen = () => {
         )}
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <Button 
           disabled={!isValid}
           onClick={handleNext} 

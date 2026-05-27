@@ -10,7 +10,7 @@ interface InviteShareCardProps {
 export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(({ draft }, ref) => {
   const getActivityLabel = () => {
     if (draft.activityMode === 'custom' && draft.customActivity) return draft.customActivity;
-    if (draft.activityMode === 'select' && draft.activityIds.length > 0) {
+    if (draft.activityMode === 'select' && draft.activityIds && draft.activityIds.length > 0) {
       if (draft.activityIds.length === 1) {
           const act = activityOptions.find(a => a.id === draft.activityIds[0]);
           return act ? act.label : '활동 투표 예정';
@@ -48,7 +48,7 @@ export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(
               <div className="flex items-center gap-2 text-sm">
                 <Calendar size={16} className="text-rose shrink-0" />
                 <span className="font-bold text-ink">
-                  {draft.dateLabels.length > 0
+                  {draft.dateLabels && draft.dateLabels.length > 0
                     ? `${draft.dateLabels[0]} 등 ${draft.dateLabels.length}개 후보`
                     : '날짜 후보 투표 예정'}
                 </span>
@@ -69,7 +69,7 @@ export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(
                   <span className="font-bold text-ink">{activityLabel}</span>
                 </div>
               )}
-              {draft.timeMode === 'fixed' && draft.timeLabels.length > 0 && (
+              {draft.timeMode === 'fixed' && draft.timeLabels && draft.timeLabels.length > 0 && (
                 <div className="flex items-center gap-2 text-sm">
                   <Clock size={16} className="text-rose shrink-0" />
                   <span className="font-bold text-ink">{draft.timeLabels[0]}</span>

@@ -57,7 +57,7 @@ export const TimeSetupScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+    <ScreenShell bottomInset="cta" className="gap-8">
       <header className="flex flex-col gap-2 pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
@@ -130,7 +130,7 @@ export const TimeSetupScreen = () => {
         )}
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <Button 
           disabled={!isValid} 
           onClick={handleNext} 

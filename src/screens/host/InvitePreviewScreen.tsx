@@ -119,7 +119,7 @@ export const InvitePreviewScreen = () => {
   }
   
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-6">
+    <ScreenShell bottomInset="cta" className="gap-6">
       <AnimatePresence>
         {notice && (
           <motion.div
@@ -312,7 +312,7 @@ export const InvitePreviewScreen = () => {
         </section>
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <div className="flex flex-col gap-3 w-full">
           <p className="text-center text-xs text-ink-hint">작성한 내용으로 초대장 이미지를 볼 수 있어요</p>
           <Button onClick={handleShareInviteImage} disabled={isSharingImage} size="full" className="shadow-warm bg-rose-50 border border-rose-200 text-rose-deep hover:bg-rose-100">

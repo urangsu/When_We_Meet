@@ -13,7 +13,14 @@ import { meetingRepository } from '../../repositories/getMeetingRepository';
 export const DashboardScreen = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams();
-  const resolvedMeetingId = meetingId || 'demo';
+  if (!meetingId) {
+    return (
+      <ScreenShell className="items-center justify-center p-5 text-center">
+        모임 정보를 찾을 수 없어요.
+      </ScreenShell>
+    );
+  }
+  const resolvedMeetingId = meetingId;
 
   const [responses, setResponses] = useState<MeetingResponse[]>([]);
 
@@ -64,7 +71,7 @@ export const DashboardScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-8 pb-20">
+    <ScreenShell bottomInset="cta" className="gap-8 pb-20">
       <header className="flex items-center justify-between pt-2">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
@@ -220,7 +227,7 @@ export const DashboardScreen = () => {
       <VoteRankingList title="만날 곳 후보" items={aggregation.placeRanking} emptyText="아직 제출된 장소가 없어요." />
       <VoteRankingList title="뭐 할지 선호" items={aggregation.activityRanking} emptyText="아직 제안된 활동이 없어요." />
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <Button
           onClick={() =>
             navigate(`/app/meetings/${resolvedMeetingId}/confirm`, {

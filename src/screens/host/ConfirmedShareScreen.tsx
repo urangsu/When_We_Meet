@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, Share2, CalendarPlus } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -6,13 +6,28 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { InitialAvatarGroup } from '../../components/profile/InitialAvatarGroup';
 import { meetingRepository } from '../../repositories/getMeetingRepository';
+import { ourCalendarRepository } from '../../repositories/getOurCalendarRepository';
+import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage';
+import { ConfirmedShareCard } from '../../components/meeting/ConfirmedShareCard';
 import type { ConfirmedPlan, MeetingResponse } from '../../types/meeting';
 import type { ProfileColorId } from '../../types';
+import { AnimatePresence, motion } from 'motion/react';
 
 export const ConfirmedShareScreen = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams();
-  const resolvedMeetingId = meetingId || 'demo';
+  const confirmedCardRef = useRef<HTMLDivElement>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  const showNotice = (text: string) => {
+    setNotice(text);
+    setTimeout(() => setNotice(null), 3000);
+  };
+
+  if (!meetingId) {
+    return <ScreenShell className="items-center justify-center p-5 text-center">모임 정보를 찾을 수 없어요.</ScreenShell>;
+  }
+  const resolvedMeetingId = meetingId;
   const [confirmedPlan, setConfirmedPlan] = useState<ConfirmedPlan | null>(null);
   const [responses, setResponses] = useState<MeetingResponse[]>([]);
 
@@ -21,14 +36,45 @@ export const ConfirmedShareScreen = () => {
     meetingRepository.getMeetingResponses(resolvedMeetingId).then(setResponses);
   }, [resolvedMeetingId]);
 
-  const handleShare = () => {
-    // TODO: Implement Kakao SDK share
-    console.log('카톡/DM 공유는 곧 연결할게요.');
+  const dateDisplay = confirmedPlan?.dateLabel || '날짜 미정';
+  const timeDisplay = confirmedPlan?.timeLabel || '시간 미정';
+  const placeDisplay = confirmedPlan?.placeName || '만날 곳 미정';
+  const activityItems = confirmedPlan?.activityLabels || [];
+
+  const handleShare = async () => {
+    if (!confirmedCardRef.current) return;
+    try {
+      const file = await createPngFileFromElement(confirmedCardRef.current, 'when_we_meet_confirmed.png');
+      await shareImageFile(file, {
+        title: '모임이 확정됐어요',
+        text: `${dateDisplay} ${timeDisplay} ${placeDisplay}`,
+      });
+      showNotice('확정 카드를 공유했어요.');
+    } catch {
+      await navigator.clipboard.writeText(`${dateDisplay} ${timeDisplay} ${placeDisplay}`);
+      showNotice('공유가 어려워서 확정 내용을 복사했어요.');
+    }
   };
 
-  const handleCalendar = () => {
-    // TODO: Implement Calendar integration
-    console.log('캘린더 추가는 곧 연결할게요.');
+  const handleCalendar = async () => {
+    try {
+      // NOTE: We should parse dateKey, but this MVP relies on a naive mapped approach or empty date string.
+      // E.g. simple regex extraction for demonstration, or default to today if not parsed well.
+      const match = dateDisplay.match(/(\d{4})-(\d{2})-(\d{2})/);
+      const dateKey = match ? match[0] : new Date().toISOString().split('T')[0];
+
+      await ourCalendarRepository.createCalendarEvent({
+        type: 'confirmed_meeting',
+        title: '모임', // Optionally fetch meeting title
+        dateKey,
+        meetingId: resolvedMeetingId,
+        timeLabel: timeDisplay,
+        colorKey: 'rose',
+      });
+      showNotice('우리 달력에 저장했어요.');
+    } catch {
+      showNotice('날짜 형식이 명확하지 않아 우리 달력에 자동 추가하지 못했어요.');
+    }
   };
 
   const participants = responses
@@ -39,13 +85,20 @@ export const ConfirmedShareScreen = () => {
       colorId: ['pink', 'skyblue', 'beige', 'gray', 'red', 'white'][index % 6] as ProfileColorId,
     }));
 
-  const dateDisplay = confirmedPlan?.dateLabel || '날짜 미정';
-  const timeDisplay = confirmedPlan?.timeLabel || '시간 미정';
-  const placeDisplay = confirmedPlan?.placeName || '만날 곳 미정';
-  const activityItems = confirmedPlan?.activityLabels || [];
-
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
+    <ScreenShell bottomInset="cta" className="gap-6 bg-bg-app">
+      <AnimatePresence>
+        {notice && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            className="fixed bottom-28 left-5 right-5 z-50 rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg"
+          >
+            {notice}
+          </motion.div>
+        )}
+      </AnimatePresence>
       <header className="flex flex-col gap-2 pt-2 px-5">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate('/app')} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
@@ -101,7 +154,11 @@ export const ConfirmedShareScreen = () => {
         </div>
       </div>
 
-      <BottomCTA withBottomNav>
+      <div className="fixed left-[-10000px] top-0 pointer-events-none">
+        <ConfirmedShareCard ref={confirmedCardRef} confirmedPlan={confirmedPlan} participants={participants} />
+      </div>
+
+      <BottomCTA>
         <div className="flex flex-col gap-3 w-full">
           <Button 
             onClick={handleShare}

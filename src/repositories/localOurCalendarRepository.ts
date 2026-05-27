@@ -5,10 +5,11 @@ import {
   mockOurCalendarShareLinks,
   mockOurCalendarSpace,
 } from '../data/mockOurCalendar';
-import type { OurCalendarMemo } from '../types/calendar';
+import type { OurCalendarMemo, OurCalendarEvent } from '../types/calendar';
 import type { OurCalendarRepository } from './ourCalendarRepository';
 
 const OUR_CALENDAR_MEMOS_KEY = 'wwm:our-calendar:memos:v1';
+const OUR_CALENDAR_EVENTS_KEY = 'wwm:our-calendar:events:v1';
 
 const now = () => new Date().toISOString();
 
@@ -35,13 +36,31 @@ const writeMemos = (memos: OurCalendarMemo[]) => {
   }
 };
 
+const readEvents = () => {
+  if (!hasWindow()) return mockOurCalendarEvents;
+  const raw = window.localStorage.getItem(OUR_CALENDAR_EVENTS_KEY);
+  if (!raw) return mockOurCalendarEvents;
+
+  try {
+    return JSON.parse(raw) as OurCalendarEvent[];
+  } catch {
+    return mockOurCalendarEvents;
+  }
+};
+
+const writeEvents = (events: OurCalendarEvent[]) => {
+  if (hasWindow()) {
+    window.localStorage.setItem(OUR_CALENDAR_EVENTS_KEY, JSON.stringify(events));
+  }
+};
+
 export const localOurCalendarRepository: OurCalendarRepository = {
   async getCalendarSpace() {
     return mockOurCalendarSpace;
   },
 
   async getCalendarEvents() {
-    return mockOurCalendarEvents;
+    return readEvents();
   },
 
   async getCalendarMemos() {
@@ -104,5 +123,16 @@ export const localOurCalendarRepository: OurCalendarRepository = {
   async deleteCalendarMemo(id) {
     const memos = readMemos();
     writeMemos(memos.filter((memo) => memo.id !== id));
+  },
+
+  async createCalendarEvent(input) {
+    const events = readEvents();
+    const event: OurCalendarEvent = {
+        ...input,
+        id: createId('event'),
+        source: 'our_calendar',
+    };
+    writeEvents([event, ...events]);
+    return event;
   },
 };

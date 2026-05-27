@@ -20,7 +20,7 @@ export const ThemeScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-8">
+    <ScreenShell bottomInset="cta" className="gap-8">
       <header className="flex items-center gap-4 pt-2">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
         <h1 className="font-bold text-2xl">어떤 분위기가 좋은가요?</h1>
@@ -59,7 +59,7 @@ export const ThemeScreen = () => {
         ))}
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <div className="flex flex-col items-center w-full">
           <p className="text-center text-sm text-ink-hint mb-3">초대장의 배경색과 글꼴이 변경됩니다</p>
           <Button onClick={handleNext} size="full">다음 · 프로필 고르기</Button>

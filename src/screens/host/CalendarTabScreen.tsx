@@ -171,7 +171,7 @@ export const CalendarTabScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav className="bg-bg-app">
+    <ScreenShell bottomInset="nav" className="bg-bg-app">
       <div className="min-h-dvh pb-24">
         <header className="px-5 pt-8 pb-4">
           <h1 className="text-2xl font-bold mb-2">우리 달력</h1>

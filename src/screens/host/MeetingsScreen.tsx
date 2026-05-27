@@ -4,6 +4,8 @@ import { MeetingSummaryCard } from '../../components/meeting/MeetingSummaryCard'
 import { useNavigate } from 'react-router-dom';
 import { getRepositoryMode } from '../../repositories/repositoryMode';
 import { mockMeetings } from '../../data/mockMeetings';
+import { createdMeetingRegistry } from '../../repositories/createdMeetingRegistry';
+import { meetingRepository } from '../../repositories/getMeetingRepository';
 import type { MeetingRecord } from '../../types/meeting';
 
 type MeetingFilter = 'all' | 'ongoing' | 'waiting' | 'past';
@@ -14,18 +16,31 @@ export const MeetingsScreen = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (getRepositoryMode() !== 'backend') {
-      setMeetings(mockMeetings);
-    }
+    const load = async () => {
+      if (getRepositoryMode() !== 'backend') {
+        setMeetings(mockMeetings as unknown as MeetingRecord[]);
+        return;
+      }
+
+      const ids = createdMeetingRegistry.list();
+      const records = await Promise.all(ids.map((id) => meetingRepository.getMeetingById(id)));
+      setMeetings(records.filter(Boolean) as MeetingRecord[]);
+    };
+
+    load();
   }, []);
 
   const filteredMeetings = meetings.filter((meeting) => {
     if (filter === 'all') return true;
-    return meeting.status === filter;
+    if (filter === 'ongoing') return meeting.status === 'collecting';
+    // If waiting means response > 0
+    if (filter === 'waiting') return meeting.status === 'collecting' && meeting.responses && meeting.responses.length === 0; 
+    if (filter === 'past') return meeting.status === 'closed' || meeting.status === 'confirmed';
+    return true;
   });
 
   return (
-    <ScreenShell withBottomNav className="bg-bg-app">
+    <ScreenShell bottomInset="nav" className="bg-bg-app gap-0">
       <header className="px-5 pt-8 pb-4">
         <h1 className="text-2xl font-bold mb-2">내 모임</h1>
         <p className="text-ink-muted text-sm leading-relaxed">

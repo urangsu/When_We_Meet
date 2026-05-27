@@ -177,7 +177,7 @@ export const CalendarCandidatePicker: React.FC<CalendarCandidatePickerProps> = (
         </div>
       )}
 
-      <BottomCTA withBottomNav={withBottomNav}>
+      <BottomCTA>
         <Button 
           disabled={selectedDates.length === 0} 
           onClick={() => onSubmit(selectedDateLabels)} 

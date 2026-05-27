@@ -10,6 +10,7 @@ import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { meetingRepository } from '../../repositories/getMeetingRepository';
 import { readJson, writeJson } from '../../repositories/localStorageAdapter';
 import { createPngFileFromElement, shareImageFile } from '../../utils/shareImage';
+import { createdMeetingRegistry } from '../../repositories/createdMeetingRegistry';
 import { InviteShareCard } from '../../components/invite/InviteShareCard';
 import { completeTutorial, markWelcomeCompleted } from '../../utils/onboardingState';
 
@@ -91,6 +92,8 @@ export const ShareScreen = () => {
         }
 
         const result = await meetingRepository.createMeetingWithInviteLink(draft);
+        createdMeetingRegistry.add(result.meetingId);
+        
         const nextUrl = getInviteShareUrl({
           meetingId: result.meetingId,
           token: result.inviteToken,

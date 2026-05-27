@@ -80,7 +80,7 @@ export const DatePickerScreen = () => {
   };
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-6">
+    <ScreenShell bottomInset="cta" className="gap-6">
       {isTutorial && (
         <TutorialHint
           step="3/6"
@@ -112,7 +112,7 @@ export const DatePickerScreen = () => {
         onPreviousMonth={goToPreviousMonth}
         onNextMonth={goToNextMonth}
         onSubmit={handleNext}
-        withBottomNav
+        withBottomNav={false}
       />
     </ScreenShell>
   );

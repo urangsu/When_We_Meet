@@ -13,7 +13,10 @@ export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { meetingId } = useParams();
-  const resolvedMeetingId = meetingId || 'demo';
+  if (!meetingId) {
+    return <ScreenShell className="items-center justify-center p-5 text-center">모임 정보를 찾을 수 없어요.</ScreenShell>;
+  }
+  const resolvedMeetingId = meetingId;
 
   const statePlan = (location.state as { selectedPlan?: MeetingRecommendedPlan } | null)
     ?.selectedPlan;
@@ -46,7 +49,7 @@ export const ConfirmPlanScreen = () => {
   }
 
   return (
-    <ScreenShell withBottomNav hasBottomCTA className="gap-6 bg-bg-app">
+    <ScreenShell bottomInset="cta" className="gap-6 bg-bg-app">
       <header className="flex flex-col gap-2 pt-2 px-5">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2"><ChevronLeft size={24}/></button>
@@ -100,7 +103,7 @@ export const ConfirmPlanScreen = () => {
         </Card>
       </div>
 
-      <BottomCTA withBottomNav>
+      <BottomCTA>
         <Button onClick={handleConfirm} size="full">
           이 모임으로 확정하기
         </Button>
