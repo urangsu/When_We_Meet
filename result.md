@@ -1,94 +1,72 @@
-# When We Meet Phase P1-M5: Supabase 초대 보안, 받은 초대장 히스토리, Guest 오류 UX, 데이터 관리, 베타 안정화 패스
+# When We Meet Phase I-1A: Weather Moment 홈 카드, 위젯 준비형 홈 구조, Discovery 피드 재정렬
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- /src/repositories/backendMeetingRepository.ts
-- /src/state/GuestInviteContext.tsx
-- /src/screens/guest/GuestCompleteScreen.tsx
-- /src/screens/host/HomeScreen.tsx
-- /src/components/invite/ReceivedInviteCard.tsx
-- /src/screens/guest/InviteLandingScreen.tsx
-- /src/screens/host/MyPageScreen.tsx
-- /src/screens/host/CalendarTabScreen.tsx
+- `src/screens/host/HomeScreen.tsx`
 
 ### 2. 신규 파일
-- /src/utils/tokenHash.ts
-- /supabase/migrations/phase-p1-token-hash.sql
-- /src/repositories/receivedInviteRegistry.ts
-- /src/config/featureFlags.ts
+- `src/components/home/WeatherIcon.tsx`
+- `src/components/home/WeatherMomentCard.tsx`
+- `src/data/weatherMomentSeed.ts`
+- `src/repositories/weatherMomentRepository.ts`
+- `src/components/discovery/DiscoveryCard.tsx`
+- `src/data/discoveryFeed.ts`
+- `src/types/discovery.ts`
 
-### 3. Supabase token hash
-- **tokenHash util:** `src/utils/tokenHash.ts`를 생성하여 브라우저 내장 `crypto.subtle`을 통한 SHA-256 단방향 암호화를 구현했습니다. (클라이언트 사이드 해시 MVP)
-- **invite_links token_hash:** `backendMeetingRepository.ts`의 `createMeetingWithInviteLink`, `getMeetingByInvite`에서 plain token 대신 `token_hash` 컬럼에 접근하도록 구현했습니다.
-- **meeting_responses invite_token_hash:** `submitGuestResponse` 메서드에서 `invite_token_hash`에 값을 채우도록 업데이트했습니다.
-- **plain token 사용 중단 여부:** 프론트엔드의 읽기 및 생성 로직은 이제 `token_hash`를 기준으로 동작합니다. 하위/마이그레이션 호환성을 위해 plain 컬럼에는 값을 남겨두었으나, API 검증 로직에서는 hash를 사용하여 검증합니다.
-- **schema/migration:** `supabase/migrations/phase-p1-token-hash.sql` 파일을 생성하여 hash 컬럼 추가 변경 사항을 기록했습니다.
+### 3. Weather Moment Card
+- **WeatherIcon:** sunny, cloudy, rainy, snowy, cold, hot, unknown에 따른 귀여운 앱 시그니처 톤의 오리지널 SVG 아이콘 생성 적용
+- **WeatherMomentCard:** 레이아웃 구현 및 스타일 적용
+- **condition:** sunny 지정 
+- **shortForecast:** 오후엔 햇살이 조금 더 따뜻해져요
+- **suggestion:** 가볍게 산책 약속 잡기 좋은 날이에요. 무거운 외투는 두고 가도 좋아요.
+- **scheduleLine:** 진행 중인 모임(내 일정) 중 최신 항목 1개 표출. 없으면 "아직 예정된 일정이 없어요" 표시
+- **compact prop:** 추후 위젯 사이즈를 대비한 compact 모드 레이아웃(간단 버전) 구현
 
-### 4. RLS / 보안
-- **적용한 SQL:** `supabase/migrations/phase-p1-token-hash.sql`에 MVP 환경 이후 전환할 RLS Policy 가이드라인을 작성해두었습니다.
-- **anon 정책:** 현재 MVP는 로그인 없이(Guest/Host) 익명 기반이므로 `meetings`, `invite_links`, `meeting_responses`에 대해 `anon`의 `SELECT`, `INSERT`를 광범위하게 허용하는 수준의 정책이 필요함을 기록했습니다.
-- **남은 MVP 보안 한계:** Dashboard에서 응답 데이터를 읽는 행위가 암호 검증이나 User Auth에 종속되지 않은 상태입니다. 완전한 RLS를 보장할 수 없으며 "MVP 제한" 상태로 유지됨을 명시했습니다.
-- **token_plain_for_local_mvp_only 잔여:** 완전한 plain token 의존 제거(Migration) 전까지는 `invite_links.token_plain_for_local_mvp_only` 필드가 저장되도록 유지했습니다.
+### 4. 홈 구조 변경
+- **기존 홈 구조:** 작은 인사 + 큰 퀵 액션 버튼 + 요약 + 빠른 초대 설정 
+- **변경된 홈 구조:** 인사 + Weather Moment + 작은 퀵 액션 + Discovery Feed + 요약 섹션 순 구역 설정
+- **Weather 최상단:** 홈 진입 시 배경 및 오늘/매일의 분위기를 만들어 줄 수 있도록 최상단 배치
+- **Quick Actions 위치:** Weather 밑으로 크기를 줄여(카드 비율 축소) 배치
+- **Discovery Feed 위치:** 나만의 일정/약속이 없을 때도 진입할 수 있도록 퀵 액션 밑으로 이동
+- **기존 모임 관리 섹션 위치:** 하단으로 내려와 '내 모임 현황' 형태 요약 카드로 정리
 
-### 5. 받은 초대장 history
-- **receivedInviteRegistry:** `src/repositories/receivedInviteRegistry.ts`를 생성하여 로컬 스토리지 키 `wwm:received-invites:v1`로 히스토리를 추적합니다.
-- **GuestInviteContext 저장:** 게스트가 유효한 초대장에 처음 진입(`getMeetingByInvite` Load 성공)하면 `receivedInviteRegistry.upsert`로 열람 기록을 저장합니다.
-- **GuestCompleteScreen responded:** 응답(답장) 제출 성공 시 `receivedInviteRegistry.markResponded(meetingId)`를 호출하여 상태를 "응답 완료"로 갱신합니다.
-- **HomeScreen 표시:** Home의 "받은 초대장" 섹션이 `receivedInviteRegistry.list()`를 바인딩하여 렌더링되게 했으며, 기존 `/invite/demo` 데모 플로우를 모두 걷어내고 실제 동적 주소 기반 Navigation으로 개선했습니다.
-- **삭제 기능:** Home 화면의 관리 기능을 통해 개별 `receivedInvite` Local Row를 지울 수 있습니다.
+### 5. 위젯 준비
+- **compact mode:** `compact={true}` 속성에 따라 축소형 위젯 레이아웃 지원
+- **data contract:** `defaultWeatherMoment`와 `WeatherMomentCardProps` 간 명확한 데이터 분리
+- **weather repository:** `weatherMomentRepository.ts`를 Scaffold 형태로 뚫어두어 렌더/데이터 로직 분리
+- **future API 연결 지점:** `getTodayMoment()` 함수 내부에 location permission/Weather API 연동 예정 포인트 남김
 
-### 6. Guest invalid UX
-- **invalid screen:** `InviteLandingScreen.tsx`의 `loadState === 'invalid'` 조건 시, 단순히 문구 1줄이 아니라 빈 편지통 아이콘과 함께 "가능한 이유" 3가지를 정리해서 안내하는 Card UI 로 교체했습니다.
-- **expired/closed/full 처리 여부:** DB 연동 Layer에서는 expired 및 closed가 이미 invalid 랩핑 후 `null` 처리를 내리도록 되어 있어, Invalid Screen 내 통합 안내 메시지로 통일했습니다. 
-- **홈 이동 CTA:** UI 하단에 홈 화면(`/app`)으로 안전하게 이탈할 수 있는 내비게이션 버튼을 연결했습니다. 
+### 6. 배경 설정 호환
+- **white background:** `bg-white/90` 와 border 로 자연스러운 가독성 및 계층 유지
+- **warm ivory:** 부드러운 앱 배경(bg-bg-app)색과 카드가 조화롭게 매칭(투명도 90)
+- **mist blue:** 배경이 달라도 흰색 기반 겹침이 이루어져 색감 침해 방지
+- **card readability:** 내부 suggestion 영역은 bg-bg-app로 다르게 주고 inset-shadow 이용, scheduleLine 볼릿은 primary 액센트로 주어 배경이 어떻든 텍스트 독립성 획득
 
-### 7. MyPage 데이터 관리
-- **작성 중 초대장 초기화:** Data Management 탭에서 로컬 스토리지를 삭제(`wwm:create-draft:v1`)하도록 연동했습니다. (내부 Custom Modal Dialog UI 뷰 적용)
-- **받은 초대장 기록 삭제:** Data Management 탭에서 `wwm:received-invites:v1`를 전체 삭제하도록 구성했습니다.
-- **내 정보 초기화:** Data Management 탭에서 `wwm:user-profile:v1`를 삭제 후 화면을 Reload시키는 로직을 추가했습니다.
-- **저장 방식 설명:** 초대장 및 응답 정보는 Supabase Cloud에, 개인 설정이나 기기 고유 데이터(받은 기록)는 브라우저 내부에 저장된다는 안내 문구를 '앱 정보' 패널 상단에 추가했습니다. 
-
-### 8. 외부 캘린더 flag
-- **featureFlags:** `src/config/featureFlags.ts` 생성 후 `externalCalendar: false`로 정의했습니다. 
-- **CalendarTabScreen:** Google OAuth 기능 연동을 시도하는 `useEffect` Hook을 `featureFlags.externalCalendar` 분기문 안으로 격리했습니다. (현재 실행 해제됨)
-- **MyPage 표시:** MyPage의 캘린더 연동 탭에서도 외부 캘린더 영역은 "추후 지원 예정" 문구 고정 및 버튼 disable 상태로 통일해 적용했습니다.
-
-### 9. Supabase E2E
-- **meetings row:** 신규 모임 생성 정상 확인.
-- **invite_links row:** 신규 생성 정상되며 `token_plain_for_local_mvp_only` 및 `token_hash` 값 저장 확인.
-- **meeting_responses row:** 게스트 응답 저장 시 전달된 `inviteToken` 해시되어 `invite_token_hash` 컬럼에 매핑 확인.
-- **confirmed_plans row:** (이전 작업본) 정상.
-- **status update:** (이전 작업본) 정상.
-- **Table Editor 확인:** RLS 기반 구조 및 MVP 제약에 따른 스키마 적합성 확인.
-
-### 10. 회귀 테스트
-- **/app:** userProfile 바인딩, Home "만든 모임" & "받은 초대장" Registry 매핑 노출 등 정상 확인
-- **/app/meetings:** 모임 리스트 표시 빛 필터 조건 동작 정상
-- **/app/create/share:** 공유 카드 동작 이상 없으며 Hash 기반 Link 생성 정상 동작 점검 완료
-- **/invite/:meetingId/:token:** URL을 통해 제대로 열리며 Local Storage(Registry)에 열람 기록 남는 것 확인 완료.
-- **guest complete:** 응답 저장 시 Local Storage(Registry)에 `respondedAt` 정상 갱신 확인 완료. 
-- **/app/me:** MyPage 기능, Data management Custom Modal 삭제 UX 정상. (`window.alert`, `window.confirm` 피함 검증 완료)
-
-### 11. 빌드
-- **npm run lint:** 통과
+### 7. 빌드
+- **npm run lint:** 통과 성공
 - **npm run build:** 빌드 성공
 
-### 12. 남은 이슈
-- RLS Policy 의 권한 검증 수준을 User Session Auth(가입/로그인) 도입 이후 다시 엄격한 Constraint로 강화해야 합니다.
-- (당장 폐기하지 않은) DB `token_plain_for_local_mvp_only` 컬럼을 향후 Data Migration 이후 어떻게 Deprecate 시킬 지 절차 고민 필요.
+### 8. 런타임 확인
+- **/app Weather card:** 표시 확인 (정상 렌더링)
+- **sunny icon:** SVG CSS Shadow 적용되어 노랑/갈색의 귀여운 아이콘 표출 확인
+- **schedule line:** 등록 한 일정 있을 시/없을 시 조건 상태 검증 확인
+- **background switch:** 테마 호환성 확인
+- **mobile 390px:** 상하 스크롤 구조 및 횡스크롤 스냅(Discovery) 여백 확인
+- **desktop 1365px:** max-w 유지 및 깨짐 없음 확인
 
-### 13. 다음 작업
-1. 계정 및 로그인 연동 (Supabase Auth)
-2. 인증된 호스트 기반 Dashbaord 읽기 권한 제약 설계 및 RLS 강화
-3. (추후 지원) 외부 캘린더 연동 Flag 켜기 (Google OAuth)
+### 9. 남은 이슈
+- 네이티브 기기 위치 정보를 바탕으로 한 실제 날씨 API(기상청, 오픈웨더 등) 연동 미구현 (현재 Scaffold / Mock 상태)
+- AI를 통한 날씨 기반 문구(suggestion) 다변화 로직 부재 (현재 고정 텍스트)
 
-### 14. 검증 검색 결과
-- `token_plain_for_local_mvp_only`: (3) - BackendRepository, Mappers
-- `invite_token_plain_for_local_mvp_only`: (2) - BackendRepository, Mappers
-- `token_hash`: (3)
-- `receivedInviteRegistry`: (5)
-- `wwm:received-invites`: (2) - Registry, MyPage Screen
-- `featureFlags`: (2)
-- `window.alert`: 검색 결과 없음 (완전 제거 성공)
-- `/invite/demo`: (2) - DebugNavigator (dev mode only), inviteRoutes 의 graceful fallback
+### 10. 다음 작업
+1. 날씨 API(OpenWeather API 등) 연동을 통한 실시간 정보 주입
+2. AI 프롬프트를 활용해 기상별 다양한 suggestion 변산 자동 생성 기능 (백엔드 Edge Function)
+3. App Widget / iOS 플랫폼 등 Native 단 위젯 출력 연동 작업
+
+### 11. 검증 검색 결과
+- `WeatherMomentCard`: (2) - HomeScreen, Repo
+- `WeatherIcon`: (2) - WeatherMomentCard, WeatherIcon component 
+- `weatherMomentRepository`: (2) - HomeScreen, Repo
+- `appBackgroundId`: User Profile / 테마 연동 정상 유지
+- `DiscoveryCard`: (2) - HomeScreen, DiscoveryCard component

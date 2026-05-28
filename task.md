@@ -718,6 +718,28 @@ Not Completed:
 
 ## 23. Immediate Next Tasks
 
+### Phase I-1A — Weather Moment Home
+
+Goal:
+Make the Home screen feel like a daily meeting companion, starting with weather, mood, and schedule context.
+
+Completed:
+- [x] Add WeatherMomentCard
+- [x] Add cute WeatherIcon component
+- [x] Add weather moment seed data
+- [x] Add weatherMomentRepository scaffold
+- [x] Put WeatherMomentCard at the top of Home
+- [x] Add scheduleLine for future widget usage
+- [x] Keep Discovery feed below weather
+- [x] Preserve quick actions and meeting management below
+
+Not Completed:
+- [ ] Real weather API
+- [ ] Location permission
+- [ ] Native app widget
+- [ ] iOS/Android widget extension
+- [ ] Weather-based AI recommendation
+
 ### Product Reliability Track
 1. Phase F-4A — Backend Preflight
 2. Phase F-4B — Supabase Repository Query Implementation
