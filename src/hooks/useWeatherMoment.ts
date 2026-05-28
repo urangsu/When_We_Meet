@@ -103,12 +103,14 @@ export const useWeatherMoment = () => {
         },
         (error) => {
           console.error('Geolocation error:', error);
-          if (mounted) setLoading(false);
+          // Fallback to Seoul
+          fetchWeather(37.566, 126.978);
         },
         { timeout: 10000 } // Give it 10 secs
       );
     } else {
-      setLoading(false);
+      // Fallback to Seoul
+      fetchWeather(37.566, 126.978);
     }
 
     return () => {
