@@ -6,6 +6,7 @@ const defaultUserProfile: UserProfile = {
   displayName: '호스트',
   profileType: 'initial',
   colorId: 'black',
+  appThemeId: 'warm-ivory',
   notifications: {
     inviteResponses: true,
     confirmedMeetings: true,
@@ -16,6 +17,23 @@ const defaultUserProfile: UserProfile = {
     externalCalendarStatus: 'coming_soon',
   },
 };
+
+const normalizeProfile = (rawProfile: Partial<UserProfile> & { appBackgroundId?: string }): UserProfile => ({
+  ...defaultUserProfile,
+  ...rawProfile,
+  appThemeId:
+    (rawProfile.appThemeId as UserProfile['appThemeId']) ||
+    (rawProfile.appBackgroundId === 'pure-white' ? 'pure-white' : undefined) ||
+    defaultUserProfile.appThemeId,
+  notifications: {
+    ...defaultUserProfile.notifications,
+    ...rawProfile.notifications,
+  },
+  calendar: {
+    ...defaultUserProfile.calendar,
+    ...rawProfile.calendar,
+  },
+});
 
 const canUseStorage = () =>
   typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -29,18 +47,7 @@ export const userProfileRepository = {
 
     try {
       const parsed = JSON.parse(raw);
-      return {
-        ...defaultUserProfile,
-        ...parsed,
-        notifications: {
-          ...defaultUserProfile.notifications,
-          ...(parsed.notifications || {}),
-        },
-        calendar: {
-          ...defaultUserProfile.calendar,
-          ...(parsed.calendar || {}),
-        },
-      };
+      return normalizeProfile(parsed);
     } catch {
       return defaultUserProfile;
     }

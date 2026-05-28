@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
-import { Settings, Bell, Calendar as CalendarIcon, Info, ChevronRight, X, Check, Camera, User, Hash, HelpCircle } from 'lucide-react';
+import { Settings, Bell, Calendar as CalendarIcon, Info, ChevronRight, X, Check, Camera, User, Hash, HelpCircle, Palette } from 'lucide-react';
 import { InitialAvatar } from '../../components/profile/InitialAvatar';
 import { userProfileRepository } from '../../repositories/userProfileRepository';
 import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { ProfileColorId } from '../../types';
 import { profileColorOptions } from '../../config/profileColorOptions';
+import { appThemePresets } from '../../config/appThemePresets';
 import type { UserProfile } from '../../types/user';
 
 const profileOptions = [
@@ -19,7 +20,7 @@ const profileOptions = [
 export const MyPageScreen = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(() => userProfileRepository.getProfile());
-  const [activePanel, setActivePanel] = useState<null | 'profile' | 'notifications' | 'calendar' | 'about'>(null);
+  const [activePanel, setActivePanel] = useState<null | 'profile' | 'appearance' | 'notifications' | 'calendar' | 'about'>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     message: string;
     action: () => void;
@@ -74,6 +75,19 @@ export const MyPageScreen = () => {
           </button>
           
           <button 
+            onClick={() => setActivePanel('appearance')}
+            className="w-full flex items-center justify-between p-4 border-b border-ink-line/50 active:bg-bg-app transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-bg-app rounded-full text-ink-hint">
+                <Palette size={20} />
+              </div>
+              <span className="font-semibold text-[15px]">앱 화면 테마</span>
+            </div>
+            <ChevronRight size={20} className="text-ink-hint" />
+          </button>
+          
+          <button 
             onClick={() => setActivePanel('calendar')}
             className="w-full flex items-center justify-between p-4 border-b border-ink-line/50 active:bg-bg-app transition-colors"
           >
@@ -121,6 +135,7 @@ export const MyPageScreen = () => {
             <header className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-bold">
                 {activePanel === 'profile' && '프로필 설정'}
+                {activePanel === 'appearance' && '앱 화면 테마'}
                 {activePanel === 'notifications' && '알림 설정'}
                 {activePanel === 'calendar' && '캘린더 연결'}
                 {activePanel === 'about' && '앱 정보'}
@@ -139,7 +154,7 @@ export const MyPageScreen = () => {
 
                 {/* Color Picker */}
                 <div className="flex flex-col gap-3">
-                  <span className="text-sm font-semibold text-ink-hint">배경 테마</span>
+                  <span className="text-sm font-semibold text-ink-hint">프로필 색상</span>
                   <div className="flex flex-wrap items-center gap-3">
                     {profileColorOptions.map((color) => (
                       <button
@@ -198,6 +213,52 @@ export const MyPageScreen = () => {
 
                 <div className="mt-2 shrink-0">
                   <Button onClick={saveProfile} size="full">저장</Button>
+                </div>
+              </div>
+            )}
+
+            {activePanel === 'appearance' && (
+              <div className="flex flex-col gap-4 pb-8">
+                <div className="rounded-2xl bg-white border border-line p-4">
+                  <h3 className="font-bold text-ink">앱 화면 테마</h3>
+                  <p className="mt-1 text-sm text-ink-muted leading-relaxed">
+                    앱 배경과 버튼, 카드 분위기가 함께 바뀌어요. 자동 테마는 나중에 글과 사진 분위기에 맞춰 생성할 예정이에요.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3">
+                  {appThemePresets.map((theme) => (
+                    <button
+                      key={theme.id}
+                      onClick={() => {
+                        const next = userProfileRepository.updateProfile({
+                          appThemeId: theme.id,
+                        });
+                        setProfile(next);
+                      }}
+                      className={`flex items-center gap-4 rounded-2xl border bg-white p-4 text-left transition-all ${
+                        profile.appThemeId === theme.id
+                          ? 'border-primary shadow-soft'
+                          : 'border-line'
+                      }`}
+                    >
+                      <div className={`h-12 w-12 rounded-2xl border border-line ${theme.previewClassName}`} />
+                      <div className="flex-1">
+                        <div className="font-bold text-ink">
+                          {theme.label}
+                          {theme.isAuto && (
+                            <span className="ml-2 rounded-full bg-ink px-2 py-0.5 text-[10px] text-white">
+                              준비 중
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-0.5 text-xs text-ink-muted">{theme.description}</p>
+                      </div>
+                      {profile.appThemeId === theme.id && (
+                        <Check size={18} className="text-primary" />
+                      )}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}

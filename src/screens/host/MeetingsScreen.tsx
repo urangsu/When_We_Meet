@@ -41,7 +41,7 @@ export const MeetingsScreen = () => {
   });
 
   return (
-    <ScreenShell bottomInset="nav" className="bg-bg-app gap-0">
+    <ScreenShell bottomInset="nav" className="gap-0">
       <header className="px-5 pt-8 pb-4">
         <h1 className="text-2xl font-bold mb-2">내 모임</h1>
         <p className="text-ink-muted text-sm leading-relaxed">
@@ -102,13 +102,18 @@ export const MeetingsScreen = () => {
       </div>
       
       {/* Floating Action Button */}
-      <button
-        onClick={() => navigate('/app/create/category')}
-        className="fixed bottom-[104px] right-5 w-14 h-14 bg-ink text-white rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.2)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-10"
-        aria-label="새 모임 만들기"
-      >
-        <Plus size={28} />
-      </button>
+      <div className="fixed inset-x-0 bottom-[96px] z-40 flex justify-center pointer-events-none">
+        <div className="w-full max-w-[430px] px-5 flex justify-end pointer-events-none">
+          <button
+            onClick={() => navigate('/app/create/category')}
+            className="pointer-events-auto flex h-[52px] items-center gap-2 rounded-full bg-primary px-5 text-white shadow-[0_10px_24px_var(--color-primary-halo)] active:scale-95 transition-transform"
+            aria-label="새 모임 만들기"
+          >
+            <Plus size={20} strokeWidth={2.5} />
+            <span className="text-sm font-bold">새 모임</span>
+          </button>
+        </div>
+      </div>
     </ScreenShell>
   );
 };
