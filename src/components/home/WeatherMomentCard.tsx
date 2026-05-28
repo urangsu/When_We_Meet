@@ -1,8 +1,8 @@
 import React from 'react';
-import { WeatherIcon } from './WeatherIcon';
+import { WeatherImage, type WeatherCondition } from './WeatherImage';
 
 export interface WeatherMomentCardProps {
-  condition: 'sunny' | 'cloudy' | 'rainy' | 'snowy' | 'hot' | 'cold' | 'unknown';
+  condition: WeatherCondition;
   conditionLabel: string;
   shortForecast: string;
   suggestion: string;
@@ -23,7 +23,7 @@ export const WeatherMomentCard = ({
       <article className="rounded-[24px] border border-white/70 bg-white/90 p-4 shadow-sm h-full flex flex-col justify-between">
         <div className="flex items-center gap-3">
           <div className="scale-75 origin-top-left -ml-2 -mt-2">
-            <WeatherIcon condition={condition} />
+            <WeatherImage condition={condition} size="md" />
           </div>
           <div>
             <h2 className="text-lg font-black text-ink leading-tight">{conditionLabel}</h2>
@@ -40,7 +40,7 @@ export const WeatherMomentCard = ({
   return (
     <article className="rounded-[28px] border border-white/70 bg-white/90 p-5 shadow-soft">
       <div className="flex items-center gap-4">
-        <WeatherIcon condition={condition} />
+        <WeatherImage condition={condition} size="lg" />
         <div>
           <p className="text-[11px] font-bold text-rose mb-0.5">오늘의 약속 날씨</p>
           <h2 className="text-xl font-black text-ink">{conditionLabel}</h2>

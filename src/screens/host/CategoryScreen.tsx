@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { categoryOptions } from '../../config/categoryOptions';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
@@ -9,13 +9,39 @@ import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import type { MeetingCategory } from '../../types';
 import { useTutorialMode } from '../../hooks/useTutorialMode';
 import { TutorialHint } from '../../components/onboarding/TutorialHint';
+import type { DiscoveryItem } from '../../types/discovery';
 
 export const CategoryScreen = () => {
   const { isTutorial, skip } = useTutorialMode();
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selected, setSelected] = useState<MeetingCategory>(draft.category);
   const [isRecurring, setIsRecurring] = useState(draft.isRecurring);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchParams.get('source') === 'discovery') {
+      try {
+        const seedJson = sessionStorage.getItem('wwm:discovery-seed:v1');
+        if (seedJson) {
+          const seed = JSON.parse(seedJson) as DiscoveryItem;
+          // Apply seed only if draft is effectively empty or user confirms.
+          // In MVP, we just overwrite initial fields softly if it's the first step.
+          const newCategory = (seed.suggestedCategory as MeetingCategory) || draft.category;
+          
+          setSelected(newCategory);
+          updateDraft({
+            category: newCategory,
+            fixedPlaceName: seed.suggestedPlace || draft.fixedPlaceName,
+            customActivity: seed.suggestedActivity || draft.customActivity,
+            hostMessage: draft.hostMessage || seed.suggestedMessage || seed.body,
+          });
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [searchParams, updateDraft]); // draft is not in deps to prevent loop, only run on mount/search change
 
   const handleNext = () => {
     updateDraft({

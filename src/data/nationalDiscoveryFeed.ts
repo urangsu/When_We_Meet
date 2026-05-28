@@ -1,0 +1,38 @@
+import type { DiscoveryItem } from '../types/discovery';
+
+export const nationalDiscoveryFeed: DiscoveryItem[] = [
+  {
+    id: 'national-popup-weekend',
+    kind: 'national_event',
+    title: '이번 주말 팝업 투어 어때요?',
+    subtitle: '여긴 어때요?',
+    body: '새로운 브랜드 팝업이나 전시를 핑계로 오랜만에 만나는 약속을 만들 수 있어요.',
+    tags: ['#팝업', '#전시', '#주말'],
+    locationScope: 'national',
+    locationLabel: '전국 추천',
+    recommendedTimeLabel: '주말',
+    suggestedCategory: 'event',
+    suggestedActivity: '팝업 구경',
+    suggestedMessage: '이번 주말에 팝업 하나 보러 갈래요?',
+    sourceType: 'curated',
+    sourceLabel: 'When We Meet 큐레이션',
+    imageUrl: 'https://images.unsplash.com/photo-1585807519962-e64e568ac18e?q=80&w=400&auto=format&fit=crop',
+  },
+  {
+    id: 'national-season-festival',
+    kind: 'national_event',
+    title: '계절 축제는 약속 명분이 되기 좋아요',
+    subtitle: '여긴 어때요?',
+    body: '꽃, 야시장, 빛축제처럼 계절감 있는 행사는 사진도 남고 초대하기도 쉬워요.',
+    tags: ['#축제', '#사진', '#계절'],
+    locationScope: 'national',
+    locationLabel: '전국 추천',
+    recommendedTimeLabel: '시즌',
+    suggestedCategory: 'festival',
+    suggestedActivity: '축제 구경',
+    suggestedMessage: '이번 시즌 축제 보러 같이 갈래요?',
+    sourceType: 'curated',
+    sourceLabel: 'When We Meet 큐레이션',
+    imageUrl: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=400&auto=format&fit=crop',
+  },
+];

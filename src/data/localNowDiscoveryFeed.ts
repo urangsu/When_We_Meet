@@ -1,0 +1,38 @@
+import type { DiscoveryItem } from '../types/discovery';
+
+export const localNowDiscoveryFeed: DiscoveryItem[] = [
+  {
+    id: 'local-evening-walk',
+    kind: 'local_now',
+    title: '퇴근 후 30분 산책 어때요?',
+    subtitle: '지금 이런 건 어때요?',
+    body: '오늘처럼 맑은 날엔 오래 앉아 있는 약속보다 가볍게 걷는 약속이 잘 맞아요.',
+    tags: ['#산책', '#퇴근후', '#가벼운약속'],
+    locationScope: 'nearby',
+    locationLabel: '내 주변',
+    recommendedTimeLabel: '저녁',
+    weatherFit: ['sunny', 'cloudy'],
+    suggestedCategory: 'walk',
+    suggestedActivity: '산책',
+    suggestedMessage: '가볍게 걷고 이야기 나눠요.',
+    sourceType: 'seed',
+    imageUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=400&auto=format&fit=crop',
+  },
+  {
+    id: 'local-rainy-cafe',
+    kind: 'local_now',
+    title: '비 오는 날엔 조용한 카페가 좋아요',
+    subtitle: '지금 이런 건 어때요?',
+    body: '우산을 접고 앉을 수 있는 실내 약속을 추천해요. 짧은 커피 약속으로 시작해보세요.',
+    tags: ['#카페', '#비오는날', '#실내'],
+    locationScope: 'nearby',
+    locationLabel: '내 주변',
+    recommendedTimeLabel: '오후',
+    weatherFit: ['rainy'],
+    suggestedCategory: 'cafe',
+    suggestedActivity: '커피',
+    suggestedMessage: '비도 오는데 따뜻한 커피 한 잔 할까요?',
+    sourceType: 'seed',
+    imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=400&auto=format&fit=crop',
+  },
+];
