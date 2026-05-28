@@ -12,7 +12,7 @@ import { userProfileRepository } from '../../repositories/userProfileRepository'
 import type { MeetingRecord } from '../../types/meeting';
 
 import { WeatherMomentCard } from '../../components/home/WeatherMomentCard';
-import { weatherMomentRepository } from '../../repositories/weatherMomentRepository';
+import { useWeatherMoment } from '../../hooks/useWeatherMoment';
 import { DiscoverySection } from '../../components/discovery/DiscoverySection';
 import { localNowDiscoveryFeed } from '../../data/localNowDiscoveryFeed';
 import { nationalDiscoveryFeed } from '../../data/nationalDiscoveryFeed';
@@ -22,6 +22,7 @@ export const HomeScreen = () => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState<MeetingRecord[]>([]);
   const [showWelcomeInvite, setShowWelcomeInvite] = useState(false);
+  const { weatherMoment } = useWeatherMoment();
   
   const userProfile = userProfileRepository.getProfile();
   const displayName = userProfile.displayName || '호스트';
@@ -53,7 +54,6 @@ export const HomeScreen = () => {
     navigate('/app/create/category?source=discovery');
   };
 
-  const weatherMoment = weatherMomentRepository.getTodayMoment();
   const scheduleLine =
     meetings.length > 0
       ? `오늘 일정 · ${meetings[0].title}`

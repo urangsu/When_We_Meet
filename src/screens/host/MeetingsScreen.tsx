@@ -7,6 +7,7 @@ import { mockMeetings } from '../../data/mockMeetings';
 import { createdMeetingRegistry } from '../../repositories/createdMeetingRegistry';
 import { meetingRepository } from '../../repositories/getMeetingRepository';
 import type { MeetingRecord } from '../../types/meeting';
+import { Plus } from 'lucide-react';
 
 type MeetingFilter = 'all' | 'ongoing' | 'waiting' | 'past';
 
@@ -99,6 +100,15 @@ export const MeetingsScreen = () => {
           )}
         </div>
       </div>
+      
+      {/* Floating Action Button */}
+      <button
+        onClick={() => navigate('/app/create/category')}
+        className="fixed bottom-[104px] right-5 w-14 h-14 bg-ink text-white rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.2)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-10"
+        aria-label="새 모임 만들기"
+      >
+        <Plus size={28} />
+      </button>
     </ScreenShell>
   );
 };
