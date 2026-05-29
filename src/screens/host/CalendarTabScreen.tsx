@@ -203,27 +203,6 @@ export const CalendarTabScreen = () => {
         </header>
 
         <div className="px-5 flex flex-col gap-4">
-          {/* Google Calendar sync promo banner */}
-          {profile.calendar.externalCalendarStatus !== 'connected' && (
-            <div className="bg-sky-50/50 border border-sky-100 rounded-2xl p-4 flex items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
-              <div className="flex-1">
-                <h4 className="font-bold text-xs text-sky-900 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                  구글 캘린더 스케줄 가져오기
-                </h4>
-                <p className="text-[11px] text-sky-700/80 leading-relaxed mt-0.5">
-                  구글 일정을 실시간으로 가져와 겹치지 않는 빈 시간을 지능적으로 찾습니다.
-                </p>
-              </div>
-              <button
-                onClick={() => navigate('/app/me')}
-                className="shrink-0 bg-sky-100 hover:bg-sky-200 text-sky-700 text-[11px] font-bold py-1.5 px-3 rounded-lg transition-colors cursor-pointer active:scale-95"
-              >
-                연동하기
-              </button>
-            </div>
-          )}
-
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-ink-line">
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold text-lg">{visibleYear}년 {visibleMonth}월</h3>

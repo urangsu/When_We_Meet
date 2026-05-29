@@ -1,87 +1,68 @@
-# 작업지시서 제목
-When We Meet Phase DS-1: 앱 테마 시스템 재정리, 회색 테마 제거, 모임탭 FAB 프레임 고정, 버튼 톤 디자인 시스템 재적용
+# 작업지시서: When We Meet Phase UX-2
+홈 Google 배너 제거, 계정/캘린더 연결 위치 정리, 홈 감성 피드 UI 정돈
 
 ## 작업 결과
 
 ### 1. 수정 파일
-- src/types/user.ts
-- src/repositories/userProfileRepository.ts
-- src/layouts/HostAppLayout.tsx
-- src/screens/host/MyPageScreen.tsx
-- src/screens/host/MeetingsScreen.tsx
+- `src/screens/host/HomeScreen.tsx` (홈 구글 배너 제거, Quick Actions 필형 버튼 변경, 내 약속 관리 3분할 콤팩트 단축 아이콘 변경)
+- `src/screens/host/MyPageScreen.tsx` (프로필 카드에서 계정 변경 버튼 제거, 계정 연결 서브 패널 분리/독립, 캘린더 연동 3종 상태 가독성 재형성)
+- `src/screens/host/CalendarTabScreen.tsx` (구글 연동 조건부 프로모션 배너 약화 및 브랜드 테마 색상 적용)
 
-### 2. 신규 파일
-- src/types/theme.ts
-- src/config/appThemePresets.ts
+### 2. Home Google 배너 제거
+- 삭제한 블록: 홈 화면 상단에 위치했던 Google Login Callout Banner (`{!user && <section>...</section>}`) 블록 완전 삭제 완료.
+- 제거한 import: `LogIn` 아이콘 import 및 불필요한 `signIn` 호출 제거 (`user` 반응성 유지를 위해 `useAuth` 자체는 프로필 갱신용으로 유지).
+- 홈 최종 구조: header -> WeatherMomentCard -> Quick Actions (필형 라운드 바) -> DiscoverySection 2종 -> 내 약속 관리 (3분할 콤팩트 그리드). 홈의 감성적인 피드 흐름과 컨셉이 완벽하게 주인공으로 복구되었습니다.
 
-### 3. 디자인 토큰 점검
-- index.css: Tailwind V4 기반 Native CSS Variable 활용 중
-- Button: 기존 테마 토큰 유지 시 문제 없음
-- 기존 primary: `--color-primary` 변수 활용
-- 기존 bg-app: `--color-bg-app` 변수 활용
+### 3. MyPage 계정 연결 분리
+- 프로필 카드 버튼 제거: 상단 프로필 카드 영역에서 "Google 계정 연동하기" 및 "로그아웃" 버튼을 완전히 배제하고 오직 아바타, 이름, 연결 상태 뱃지만 유지.
+- 계정 연결 메뉴: '프로필 설정' 바로 아래에 독립된 '계정 연결' 메뉴아이콘 및 연결 상태 콤팩트 텍스트 배치.
+- account panel: `activePanel === 'account'` 패널을 신설하여, 여기서만 구글 계정 연결하기(로그인) / 연결 해제(로그아웃)가 활성화되도록 구조 변경.
+- 로그인/로그아웃 동작: 기존 Firebase-Google Auth와 완벽 호환되며, 계정 로그인 상태에 따라 다른 메뉴 및 패널 뷰가 원활하게 변경.
 
-### 4. App Theme 시스템
-- AppThemeId: 'warm-ivory' | 'pure-white' | 'paper' | 'mist-blue' | 'auto'
-- AppThemePreset: 테마 인터페이스 신설
-- appThemePresets: 회색을 제외한 웜아이보리, 화이트, 페이퍼, 미스트 블루, 자동 테마 추가
-- gray theme 제거: 완전 제거
-- white theme: `pure-white` 추가 완료
-- auto theme scaffold: 그라디언트 배경으로 scaffolding 처리
+### 4. Calendar 연결 UX
+- 로그인 전: "Google Calendar 스케줄 가져오기" 패널에 구글 계정 연결 가이드 문구가 노출되며, `[Google 계정 연결하기]` 클릭 시 바로 계정 연결 패널로 화면 포커스 인터랙션 분기.
+- 로그인 후 비활성: "Google Calendar 스케줄 가져오기" 패널과 함께 `[스케줄 가져오기 켜기]` primary 버튼 활성화.
+- 연결됨: "Google Calendar 연결됨" 상태 뱃지가 깔끔하게 노출되며, `[스케줄 가져오기 끄기]` outline 버튼을 배정하여 상태를 토글할 수 있도록 구조 재편.
+- 버튼 색상: 활성화/연결하기는 primary (rose 브랜딩 색상), 끄기 상태는 친숙한 outline 스타일을 사용하여 위계질서 성립.
+- 문구 과장 제거: "실시간 분석", "지능적으로 찾아서 분석" 과 같은 다소 인위적이고 기계적인 솔루션을 담백하고 우아한 서비스 가이드로 재피팅.
 
-### 5. UserProfile migration
-- appThemeId: `appThemeId: AppThemeId` 필드 추가
-- appBackgroundId migration: 제거하고 `normalizeProfile`에서 `appThemeId`로 포팅하도록 구성
-- default value: `warm-ivory`
+### 5. CalendarTab 배너 정리
+- featureFlags 조건: `featureFlags.externalCalendar && profile.calendar.externalCalendarStatus !== 'connected'` 적용.
+- 문구: "구글 일정도 함께 볼 수 있어요" / "내 정보에서 Google Calendar를 연결하면 일정 힌트를 함께 볼 수 있어요." (과한 기계식 텍스트 삭제 및 정감있는 톤유지).
+- 위치: 달력 뷰 바로 위 영역.
+- 색상: 기존 인위적이던 `sky-` 그라디언트를 탈피해 깔끔한 `bg-white border-rose-100` 카드 틀에 `rose` 아기자기한 포인트 인디케이터 배정.
 
-### 6. HostAppLayout 적용
-- theme CSS variables: 인라인 `--color-bg-app` 등 테마 변수 매핑 적용 완료
-- bg-bg-app: 테마 변수 영향권으로 처리
-- primary token: 변경되는 테마 토큰을 우선 참조
-- line/surface/ink token: 변경되는 테마 토큰을 하위 컴포넌트 렌더링에 모두 적용
+### 6. Home UI 정돈
+- Quick Actions: 기존 2열 카드 구조를 가로 스크롤형 Pill인 `새 초대장(rose)`, `받은 약속(white border)` 조합으로 콤팩트 설계. 가독성과 엄숙함 배가.
+- 관리 링크: 뚱뚱한 세로 리스트형 카드를 콤팩트한 3열 버튼 모음 뷰(`모임(users)`, `달력(calendar)`, `받은 약속(mail)`)로 대체하여 인지적 로드를 드라마틱하게 경감.
+- sky/slate 색상 정리: UI에 사용되던 인공적인 slate-100 배경들을 bg-bg-app 등으로 치환하고 불필요한 sky- 계열 하이라이트 완전히 축소.
+- 날씨/추천 피드 우선순위 유지: 복잡한 캘린더나 로그인 CTA가 피드를 가리지 않아 유려한 추천이 눈을 가장 먼저 편안하게 해줌.
 
-### 7. MyPage 설정
-- 앱 화면 테마 메뉴: activePanel `appearance`로 분리 추가
-- appearance panel: 테마별 이름 설명과 체크 선택 UI 추가
-- 프로필 색상 문구 수정: 기존 프로필 색상 변경 섹션의 타이틀을 배경 테마에서 '프로필 색상'으로 변경
-- 회색 테마 없음: 회색 미적용
-- white theme 선택 확인: 정상 구동
+### 7. 빌드
+- npm run lint: 성공 (Clean)
+- npm run build: 성공 (Clean)
 
-### 8. MeetingsScreen FAB 수정
-- 기존 문제: fixed bottom 14 right-5 로 뷰포트 기준 설정되어 있음
-- fixed right-5 제거: 제거
-- app frame constrained wrapper: `fixed inset-x-0` 과 `w-full max-w-[430px]` 래핑 구조 추가
-- bg-primary 적용: `bg-ink` 에서 `bg-primary`로 CTA 교체
-- mobile 위치: 바텀 내비게이션 상단 `bottom-[96px]` 고정
-- desktop 위치: 반응형 컨테이너 우측 하단 고정성 확인
+### 8. 런타임 확인
+- /app 로그아웃 상태: Google 로그인 배너 없음, 날씨와 피드가 시각적 주인공.
+- /app에 Google 배너 없음: 완벽 확인.
+- /app/me 계정 연결: 별도 계정 연결 서브 패널에서 안전하고 깔끔하게 로그인/연동 상태 통역.
+- /app/me 캘린더 연결: 계정 로그인 여부와 이전 연동 기록 여하에 따라 지능적으로 켜기/끄기 분기 처리.
+- /app/calendar 로그아웃 상태: 캘린더 하이라이트 내 로컬 연동 배너 콤팩트 및 따뜻하게 노출.
+- /app/calendar 연결됨 상태: 캘린더에 연동 배너가 자취를 감추고 구글 연동 중 뱃지로 우아하게 시그널 표출.
 
-### 9. 빌드
-- npm run lint: 통과
-- npm run build: 통과
+### 9. 남은 이슈
+- 없음. 전체 흐름이 자연스럽고 일체화되었습니다.
 
-### 10. 런타임 확인
-- /app/me 앱 화면 테마: '앱 화면 테마' 패널 접근 및 색상 적용 동작 확인
-- warm ivory: 동작 확인
-- pure white: 동작 확인
-- paper: 동작 확인
-- mist blue: 동작 확인
-- auto: 동작 확인
-- /app/meetings mobile FAB: 정상 정렬 확인
-- /app/meetings desktop FAB: 430px 기준선 우측 정렬 정상 확인
+### 10. 다음 작업
+1. 다가올 모임 날짜 및 최종 응답 일자 통계 뷰 개편 준비.
+2. 초대장 링크 생성 시 로컬 디바이스 카카오톡/클립보드 다용도 연동 플로우 보강.
+3. 테마 테일러링을 통한 개인 감성 맞춤화 자동 생성.
 
-### 11. 남은 이슈
-- 추후 Auto 테마 선택 시 사진/글 추출 AI 기능을 통한 자동 색상 배합 로직 구현 필요.
-
-### 12. 다음 작업
-1. Auto(자동) 앱 화면 테마 AI 색상 추출 로직 구현.
-2. 외부 캘린더 연동 (Google Calendar)
-3. 생성, 확인 페이지 내 애니메이션 (motion) 최적화.
-
-### 13. 검증 검색 결과
-- appThemeId: src/types/user.ts, src/types/theme.ts, 등 정상 확인
-- appThemePresets: src/config/appThemePresets.ts 작성 완료
-- appBackgroundId: migration 코드 정상 동작
-- 배경 테마: 삭제 및 "프로필 색상", "앱 화면 테마" 로 수정
-- 프로필 색상: 수정 완료
-- fixed bottom: MeetingsScreen.tsx 수정 및 래퍼 적용 완료
-- right-5: 해당 요소 제외 완료
-- bg-ink: MeetingsScreen.tsx 내부 FAB에서 삭제 및 대체 완료
+### 11. 검증 검색 결과
+- 구글 계정을 연동해 보세요: 제거됨
+- Google로 간편 로그인: 제거됨
+- 구글 캘린더 스케줄 가져오기: MyPage 캘린더 패널에서 기계적이지 않은 정제어 및 상태 뱃지 레이어로 가독성 최적화
+- 실시간 분석: 제거됨
+- 지능적으로: 제거됨
+- sky-: CalendarTab 외부 일정 표시/연동 뱃지 등 필수 부분 외 남용 전면 회수
+- slate-: 완전히 회수 및 테마 표준 규격 회귀

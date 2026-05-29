@@ -63,54 +63,81 @@ const getShortForecast = (condition: string, temperature: number): string => {
 };
 
 export const useWeatherMoment = () => {
-  const [weatherMoment, setWeatherMoment] = useState<Omit<WeatherMomentCardProps, 'scheduleLine' | 'compact'>>(defaultWeatherMoment);
+  const [weatherMoment, setWeatherMoment] = useState<Omit<WeatherMomentCardProps, 'scheduleLine' | 'compact' | 'locationLabel' | 'onRefreshLocation' | 'isRefreshing'>>(defaultWeatherMoment);
   const [loading, setLoading] = useState(true);
+  const [locationLabel, setLocationLabel] = useState('위치 조회 중...');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
-    let mounted = true;
+  const fetchWeather = async (lat: number, lon: number) => {
+    try {
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);
+      if (!res.ok) throw new Error('Weather API failed');
+      const data = await res.json();
+      
+      const current = data.current_weather;
+      if (!current) return;
 
-    const fetchWeather = async (lat: number, lon: number) => {
-      try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);
-        if (!res.ok) throw new Error('Weather API failed');
-        const data = await res.json();
-        
-        const current = data.current_weather;
-        if (!current) return;
+      const { temperature, weathercode } = current;
+      const condition = mapWmoCodeToCondition(weathercode, temperature);
 
-        const { temperature, weathercode } = current;
-        const condition = mapWmoCodeToCondition(weathercode, temperature);
+      setWeatherMoment({
+        condition,
+        conditionLabel: getConditionLabel(condition),
+        shortForecast: getShortForecast(condition, temperature),
+        suggestion: getSuggestion(condition),
+      });
+    } catch (err) {
+      console.error('Failed to fetch weather:', err);
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  };
 
-        if (mounted) {
-          setWeatherMoment({
-            condition,
-            conditionLabel: getConditionLabel(condition),
-            shortForecast: getShortForecast(condition, temperature),
-            suggestion: getSuggestion(condition),
-          });
-        }
-      } catch (err) {
-        console.error('Failed to fetch weather:', err);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-
+  const refreshLocation = () => {
+    setIsRefreshing(true);
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          setLocationLabel('현재 위치');
           fetchWeather(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
           console.error('Geolocation error:', error);
-          // Fallback to Seoul
+          setLocationLabel('서울 (기본값)');
           fetchWeather(37.566, 126.978);
         },
-        { timeout: 10000 } // Give it 10 secs
+        { timeout: 7000 }
       );
     } else {
-      // Fallback to Seoul
+      setLocationLabel('서울');
       fetchWeather(37.566, 126.978);
+    }
+  };
+
+  useEffect(() => {
+    let mounted = true;
+
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (!mounted) return;
+          setLocationLabel('현재 위치');
+          fetchWeather(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.error('Geolocation error inside mount:', error);
+          if (!mounted) return;
+          setLocationLabel('서울');
+          fetchWeather(37.566, 126.978);
+        },
+        { timeout: 8000 }
+      );
+    } else {
+      if (mounted) {
+        setLocationLabel('서울');
+        fetchWeather(37.566, 126.978);
+      }
     }
 
     return () => {
@@ -118,5 +145,5 @@ export const useWeatherMoment = () => {
     };
   }, []);
 
-  return { weatherMoment, loading };
+  return { weatherMoment, loading, locationLabel, refreshLocation, isRefreshing };
 };

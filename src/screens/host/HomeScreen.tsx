@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronRight, CalendarCheck, Calendar, Users, Mail, LogIn } from 'lucide-react';
+import { ChevronRight, CalendarCheck, Calendar, Users, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { getRepositoryMode } from '../../repositories/repositoryMode';
@@ -21,10 +21,10 @@ import type { DiscoveryItem } from '../../types/discovery';
 
 export const HomeScreen = () => {
   const navigate = useNavigate();
-  const { user, signIn } = useAuth();
+  const { user } = useAuth();
   const [meetings, setMeetings] = useState<MeetingRecord[]>([]);
   const [showWelcomeInvite, setShowWelcomeInvite] = useState(false);
-  const { weatherMoment } = useWeatherMoment();
+  const { weatherMoment, locationLabel, refreshLocation, isRefreshing } = useWeatherMoment();
   
   const [profile, setProfile] = useState(() => userProfileRepository.getProfile());
 
@@ -92,59 +92,29 @@ export const HomeScreen = () => {
       <section className="px-2">
         <WeatherMomentCard
           {...weatherMoment}
+          locationLabel={locationLabel}
+          onRefreshLocation={refreshLocation}
+          isRefreshing={isRefreshing}
           scheduleLine={scheduleLine}
         />
       </section>
 
-      {/* Google Login Callout Banner */}
-      {!user && (
-        <section className="px-2 shrink-0 animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="bg-gradient-to-br from-rose/5 to-orange-50/10 border border-rose-200/50 rounded-2xl p-4 flex flex-col gap-3">
-            <div>
-              <h3 className="font-bold text-[14px] text-rose-deep flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 bg-rose rounded-full animate-ping" />
-                구글 계정을 연동해 보세요!
-              </h3>
-              <p className="text-xs text-ink-muted leading-relaxed mt-1">
-                일정 조율 결과를 보관하고 구글 캘린더 일정을 실시간 분석할 수 있습니다.
-              </p>
-            </div>
-            <button
-              onClick={() => signIn().catch(() => {})}
-              className="flex items-center justify-center gap-2 h-10 w-full bg-rose text-white text-xs font-bold rounded-xl shadow-[0_4px_12px_var(--color-primary-halo)] active:scale-95 transition-transform cursor-pointer"
-            >
-              <LogIn size={13} />
-              Google로 간편 로그인
-            </button>
-          </div>
-        </section>
-      )}
-
       {/* 2. Quick Actions */}
-      <section className="grid grid-cols-2 gap-3 px-2">
-        <button 
-          onClick={() => navigate('/app/create/category')}
-          className="flex items-center gap-3 p-4 bg-white border border-rose-200 rounded-[20px] shadow-sm text-left hover:border-rose transition-colors"
-        >
-          <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center text-rose flex-shrink-0">
-            <CalendarCheck size={16} />
-          </div>
-          <div>
-            <div className="font-bold text-ink text-sm">새 초대장</div>
-          </div>
-        </button>
-
-        <button 
-          onClick={() => navigate('/app/meetings?filter=received')}
-          className="flex items-center gap-3 p-4 bg-white border border-sky-200 rounded-[20px] shadow-sm text-left hover:border-sky-500 transition-colors"
-        >
-          <div className="w-8 h-8 rounded-full bg-sky-50 flex items-center justify-center text-sky-600 flex-shrink-0">
-            <span className="font-black text-[11px]">Hi</span>
-          </div>
-          <div>
-            <div className="font-bold text-ink text-sm">받은 초대장</div>
-          </div>
-        </button>
+      <section className="px-2">
+        <div className="flex gap-2 overflow-x-auto hide-scrollbar">
+          <button 
+            onClick={() => navigate('/app/create/category')}
+            className="shrink-0 rounded-full bg-rose px-5 py-2.5 text-xs font-bold text-white shadow-soft active:scale-95 transition-transform cursor-pointer"
+          >
+            새 초대장
+          </button>
+          <button 
+            onClick={() => navigate('/app/meetings?filter=received')}
+            className="shrink-0 rounded-full bg-white border border-ink-line/80 px-5 py-2.5 text-xs font-bold text-ink active:scale-95 transition-transform cursor-pointer"
+          >
+            받은 약속
+          </button>
+        </div>
       </section>
 
       {/* 3. Discovery Feeds */}
@@ -165,58 +135,33 @@ export const HomeScreen = () => {
       {/* 4. 글/사진형 추천 (추후 확장) */}
       
       {/* 5. 하단 작은 관리 링크 */}
-      <section className="px-2 pb-6 flex flex-col gap-3">
-        <div className="flex items-center text-sm font-semibold text-ink-hint px-1 mb-1">
+      <section className="px-2 pb-6">
+        <div className="flex items-center text-xs font-bold text-ink-hint px-1 mb-2.5">
           내 약속 관리
         </div>
-
-        <button 
-          onClick={() => navigate('/app/meetings')}
-          className="w-full flex items-center justify-between bg-white border border-line rounded-xl p-4 shadow-sm group hover:border-black/20 transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-800">
-              <Users size={16} />
-            </div>
-            <div className="text-left">
-              <div className="font-bold text-ink text-sm">내 모임 보기</div>
-              <div className="text-[11px] text-ink-hint mt-0.5">내가 만든 단체 약속 확인</div>
-            </div>
-          </div>
-          <ChevronRight size={18} className="text-ink-hint group-hover:text-ink transition-colors" />
-        </button>
-
-        <button 
-          onClick={() => navigate('/app/calendar')}
-          className="w-full flex items-center justify-between bg-white border border-line rounded-xl p-4 shadow-sm group hover:border-black/20 transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-800">
-              <Calendar size={16} />
-            </div>
-            <div className="text-left">
-              <div className="font-bold text-ink text-sm">우리 달력 보기</div>
-              <div className="text-[11px] text-ink-hint mt-0.5">결정된 일정 한눈에 보기</div>
-            </div>
-          </div>
-          <ChevronRight size={18} className="text-ink-hint group-hover:text-ink transition-colors" />
-        </button>
-
-        <button 
-          onClick={() => navigate('/app/meetings?filter=received')}
-          className="w-full flex items-center justify-between bg-white border border-line rounded-xl p-4 shadow-sm group hover:border-black/20 transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-800">
-              <Mail size={16} />
-            </div>
-            <div className="text-left">
-              <div className="font-bold text-ink text-sm">받은 약속 보기</div>
-              <div className="text-[11px] text-ink-hint mt-0.5">친구에게 받은 초대장들</div>
-            </div>
-          </div>
-          <ChevronRight size={18} className="text-ink-hint group-hover:text-ink transition-colors" />
-        </button>
+        <div className="grid grid-cols-3 gap-2.5">
+          <button 
+            onClick={() => navigate('/app/meetings')}
+            className="flex flex-col items-center justify-center py-4 px-2 bg-white border border-ink-line/50 rounded-2xl text-center active:bg-bg-app transition-colors group cursor-pointer"
+          >
+            <Users size={18} className="text-rose mb-1.5 transition-transform group-hover:scale-110" />
+            <span className="font-bold text-xs text-ink">모임</span>
+          </button>
+          <button 
+            onClick={() => navigate('/app/calendar')}
+            className="flex flex-col items-center justify-center py-4 px-2 bg-white border border-ink-line/50 rounded-2xl text-center active:bg-bg-app transition-colors group cursor-pointer"
+          >
+            <Calendar size={18} className="text-rose mb-1.5 transition-transform group-hover:scale-110" />
+            <span className="font-bold text-xs text-ink">달력</span>
+          </button>
+          <button 
+            onClick={() => navigate('/app/meetings?filter=received')}
+            className="flex flex-col items-center justify-center py-4 px-2 bg-white border border-ink-line/50 rounded-2xl text-center active:bg-bg-app transition-colors group cursor-pointer"
+          >
+            <Mail size={18} className="text-rose mb-1.5 transition-transform group-hover:scale-110" />
+            <span className="font-bold text-xs text-ink">받은 약속</span>
+          </button>
+        </div>
       </section>
     </ScreenShell>
   );

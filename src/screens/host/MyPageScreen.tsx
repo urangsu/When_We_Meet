@@ -22,7 +22,7 @@ export const MyPageScreen = () => {
   const navigate = useNavigate();
   const { user, signIn, signOut } = useAuth();
   const [profile, setProfile] = useState(() => userProfileRepository.getProfile());
-  const [activePanel, setActivePanel] = useState<null | 'profile' | 'appearance' | 'notifications' | 'calendar' | 'about'>(null);
+  const [activePanel, setActivePanel] = useState<null | 'profile' | 'appearance' | 'account' | 'notifications' | 'calendar' | 'about'>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     message: string;
     action: () => void;
@@ -90,35 +90,15 @@ export const MyPageScreen = () => {
               <h2 className="text-xl font-bold flex items-center gap-2">
                 {profile.displayName}
                 {user && (
-                  <span className="text-[10px] font-bold text-rose bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
-                    구글 연결됨
+                  <span className="text-[10px] bg-rose-50 text-rose border border-rose-100 px-2 py-0.5 rounded-full font-bold">
+                    연결됨
                   </span>
                 )}
               </h2>
               <p className="text-xs text-ink-muted">
-                {user ? profile.email : (profile.profileType === 'anon' ? '익명으로 초대장을 만들어요' : '초대장을 만드는 호스트')}
+                {user ? (profile.email || user.email) : (profile.profileType === 'anon' ? '익명으로 초대장을 만들어요' : '초대장을 만드는 호스트')}
               </p>
             </div>
-          </div>
-          
-          <div className="border-t border-ink-line/30 pt-3">
-            {!user ? (
-              <button
-                onClick={handleSignIn}
-                className="flex items-center justify-center gap-2 h-11 w-full bg-rose text-white border border-rose rounded-xl active:scale-95 transition-transform text-sm font-bold shadow-[0_4px_12px_var(--color-primary-halo)] cursor-pointer"
-              >
-                <LogIn size={16} />
-                Google 계정 연동하기
-              </button>
-            ) : (
-              <button
-                onClick={handleSignOut}
-                className="flex items-center justify-center gap-2 h-11 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl active:scale-95 transition-transform text-sm font-semibold cursor-pointer"
-              >
-                <LogOut size={16} />
-                로그아웃 (구글 연동 해제)
-              </button>
-            )}
           </div>
         </div>
 
@@ -133,6 +113,24 @@ export const MyPageScreen = () => {
                 <Settings size={20} />
               </div>
               <span className="font-semibold text-[15px]">프로필 설정</span>
+            </div>
+            <ChevronRight size={20} className="text-ink-hint" />
+          </button>
+
+          <button 
+            onClick={() => setActivePanel('account')}
+            className="w-full flex items-center justify-between p-4 border-b border-ink-line/50 active:bg-bg-app transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-bg-app rounded-full text-rose">
+                <Link2 size={20} />
+              </div>
+              <div className="text-left">
+                <span className="block font-semibold text-[15px]">계정 연결</span>
+                <span className="block text-[11px] text-ink-hint">
+                  {user ? 'Google 계정 연결됨' : 'Google 계정 연결 안 됨'}
+                </span>
+              </div>
             </div>
             <ChevronRight size={20} className="text-ink-hint" />
           </button>
@@ -199,6 +197,7 @@ export const MyPageScreen = () => {
               <h2 className="text-xl font-bold">
                 {activePanel === 'profile' && '프로필 설정'}
                 {activePanel === 'appearance' && '앱 화면 테마'}
+                {activePanel === 'account' && '계정 연결'}
                 {activePanel === 'notifications' && '알림 설정'}
                 {activePanel === 'calendar' && '캘린더 연결'}
                 {activePanel === 'about' && '앱 정보'}
@@ -357,47 +356,81 @@ export const MyPageScreen = () => {
               </div>
             )}
 
+            {activePanel === 'account' && (
+              <div className="flex flex-col gap-4 pb-8 h-full">
+                <div className="rounded-2xl bg-white border border-ink-line/50 p-4">
+                  <h3 className="font-bold text-ink text-sm">Google 계정 연결</h3>
+                  <p className="mt-1 text-xs text-ink-muted leading-relaxed">
+                    계정을 연결하면 일정 조율 결과를 더 안전하게 보관하고, 구글 캘린더 기능을 사용할 수 있어요.
+                  </p>
+                </div>
+
+                {user ? (
+                  <div className="rounded-2xl bg-white border border-ink-line/50 p-4 flex flex-col gap-4">
+                    <div>
+                      <p className="text-[10px] font-bold text-rose inline-block bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-full mb-2">Google 계정 연동 상태</p>
+                      <p className="font-bold text-ink text-sm">{profile.email || user.email}</p>
+                    </div>
+                    <Button onClick={handleSignOut} variant="outline" size="full">
+                      Google 연결 해제
+                    </Button>
+                  </div>
+                ) : (
+                  <Button onClick={handleSignIn} size="full">
+                    Google 계정 연결하기
+                  </Button>
+                )}
+              </div>
+            )}
+
             {activePanel === 'calendar' && (
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-ink-line">
-                  <span className="font-semibold text-ink">우리 달력 사용 중</span>
+              <div className="flex flex-col gap-4 pb-8">
+                <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-ink-line/55">
+                  <span className="font-semibold text-ink text-sm">우리 달력 사용 중</span>
                   <div className="w-12 h-6 rounded-full bg-rose transition-colors relative">
                     <div className="w-5 h-5 bg-white rounded-full absolute right-1 top-0.5" />
                   </div>
                 </div>
                 
                 {!user ? (
-                  <div className="flex flex-col gap-2 p-4 bg-white rounded-xl border border-ink-line">
-                    <h3 className="font-bold text-ink flex items-center gap-2">
+                  <div className="flex flex-col gap-3 p-4 bg-white rounded-2xl border border-ink-line/55">
+                    <h3 className="font-bold text-ink text-xs flex items-center gap-2">
                       <Link2 size={16} className="text-ink-hint" />
-                      구글 캘린더 연동
+                      Google Calendar 스케줄 가져오기
                     </h3>
-                    <p className="text-xs text-ink-muted leading-relaxed">
-                      구글 일정을 불러와 바쁜 시간을 지능적으로 분석하려면 먼저 구글 로그인이 필요해요.
+                    <p className="text-[11px] text-ink-muted leading-relaxed">
+                      구글 캘린더 일정을 가져오려면 먼저 Google 계정 연결이 필요해요.
                     </p>
-                    <button 
-                      onClick={handleSignIn}
-                      className="mt-2 w-full border border-rose rounded-lg bg-rose text-white hover:bg-rose-600 py-2.5 px-3 text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                    <Button 
+                      onClick={() => {
+                        setActivePanel('account');
+                      }}
+                      size="full"
                     >
-                      <LogIn size={15} />
-                      구글 계정 연결하기
-                    </button>
+                      Google 계정 연결하기
+                    </Button>
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-2 p-4 bg-white rounded-xl border border-ink-line">
-                    <h3 className="font-bold text-ink flex items-center justify-between">
+                  <div className="flex flex-col gap-3 p-4 bg-white rounded-2xl border border-ink-line/55">
+                    <h3 className="font-bold text-ink text-xs flex items-center justify-between">
                       <span className="flex items-center gap-2">
-                        <Link2 size={16} className="text-rose" />
-                        구글 캘린더 연동 상태
+                        <Link2 size={16} className={profile.calendar.externalCalendarStatus === 'connected' ? 'text-rose' : 'text-ink-hint'} />
+                        {profile.calendar.externalCalendarStatus === 'connected' 
+                          ? 'Google Calendar 연결됨' 
+                          : 'Google Calendar 스케줄 가져오기'}
                       </span>
-                      <span className="text-[10px] bg-sky-50 text-sky-600 border border-sky-100 px-2 py-0.5 rounded-full font-bold">
-                        연결됨
-                      </span>
+                      {profile.calendar.externalCalendarStatus === 'connected' && (
+                        <span className="text-[11px] bg-rose-50 text-rose border border-rose-100 px-2 py-0.5 rounded-full font-bold">
+                          연결됨
+                        </span>
+                      )}
                     </h3>
-                    <p className="text-xs text-ink-muted leading-relaxed">
-                      외부 구글 캘린더 스케줄을 달력 탭 및 일정 조율 화면에서 함께 실시간으로 고려합니다.
+                    <p className="text-[11px] text-ink-muted leading-relaxed">
+                      {profile.calendar.externalCalendarStatus === 'connected'
+                        ? '달력 탭에서 구글 일정을 함께 확인할 수 있어요.'
+                        : '구글 캘린더 일정을 달력 탭과 약속 만들기에서 함께 볼 수 있어요.'}
                     </p>
-                    <button 
+                    <Button 
                       onClick={() => {
                         const isCurrentlyConnected = profile.calendar.externalCalendarStatus === 'connected';
                         const next = userProfileRepository.updateProfile({
@@ -408,21 +441,18 @@ export const MyPageScreen = () => {
                         });
                         setProfile(next);
                       }}
-                      className={`mt-2 w-full border rounded-lg py-2.5 px-3 text-sm font-bold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] cursor-pointer ${
-                        profile.calendar.externalCalendarStatus === 'connected'
-                          ? 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100'
-                          : 'bg-rose text-white border-rose hover:bg-rose-600'
-                      }`}
+                      variant={profile.calendar.externalCalendarStatus === 'connected' ? 'outline' : 'primary'}
+                      size="full"
                     >
                       {profile.calendar.externalCalendarStatus === 'connected'
-                        ? '구글 캘린더 연결 해제하기'
-                        : '구글 캘린더 지금 연동 활성화'}
-                    </button>
+                        ? '스케줄 가져오기 끄기'
+                        : '스케줄 가져오기 켜기'}
+                    </Button>
                   </div>
                 )}
 
                 <div className="mt-4">
-                  <Button onClick={() => navigate('/app/calendar')} size="full">우리 달력 열기</Button>
+                  <Button onClick={() => navigate('/app/calendar')} variant="outline" size="full">우리 달력 열기</Button>
                 </div>
               </div>
             )}
