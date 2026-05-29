@@ -20,8 +20,13 @@ export const CalendarDayCell: React.FC<{
   return (
     <div
       className={`
-        relative aspect-square rounded-xl transition-all overflow-hidden
-        ${isSelected ? 'bg-rose shadow-md scale-105 z-10' : 'bg-transparent hover:bg-ivory'}
+        relative aspect-square rounded-xl transition-all overflow-hidden border
+        ${isSelected 
+          ? 'bg-rose border-rose shadow-md scale-105 z-10' 
+          : externalHintCount > 0 
+            ? 'bg-sky-50/80 border-sky-100 hover:bg-sky-100/50' 
+            : 'bg-transparent border-transparent hover:bg-ivory'
+        }
       `}
     >
       <button

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScreenShell } from '../../components/layout/ScreenShell';
-import { Settings, Bell, Calendar as CalendarIcon, Info, ChevronRight, X, Check, Camera, User, Hash, HelpCircle, Palette } from 'lucide-react';
+import { Settings, Bell, Calendar as CalendarIcon, Info, ChevronRight, X, Check, Camera, User, Hash, HelpCircle, Palette, LogIn, LogOut, Link2 } from 'lucide-react';
 import { InitialAvatar } from '../../components/profile/InitialAvatar';
 import { userProfileRepository } from '../../repositories/userProfileRepository';
 import { Button } from '../../components/Button';
@@ -9,6 +9,7 @@ import { ProfileColorId } from '../../types';
 import { profileColorOptions } from '../../config/profileColorOptions';
 import { appThemePresets } from '../../config/appThemePresets';
 import type { UserProfile } from '../../types/user';
+import { useAuth } from '../../state/AuthContext';
 
 const profileOptions = [
   { id: 'my-photo', label: '내 사진', icon: Camera },
@@ -19,6 +20,7 @@ const profileOptions = [
 
 export const MyPageScreen = () => {
   const navigate = useNavigate();
+  const { user, signIn, signOut } = useAuth();
   const [profile, setProfile] = useState(() => userProfileRepository.getProfile());
   const [activePanel, setActivePanel] = useState<null | 'profile' | 'appearance' | 'notifications' | 'calendar' | 'about'>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
@@ -31,6 +33,11 @@ export const MyPageScreen = () => {
   const [draftProfileType, setDraftProfileType] = useState<UserProfile['profileType']>(profile.profileType);
   const [draftColorId, setDraftColorId] = useState<ProfileColorId>(profile.colorId as ProfileColorId);
 
+  // Sync state with repository updates
+  const syncProfileState = () => {
+    setProfile(userProfileRepository.getProfile());
+  };
+
   const saveProfile = () => {
     const next = userProfileRepository.updateProfile({
       displayName: draftName.trim() || '호스트',
@@ -41,6 +48,24 @@ export const MyPageScreen = () => {
     setActivePanel(null);
   };
 
+  const handleSignIn = async () => {
+    try {
+      await signIn();
+      syncProfileState();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      syncProfileState();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <ScreenShell bottomInset="nav" className="bg-bg-app">
       <header className="px-5 pt-8 pb-4">
@@ -49,13 +74,51 @@ export const MyPageScreen = () => {
 
       <div className="px-5 pb-8 flex flex-col gap-6">
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line/50 flex items-center gap-4">
-          <InitialAvatar name={profile.displayName} colorId={profile.colorId as ProfileColorId} size="lg" />
-          <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold">{profile.displayName}</h2>
-            <p className="text-sm text-ink-muted">
-              {profile.profileType === 'anon' ? '익명으로 초대장을 만들어요' : '초대장을 만드는 호스트'}
-            </p>
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line/50 flex flex-col gap-4">
+          <div className="flex items-center gap-4 w-full">
+            {profile.photoURL ? (
+              <img 
+                src={profile.photoURL} 
+                alt={profile.displayName} 
+                className="w-14 h-14 rounded-full border border-ink-line object-cover" 
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <InitialAvatar name={profile.displayName} colorId={profile.colorId as ProfileColorId} size="lg" />
+            )}
+            <div className="flex flex-col gap-1 flex-1">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                {profile.displayName}
+                {user && (
+                  <span className="text-[10px] font-bold text-rose bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
+                    구글 연결됨
+                  </span>
+                )}
+              </h2>
+              <p className="text-xs text-ink-muted">
+                {user ? profile.email : (profile.profileType === 'anon' ? '익명으로 초대장을 만들어요' : '초대장을 만드는 호스트')}
+              </p>
+            </div>
+          </div>
+          
+          <div className="border-t border-ink-line/30 pt-3">
+            {!user ? (
+              <button
+                onClick={handleSignIn}
+                className="flex items-center justify-center gap-2 h-11 w-full bg-rose text-white border border-rose rounded-xl active:scale-95 transition-transform text-sm font-bold shadow-[0_4px_12px_var(--color-primary-halo)] cursor-pointer"
+              >
+                <LogIn size={16} />
+                Google 계정 연동하기
+              </button>
+            ) : (
+              <button
+                onClick={handleSignOut}
+                className="flex items-center justify-center gap-2 h-11 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl active:scale-95 transition-transform text-sm font-semibold cursor-pointer"
+              >
+                <LogOut size={16} />
+                로그아웃 (구글 연동 해제)
+              </button>
+            )}
           </div>
         </div>
 
@@ -303,15 +366,60 @@ export const MyPageScreen = () => {
                   </div>
                 </div>
                 
-                <div className="flex flex-col gap-2 p-4 bg-white rounded-xl border border-ink-line opacity-60">
-                  <h3 className="font-bold text-ink">외부 캘린더 (추후 지원 예정)</h3>
-                  <button 
-                    disabled
-                    className="mt-2 w-full border border-ink-line rounded-lg bg-bg-app text-ink-muted cursor-not-allowed py-2 px-3 text-sm font-semibold flex items-center justify-center"
-                  >
-                    Google Calendar 연동 준비 중
-                  </button>
-                </div>
+                {!user ? (
+                  <div className="flex flex-col gap-2 p-4 bg-white rounded-xl border border-ink-line">
+                    <h3 className="font-bold text-ink flex items-center gap-2">
+                      <Link2 size={16} className="text-ink-hint" />
+                      구글 캘린더 연동
+                    </h3>
+                    <p className="text-xs text-ink-muted leading-relaxed">
+                      구글 일정을 불러와 바쁜 시간을 지능적으로 분석하려면 먼저 구글 로그인이 필요해요.
+                    </p>
+                    <button 
+                      onClick={handleSignIn}
+                      className="mt-2 w-full border border-rose rounded-lg bg-rose text-white hover:bg-rose-600 py-2.5 px-3 text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <LogIn size={15} />
+                      구글 계정 연결하기
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2 p-4 bg-white rounded-xl border border-ink-line">
+                    <h3 className="font-bold text-ink flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        <Link2 size={16} className="text-rose" />
+                        구글 캘린더 연동 상태
+                      </span>
+                      <span className="text-[10px] bg-sky-50 text-sky-600 border border-sky-100 px-2 py-0.5 rounded-full font-bold">
+                        연결됨
+                      </span>
+                    </h3>
+                    <p className="text-xs text-ink-muted leading-relaxed">
+                      외부 구글 캘린더 스케줄을 달력 탭 및 일정 조율 화면에서 함께 실시간으로 고려합니다.
+                    </p>
+                    <button 
+                      onClick={() => {
+                        const isCurrentlyConnected = profile.calendar.externalCalendarStatus === 'connected';
+                        const next = userProfileRepository.updateProfile({
+                          calendar: {
+                            ...profile.calendar,
+                            externalCalendarStatus: isCurrentlyConnected ? 'not_connected' : 'connected'
+                          }
+                        });
+                        setProfile(next);
+                      }}
+                      className={`mt-2 w-full border rounded-lg py-2.5 px-3 text-sm font-bold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] cursor-pointer ${
+                        profile.calendar.externalCalendarStatus === 'connected'
+                          ? 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100'
+                          : 'bg-rose text-white border-rose hover:bg-rose-600'
+                      }`}
+                    >
+                      {profile.calendar.externalCalendarStatus === 'connected'
+                        ? '구글 캘린더 연결 해제하기'
+                        : '구글 캘린더 지금 연동 활성화'}
+                    </button>
+                  </div>
+                )}
 
                 <div className="mt-4">
                   <Button onClick={() => navigate('/app/calendar')} size="full">우리 달력 열기</Button>

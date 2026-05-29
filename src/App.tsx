@@ -9,6 +9,7 @@ import { GuestWebLayout } from './layouts/GuestWebLayout';
 // Providers
 import { CreateMeetingDraftProvider } from './state/CreateMeetingDraftContext';
 import { GuestResponseDraftProvider } from './state/GuestResponseDraftContext';
+import { AuthProvider } from './state/AuthContext';
 
 // Host Screens
 import { HomeScreen } from './screens/host/HomeScreen';
@@ -42,62 +43,64 @@ import { GuestCompleteScreen } from './screens/guest/GuestCompleteScreen';
 
 export default function App() {
   return (
-    <CreateMeetingDraftProvider>
-      <GuestResponseDraftProvider>
-        <BrowserRouter>
-          <HashRouteRedirect />
-          <Routes>
-            {/* Default redirect to Host App Home */}
-            <Route path="/" element={<Navigate to="/app" replace />} />
+    <AuthProvider>
+      <CreateMeetingDraftProvider>
+        <GuestResponseDraftProvider>
+          <BrowserRouter>
+            <HashRouteRedirect />
+            <Routes>
+              {/* Default redirect to Host App Home */}
+              <Route path="/" element={<Navigate to="/app" replace />} />
 
-            {/* Host App Flow */}
-            <Route path="/app" element={<HostAppLayout />}>
-              <Route index element={<HomeScreen />} />
-              <Route path="meetings" element={<MeetingsScreen />} />
-              <Route path="calendar" element={<CalendarTabScreen />} />
-              <Route path="me" element={<MyPageScreen />} />
-              <Route path="create/category" element={<CategoryScreen />} />
-              <Route path="create/info" element={<MeetingInfoScreen />} />
-              <Route path="create/place" element={<PlaceSetupScreen />} />
-              <Route path="create/dates" element={<DatePickerScreen />} />
-              <Route path="create/time" element={<TimeSetupScreen />} />
-              <Route path="create/activity" element={<ActivitySetupScreen />} />
-              <Route path="create/theme" element={<ThemeScreen />} />
-              <Route path="create/profile" element={<ProfileScreen />} />
-              <Route path="create/preview" element={<InvitePreviewScreen />} />
-              <Route path="create/share" element={<ShareScreen />} />
-              <Route path="meetings/demo/dashboard" element={<DashboardScreen />} />
-              <Route path="meetings/:meetingId/dashboard" element={<DashboardScreen />} />
-              <Route path="meetings/demo/confirm" element={<ConfirmPlanScreen />} />
-              <Route path="meetings/:meetingId/confirm" element={<ConfirmPlanScreen />} />
-              <Route path="meetings/demo/confirmed-share" element={<ConfirmedShareScreen />} />
-              <Route path="meetings/:meetingId/confirmed-share" element={<ConfirmedShareScreen />} />
-              <Route path="meetings/demo/post-meeting" element={<PostMeetingScreen />} />
-              <Route path="meetings/:meetingId/post-meeting" element={<PostMeetingScreen />} />
-            </Route>
+              {/* Host App Flow */}
+              <Route path="/app" element={<HostAppLayout />}>
+                <Route index element={<HomeScreen />} />
+                <Route path="meetings" element={<MeetingsScreen />} />
+                <Route path="calendar" element={<CalendarTabScreen />} />
+                <Route path="me" element={<MyPageScreen />} />
+                <Route path="create/category" element={<CategoryScreen />} />
+                <Route path="create/info" element={<MeetingInfoScreen />} />
+                <Route path="create/place" element={<PlaceSetupScreen />} />
+                <Route path="create/dates" element={<DatePickerScreen />} />
+                <Route path="create/time" element={<TimeSetupScreen />} />
+                <Route path="create/activity" element={<ActivitySetupScreen />} />
+                <Route path="create/theme" element={<ThemeScreen />} />
+                <Route path="create/profile" element={<ProfileScreen />} />
+                <Route path="create/preview" element={<InvitePreviewScreen />} />
+                <Route path="create/share" element={<ShareScreen />} />
+                <Route path="meetings/demo/dashboard" element={<DashboardScreen />} />
+                <Route path="meetings/:meetingId/dashboard" element={<DashboardScreen />} />
+                <Route path="meetings/demo/confirm" element={<ConfirmPlanScreen />} />
+                <Route path="meetings/:meetingId/confirm" element={<ConfirmPlanScreen />} />
+                <Route path="meetings/demo/confirmed-share" element={<ConfirmedShareScreen />} />
+                <Route path="meetings/:meetingId/confirmed-share" element={<ConfirmedShareScreen />} />
+                <Route path="meetings/demo/post-meeting" element={<PostMeetingScreen />} />
+                <Route path="meetings/:meetingId/post-meeting" element={<PostMeetingScreen />} />
+              </Route>
 
-            {/* Guest Web Flow */}
-            <Route path="/invite" element={<GuestWebLayout />}>
-              <Route path="demo" element={<InviteLandingScreen />} />
-              <Route path="demo/nickname" element={<GuestNicknameScreen />} />
-              <Route path="demo/attendance" element={<GuestAttendanceScreen />} />
-              <Route path="demo/dates" element={<GuestDateVoteScreen />} />
-              <Route path="demo/place" element={<GuestPlacePreferenceScreen />} />
-              <Route path="demo/preferences" element={<GuestPreferenceScreen />} />
-              <Route path="demo/complete" element={<GuestCompleteScreen />} />
+              {/* Guest Web Flow */}
+              <Route path="/invite" element={<GuestWebLayout />}>
+                <Route path="demo" element={<InviteLandingScreen />} />
+                <Route path="demo/nickname" element={<GuestNicknameScreen />} />
+                <Route path="demo/attendance" element={<GuestAttendanceScreen />} />
+                <Route path="demo/dates" element={<GuestDateVoteScreen />} />
+                <Route path="demo/place" element={<GuestPlacePreferenceScreen />} />
+                <Route path="demo/preferences" element={<GuestPreferenceScreen />} />
+                <Route path="demo/complete" element={<GuestCompleteScreen />} />
 
-              <Route path=":meetingId/:token" element={<InviteLandingScreen />} />
-              <Route path=":meetingId/:token/nickname" element={<GuestNicknameScreen />} />
-              <Route path=":meetingId/:token/attendance" element={<GuestAttendanceScreen />} />
-              <Route path=":meetingId/:token/dates" element={<GuestDateVoteScreen />} />
-              <Route path=":meetingId/:token/place" element={<GuestPlacePreferenceScreen />} />
-              <Route path=":meetingId/:token/preferences" element={<GuestPreferenceScreen />} />
-              <Route path=":meetingId/:token/complete" element={<GuestCompleteScreen />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </GuestResponseDraftProvider>
-    </CreateMeetingDraftProvider>
+                <Route path=":meetingId/:token" element={<InviteLandingScreen />} />
+                <Route path=":meetingId/:token/nickname" element={<GuestNicknameScreen />} />
+                <Route path=":meetingId/:token/attendance" element={<GuestAttendanceScreen />} />
+                <Route path=":meetingId/:token/dates" element={<GuestDateVoteScreen />} />
+                <Route path=":meetingId/:token/place" element={<GuestPlacePreferenceScreen />} />
+                <Route path=":meetingId/:token/preferences" element={<GuestPreferenceScreen />} />
+                <Route path=":meetingId/:token/complete" element={<GuestCompleteScreen />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </GuestResponseDraftProvider>
+      </CreateMeetingDraftProvider>
+    </AuthProvider>
   );
 }
 

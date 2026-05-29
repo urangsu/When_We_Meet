@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronRight, CalendarCheck, Calendar, Users, Mail } from 'lucide-react';
+import { ChevronRight, CalendarCheck, Calendar, Users, Mail, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { getRepositoryMode } from '../../repositories/repositoryMode';
@@ -9,6 +9,7 @@ import { WelcomeInviteOverlay } from '../../components/onboarding/WelcomeInviteO
 import { createdMeetingRegistry } from '../../repositories/createdMeetingRegistry';
 import { meetingRepository } from '../../repositories/getMeetingRepository';
 import { userProfileRepository } from '../../repositories/userProfileRepository';
+import { useAuth } from '../../state/AuthContext';
 import type { MeetingRecord } from '../../types/meeting';
 
 import { WeatherMomentCard } from '../../components/home/WeatherMomentCard';
@@ -20,12 +21,18 @@ import type { DiscoveryItem } from '../../types/discovery';
 
 export const HomeScreen = () => {
   const navigate = useNavigate();
+  const { user, signIn } = useAuth();
   const [meetings, setMeetings] = useState<MeetingRecord[]>([]);
   const [showWelcomeInvite, setShowWelcomeInvite] = useState(false);
   const { weatherMoment } = useWeatherMoment();
   
-  const userProfile = userProfileRepository.getProfile();
-  const displayName = userProfile.displayName || '호스트';
+  const [profile, setProfile] = useState(() => userProfileRepository.getProfile());
+
+  useEffect(() => {
+    setProfile(userProfileRepository.getProfile());
+  }, [user]);
+
+  const displayName = profile.displayName || '호스트';
 
   useEffect(() => {
     if (!hasCompletedWelcome()) {
@@ -88,6 +95,30 @@ export const HomeScreen = () => {
           scheduleLine={scheduleLine}
         />
       </section>
+
+      {/* Google Login Callout Banner */}
+      {!user && (
+        <section className="px-2 shrink-0 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="bg-gradient-to-br from-rose/5 to-orange-50/10 border border-rose-200/50 rounded-2xl p-4 flex flex-col gap-3">
+            <div>
+              <h3 className="font-bold text-[14px] text-rose-deep flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-rose rounded-full animate-ping" />
+                구글 계정을 연동해 보세요!
+              </h3>
+              <p className="text-xs text-ink-muted leading-relaxed mt-1">
+                일정 조율 결과를 보관하고 구글 캘린더 일정을 실시간 분석할 수 있습니다.
+              </p>
+            </div>
+            <button
+              onClick={() => signIn().catch(() => {})}
+              className="flex items-center justify-center gap-2 h-10 w-full bg-rose text-white text-xs font-bold rounded-xl shadow-[0_4px_12px_var(--color-primary-halo)] active:scale-95 transition-transform cursor-pointer"
+            >
+              <LogIn size={13} />
+              Google로 간편 로그인
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* 2. Quick Actions */}
       <section className="grid grid-cols-2 gap-3 px-2">

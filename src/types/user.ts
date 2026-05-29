@@ -14,4 +14,7 @@ export interface UserProfile {
     ourCalendarEnabled: boolean;
     externalCalendarStatus: 'not_connected' | 'coming_soon' | 'connected';
   };
+  uid?: string;
+  email?: string;
+  photoURL?: string;
 }

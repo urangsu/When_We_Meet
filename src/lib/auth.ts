@@ -3,13 +3,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User 
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/calendar');
 
 let isSigningIn = false;
-let cachedAccessToken: string | null = null;
+let cachedAccessToken: string | null = typeof window !== 'undefined' ? sessionStorage.getItem('google_access_token') : null;
 
 export const initAuth = (
   onAuthSuccess?: (user: User, token: string) => void,
@@ -25,6 +25,9 @@ export const initAuth = (
       }
     } else {
       cachedAccessToken = null;
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('google_access_token');
+      }
       if (onAuthFailure) onAuthFailure();
     }
   });
@@ -40,6 +43,9 @@ export const googleSignIn = async (): Promise<{ user: User; accessToken: string 
     }
 
     cachedAccessToken = credential.accessToken;
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('google_access_token', cachedAccessToken);
+    }
     return { user: result.user, accessToken: cachedAccessToken };
   } catch (error: any) {
     console.error('Sign in error:', error);
@@ -56,4 +62,7 @@ export const getAccessToken = async (): Promise<string | null> => {
 export const logout = async () => {
   await auth.signOut();
   cachedAccessToken = null;
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem('google_access_token');
+  }
 };

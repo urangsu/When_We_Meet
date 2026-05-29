@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ScreenShell } from '../../components/layout/ScreenShell';
 import { ChevronLeft, ChevronRight, PencilLine } from 'lucide-react';
 import { ourCalendarRepository } from '../../repositories/getOurCalendarRepository';
@@ -22,6 +23,8 @@ import type {
 } from '../../types/calendar';
 
 export const CalendarTabScreen = () => {
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState(() => userProfileRepository.getProfile());
   const [visibleYear, setVisibleYear] = useState(new Date().getFullYear());
   const [visibleMonth, setVisibleMonth] = useState(new Date().getMonth() + 1);
   const [selectedDateKey, setSelectedDateKey] = useState<string | null>(
@@ -42,8 +45,14 @@ export const CalendarTabScreen = () => {
   useEffect(() => {
     // Initialize auth listener
     const unsubscribe = initAuth(
-      (_user, _token) => setIsAuthenticated(true),
-      () => setIsAuthenticated(false)
+      (_user, _token) => {
+        setIsAuthenticated(true);
+        setProfile(userProfileRepository.getProfile());
+      },
+      () => {
+        setIsAuthenticated(false);
+        setProfile(userProfileRepository.getProfile());
+      }
     );
     return () => unsubscribe();
   }, []);
@@ -58,8 +67,8 @@ export const CalendarTabScreen = () => {
     const fetchGoogleEvents = async () => {
       if (!featureFlags.externalCalendar) return;
 
-      const profile = userProfileRepository.getProfile();
-      if (!isAuthenticated || profile.calendar.externalCalendarStatus !== 'connected') {
+      const currentProfile = userProfileRepository.getProfile();
+      if (!isAuthenticated || currentProfile.calendar.externalCalendarStatus !== 'connected') {
         return;
       }
       
@@ -75,7 +84,7 @@ export const CalendarTabScreen = () => {
     };
 
     fetchGoogleEvents();
-  }, [visibleYear, visibleMonth, isAuthenticated]);
+  }, [visibleYear, visibleMonth, isAuthenticated, profile]);
 
   const goToPreviousMonth = () => {
     setSelectedDateKey(null);
@@ -177,14 +186,45 @@ export const CalendarTabScreen = () => {
     <ScreenShell bottomInset="nav" className="bg-bg-app">
       <div className="min-h-dvh pb-24">
         <header className="px-5 pt-8 pb-4">
-          <h1 className="text-2xl font-bold mb-2">우리 달력</h1>
-          <p className="text-ink-muted text-sm leading-relaxed">
-            약속 후보, 모임, 메모를 한 곳에 모아요.
-          </p>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold mb-1">우리 달력</h1>
+              <p className="text-ink-muted text-xs leading-relaxed">
+                약속 후보, 모임, 메모를 한 곳에 모아요.
+              </p>
+            </div>
+            {profile.calendar.externalCalendarStatus === 'connected' && isAuthenticated && (
+              <span className="text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-1 rounded-full border border-sky-100/80 flex items-center gap-1.5 shrink-0 animate-in fade-in duration-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+                Google 연동 중
+              </span>
+            )}
+          </div>
         </header>
 
-        <div className="px-5 flex flex-col gap-6">
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line">
+        <div className="px-5 flex flex-col gap-4">
+          {/* Google Calendar sync promo banner */}
+          {profile.calendar.externalCalendarStatus !== 'connected' && (
+            <div className="bg-sky-50/50 border border-sky-100 rounded-2xl p-4 flex items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
+              <div className="flex-1">
+                <h4 className="font-bold text-xs text-sky-900 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                  구글 캘린더 스케줄 가져오기
+                </h4>
+                <p className="text-[11px] text-sky-700/80 leading-relaxed mt-0.5">
+                  구글 일정을 실시간으로 가져와 겹치지 않는 빈 시간을 지능적으로 찾습니다.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/app/me')}
+                className="shrink-0 bg-sky-100 hover:bg-sky-200 text-sky-700 text-[11px] font-bold py-1.5 px-3 rounded-lg transition-colors cursor-pointer active:scale-95"
+              >
+                연동하기
+              </button>
+            </div>
+          )}
+
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-ink-line">
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold text-lg">{visibleYear}년 {visibleMonth}월</h3>
               <div className="flex gap-4">
@@ -300,7 +340,14 @@ export const CalendarTabScreen = () => {
                      {selectedContext.externalHints.map(hint => (
                         <div key={hint.id} className="flex flex-col gap-1 mb-2 last:mb-0 bg-bg-app border border-ink-line/50 p-3 rounded-xl">
                           <p className="font-bold text-ink text-sm flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block" /> {hint.title}</p>
-                          <p className="text-xs text-ink-muted">{hint.note}</p>
+                          <div className="flex items-center gap-1.5 text-xs text-ink-muted mt-0.5">
+                            {hint.timeLabel && (
+                              <span className="text-[10px] bg-sky-50 text-sky-600 border border-sky-100 rounded px-1.5 py-0.5 font-bold shrink-0">
+                                {hint.timeLabel}
+                              </span>
+                            )}
+                            <span>{hint.note}</span>
+                          </div>
                         </div>
                      ))}
                    </div>
