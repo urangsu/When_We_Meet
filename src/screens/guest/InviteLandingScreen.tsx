@@ -57,12 +57,12 @@ export const InviteLandingScreen = () => {
 
   const title = meeting?.title || '새로운 초대장';
   const message = meeting?.hostMessage || '같이 시간 맞춰볼까요?\n가능한 날짜와 하고 싶은 걸 가볍게 골라주세요.';
-  const dateLabel = meeting?.dateOptions?.length ? meeting.dateOptions.length + '개의 날짜 후보' : undefined;
+  const dateLabel = meeting?.dateLabels?.length ? meeting.dateLabels.length + '개의 날짜 후보' : undefined;
   
   let placeLabel = undefined;
-  if (meeting?.placeMode === 'decided' && meeting.placeCandidate) {
-    placeLabel = meeting.placeCandidate;
-  } else if (meeting?.placeMode === 'vote') {
+  if (meeting?.locationMode === 'fixed' && meeting.fixedPlaceName) {
+    placeLabel = meeting.fixedPlaceName;
+  } else if (meeting?.locationMode === 'candidate_vote') {
     placeLabel = '친구들과 함께 결정';
   }
 

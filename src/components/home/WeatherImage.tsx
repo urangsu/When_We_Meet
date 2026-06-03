@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import sunny from '../../assets/weather/weather-sunny.webp';
 import cloudy from '../../assets/weather/weather-cloudy.webp';
 import rainy from '../../assets/weather/weather-rainy.webp';
@@ -32,11 +32,21 @@ interface WeatherImageProps {
 }
 
 export const WeatherImage = ({ condition, size = 'md' }: WeatherImageProps) => {
+  const [error, setError] = useState(false);
+
   const sizeClass = {
     sm: 'h-12 w-12',
     md: 'h-16 w-16',
     lg: 'h-20 w-20',
   }[size];
+
+  if (error) {
+    return (
+      <div className={`${sizeClass} flex flex-col items-center justify-center rounded-full bg-slate-100 border border-slate-200 text-slate-400`}>
+        <span className="text-[10px] font-bold">N/A</span>
+      </div>
+    );
+  }
 
   return (
     <img
@@ -45,6 +55,7 @@ export const WeatherImage = ({ condition, size = 'md' }: WeatherImageProps) => {
       className={`${sizeClass} object-contain drop-shadow-sm`}
       draggable={false}
       referrerPolicy="no-referrer"
+      onError={() => setError(true)}
     />
   );
 };

@@ -13,7 +13,7 @@ export const GuestCompleteScreen = () => {
   const { meetingId, token } = useParams();
   const { draft } = useGuestResponseDraft();
 
-  const activityItems = draft.activityIds.length > 0 
+  const activityItems = draft.activityIds && draft.activityIds.length > 0 
     ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
     : [];
 
@@ -37,12 +37,15 @@ export const GuestCompleteScreen = () => {
             suggestedDateLabels: draft.suggestedDateLabels,
             timeLabels: [],
             placeCandidate: draft.placeCandidate,
-            activityIds: draft.activityIds,
+            activityIds: draft.activityIds || [],
             customActivity: draft.customActivity,
             requestNote: draft.requestNote,
             source: 'guest_web',
             inviteToken: token || 'demo-token',
             idempotencyKey: `${meetingId || 'demo'}-${token || 'demo-token'}-${draft.nickname || 'anonymous'}`,
+            orderSelections: draft.orderSelections || [],
+            orderNote: draft.orderNote || '',
+            selectedPlaceCandidate: draft.selectedPlaceCandidate,
           },
         });
         setSubmitState('submitted');

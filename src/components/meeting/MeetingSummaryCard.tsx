@@ -42,14 +42,14 @@ export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting,
         <div className="flex flex-col gap-1.5">
           <h3 className="font-bold text-lg">{meeting.title}</h3>
           <div className="flex items-center gap-3 text-sm text-ink-muted">
-            <span className="flex items-center gap-1"><Clock size={14}/> {meeting.date}</span>
-            <span className="flex items-center gap-1"><MessageCircle size={14}/> {meeting.guests}명 응답</span>
+            <span className="flex items-center gap-1"><Clock size={14}/> {meeting.date || '일정 미정'}</span>
+            <span className="flex items-center gap-1"><MessageCircle size={14}/> {meeting.guests || 0}명 응답</span>
           </div>
         </div>
         {variant === 'home' && (
            <InitialAvatarGroup 
-              participants={meeting.participants} 
-              totalCount={meeting.guests} 
+              participants={meeting.participants || []} 
+              totalCount={meeting.guests || 0} 
               onOpenList={() => setIsParticipantModalOpen(true)}
             />
         )}
@@ -58,8 +58,8 @@ export const MeetingSummaryCard: React.FC<MeetingSummaryCardProps> = ({ meeting,
       <div className={`flex gap-2 items-center ${variant === 'list' ? 'justify-between' : ''}`}>
         {variant === 'list' && (
           <InitialAvatarGroup 
-            participants={meeting.participants} 
-            totalCount={meeting.guests} 
+            participants={meeting.participants || []} 
+            totalCount={meeting.guests || 0} 
             onOpenList={() => setIsParticipantModalOpen(true)}
           />
         )}

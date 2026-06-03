@@ -7,28 +7,59 @@ import { Button } from '../../components/Button';
 import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
 import { VoteRankingList } from '../../components/meeting/VoteRankingList';
 import { RecommendedPlanCard } from '../../components/meeting/RecommendedPlanCard';
-import type { MeetingRecommendedPlan, MeetingResponse } from '../../types/meeting';
+import type { MeetingRecommendedPlan, MeetingResponse, MeetingRecord } from '../../types/meeting';
 import { meetingRepository } from '../../repositories/getMeetingRepository';
+import { aggregateOrderResponses } from '../../utils/orderAggregation';
+import { OrderReceiptMotion } from '../../components/order/OrderReceiptMotion';
+import { ScreenLoading, ScreenError } from '../../components/error/ScreenState';
+
 
 export const DashboardScreen = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams();
-  if (!meetingId) {
-    return (
-      <ScreenShell className="items-center justify-center p-5 text-center">
-        모임 정보를 찾을 수 없어요.
-      </ScreenShell>
-    );
-  }
-  const resolvedMeetingId = meetingId;
+  const resolvedMeetingId = meetingId || '';
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [responses, setResponses] = useState<MeetingResponse[]>([]);
+  const [meeting, setMeeting] = useState<MeetingRecord | null>(null);
+  const [isManualOpen, setIsManualOpen] = useState(false);
+
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [selectedPlace, setSelectedPlace] = useState('');
+  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
 
   useEffect(() => {
+    if (!resolvedMeetingId) {
+      setError('모임 ID를 찾을 수 없어요.');
+      setLoading(false);
+      return;
+    }
+
     let mounted = true;
-    meetingRepository.getMeetingResponses(resolvedMeetingId).then((nextResponses) => {
-      if (mounted) setResponses(nextResponses);
-    });
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [nextResponses, m] = await Promise.all([
+          meetingRepository.getMeetingResponses(resolvedMeetingId),
+          meetingRepository.getMeetingById(resolvedMeetingId),
+        ]);
+        if (mounted) {
+          setResponses(nextResponses || []);
+          setMeeting(m || null);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('[DashboardScreen] failed to load dashboard details', err);
+        if (mounted) {
+          setError('응답 현황을 불러오지 못했어요.');
+          setLoading(false);
+        }
+      }
+    };
+    fetchData();
+
     return () => {
       mounted = false;
     };
@@ -36,12 +67,9 @@ export const DashboardScreen = () => {
 
   const aggregation = useMemo(() => aggregateMeetingResponses(responses), [responses]);
 
-  const [isManualOpen, setIsManualOpen] = useState(false);
-
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  const [selectedPlace, setSelectedPlace] = useState('');
-  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
+  const orderSummary = useMemo(() => {
+    return aggregateOrderResponses(meeting, responses);
+  }, [meeting, responses]);
 
   useEffect(() => {
     if (aggregation.recommendedPlan) {
@@ -69,6 +97,51 @@ export const DashboardScreen = () => {
         : [...prev, label]
     );
   };
+
+  if (!meetingId) {
+    return (
+      <ScreenShell className="items-center justify-center p-5 text-center">
+        <ScreenError title="모임 정보를 찾을 수 없어요" />
+      </ScreenShell>
+    );
+  }
+
+  if (loading) {
+    return (
+      <ScreenShell>
+        <ScreenLoading message="모임 응답 정보를 가져오고 있어요..." />
+      </ScreenShell>
+    );
+  }
+
+  if (error) {
+    return (
+      <ScreenShell>
+        <ScreenError 
+          title="응답 정보를 불러오지 못했어요" 
+          message={error}
+          onRetry={() => {
+            setError(null);
+            setLoading(true);
+            meetingRepository.getMeetingResponses(resolvedMeetingId)
+              .then((nextResponses) => {
+                setResponses(nextResponses || []);
+                return meetingRepository.getMeetingById(resolvedMeetingId);
+              })
+              .then((m) => {
+                setMeeting(m || null);
+                setLoading(false);
+              })
+              .catch(() => {
+                setError('확정되지 못한 네트워크 오류가 계속 발생해요.');
+                setLoading(false);
+              });
+          }}
+        />
+      </ScreenShell>
+    );
+  }
+
 
   return (
     <ScreenShell bottomInset="cta" className="gap-8 pb-20">
@@ -100,6 +173,14 @@ export const DashboardScreen = () => {
       </section>
 
       <RecommendedPlanCard plan={aggregation.recommendedPlan} />
+
+      {meeting?.specialFlow === 'order' && orderSummary.items.length > 0 && (
+        <OrderReceiptMotion
+          items={orderSummary.items}
+          grandTotalQuantity={orderSummary.grandTotalQuantity}
+          grandTotalPrice={orderSummary.grandTotalPrice}
+        />
+      )}
 
       <button
         type="button"

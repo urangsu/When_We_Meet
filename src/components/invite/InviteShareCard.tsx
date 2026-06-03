@@ -9,13 +9,18 @@ interface InviteShareCardProps {
 
 export const InviteShareCard = forwardRef<HTMLDivElement, InviteShareCardProps>(({ draft }, ref) => {
   const getActivityLabel = () => {
-    if (draft.activityMode === 'custom' && draft.customActivity) return draft.customActivity;
-    if (draft.activityMode === 'select' && draft.activityIds && draft.activityIds.length > 0) {
-      if (draft.activityIds.length === 1) {
+    if (draft.activityMode === 'decided') {
+      if (draft.customActivity) return draft.customActivity;
+      if (draft.activityIds && draft.activityIds.length > 0) {
+        if (draft.activityIds.length === 1) {
           const act = activityOptions.find(a => a.id === draft.activityIds[0]);
-          return act ? act.label : '활동 투표 예정';
+          return act ? act.label : '활동 선택 완료';
+        }
+        return `${draft.activityIds.length}개의 추천 활동`;
       }
-      return '활동 후보 투표 예정';
+    }
+    if (draft.activityMode === 'vote') {
+      return '활동 투표 예정';
     }
     return '';
   };

@@ -37,7 +37,6 @@ export const ProfileScreen = () => {
     updateDraft({ 
       hostColorId: selectedColorId,
       hostName: draft.hostName || userProfile.displayName,
-      hostProfileType: selected as UserProfile['profileType'],
     });
     navigate('/app/create/preview');
   };

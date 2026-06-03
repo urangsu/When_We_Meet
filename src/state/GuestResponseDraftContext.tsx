@@ -17,6 +17,8 @@ const defaultDraft: GuestResponseDraft = {
   activityIds: [],
   customActivity: '',
   requestNote: '',
+  orderSelections: [],
+  orderNote: '',
 };
 
 const GuestResponseDraftContext = createContext<GuestResponseDraftContextState | undefined>(undefined);

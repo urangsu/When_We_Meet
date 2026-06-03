@@ -1,7 +1,7 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, HTMLMotionProps } from 'motion/react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends HTMLMotionProps<'button'> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'decline';
   size?: 'sm' | 'md' | 'lg' | 'full';
   children: React.ReactNode;
@@ -9,6 +9,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
 }
+
 
 export const Button = ({ variant = 'primary', size = 'md', children, className = '', ...props }: ButtonProps) => {
   const baseStyles = "rounded-2xl font-semibold transition-all flex items-center justify-center gap-2 active:scale-[0.98]";

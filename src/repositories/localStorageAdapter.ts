@@ -13,11 +13,20 @@ export const readJson = <T>(key: string, fallback: T): T => {
 export const writeJson = <T>(key: string, value: T) => {
   if (typeof window === 'undefined') return;
 
-  window.localStorage.setItem(key, JSON.stringify(value));
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.warn(`[localStorageAdapter] Failed to write ${key}`, error);
+  }
 };
 
 export const removeJson = (key: string) => {
   if (typeof window === 'undefined') return;
 
-  window.localStorage.removeItem(key);
+  try {
+    window.localStorage.removeItem(key);
+  } catch (error) {
+    console.warn(`[localStorageAdapter] Failed to remove ${key}`, error);
+  }
 };
+

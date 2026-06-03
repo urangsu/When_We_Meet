@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '../../components/Button';
 import { ChevronLeft, Share2, MapPin, Calendar, User, Clock, Bookmark, PlayCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -28,27 +28,44 @@ export const InvitePreviewScreen = () => {
   const shareCardRef = useRef<HTMLDivElement>(null);
   const [isSharingImage, setIsSharingImage] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const noticeTimerRef = useRef<number | null>(null);
+
   const showNotice = (message: string) => {
     setNotice(message);
-    window.setTimeout(() => setNotice(null), 2400);
+    if (noticeTimerRef.current) {
+      window.clearTimeout(noticeTimerRef.current);
+    }
+    noticeTimerRef.current = window.setTimeout(() => {
+      setNotice(null);
+      noticeTimerRef.current = null;
+    }, 2400);
   };
+
+  useEffect(() => {
+    return () => {
+      if (noticeTimerRef.current) {
+        window.clearTimeout(noticeTimerRef.current);
+      }
+    };
+  }, []);
+
   
   const selectedCategory = categoryOptions.find(c => c.id === draft.category);
   const categoryLabel = selectedCategory ? selectedCategory.label : '모임';
   
-  const activityItems = draft.activityIds.length > 0 
+  const activityItems = draft.activityIds && draft.activityIds.length > 0 
     ? getActivityDisplayItems(draft.activityIds, draft.customActivity)
     : [];
 
   const dateContext = getDateMessageContext(
     draft.dateLabels,
     draft.timeLabels,
-    draft.activityIds
+    draft.activityIds || []
   );
 
   const smartSuggestions = getContextualInviteCopySuggestions({
     placeContext: getPlaceContext(draft.fixedPlaceName),
-    activityIds: draft.activityIds,
+    activityIds: draft.activityIds || [],
     customActivity: draft.customActivity,
     hasWeekendDate: dateContext.hasWeekendDate,
     hasWeekdayDate: dateContext.hasWeekdayDate,
@@ -68,8 +85,9 @@ export const InvitePreviewScreen = () => {
   };
 
   const getActivityLabel = () => {
-    if (draft.activityMode === 'decided' && (draft.activityIds.length || draft.customActivity)) {
-      return draft.activityIds.length ? `${draft.activityIds.length}개의 후보` : draft.customActivity;
+    const ids = draft.activityIds || [];
+    if (draft.activityMode === 'decided' && (ids.length || draft.customActivity)) {
+      return ids.length ? `${ids.length}개의 후보` : draft.customActivity;
     }
     if (draft.activityMode === 'vote') return '친구들과 함께 결정';
     return undefined;
@@ -122,14 +140,18 @@ export const InvitePreviewScreen = () => {
     <ScreenShell bottomInset="cta" className="gap-6">
       <AnimatePresence>
         {notice && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 12 }}
-            className="fixed bottom-28 left-5 right-5 z-50 rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg"
-          >
-            {notice}
-          </motion.div>
+          <div className="fixed inset-x-0 bottom-28 z-50 flex justify-center pointer-events-none">
+            <div className="w-full max-w-[430px] px-5">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                className="pointer-events-auto rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg text-center"
+              >
+                {notice}
+              </motion.div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
       {isTutorial && (

@@ -220,6 +220,13 @@ export const backendMeetingRepository: MeetingRepository = {
         message: response.attendanceMessage || response.requestNote || null,
         idempotency_key: input.idempotencyKey,
         source: 'guest_web',
+        order_payload: {
+          selections: response.orderSelections || [],
+          note: response.orderNote || '',
+        },
+        place_payload: {
+          selectedPlaceCandidate: response.selectedPlaceCandidate || null,
+        },
       })
       .select()
       .single();

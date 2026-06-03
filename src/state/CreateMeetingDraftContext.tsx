@@ -23,6 +23,7 @@ const defaultDraft: CreateMeetingDraft = {
   timeLabels: [],
   activityIds: [],
   customActivity: '',
+  activityMode: 'undecided',
   themeId: 'calendar-kiss',
   hostName: '',
   hostColorId: 'white',
@@ -30,6 +31,8 @@ const defaultDraft: CreateMeetingDraft = {
   attachedCalendarMemoNotes: [],
   attachedCalendarMemoTags: [],
   attachedCalendarMemoDateKeys: [],
+  specialFlow: 'none',
+  orderMenuItems: [],
 };
 
 const initialDraft = readJson<CreateMeetingDraft>(CREATE_DRAFT_KEY, defaultDraft);

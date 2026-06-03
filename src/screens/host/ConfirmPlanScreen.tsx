@@ -8,45 +8,116 @@ import { Card } from '../../components/Card';
 import { aggregateMeetingResponses } from '../../utils/meetingAggregation';
 import type { MeetingRecommendedPlan } from '../../types/meeting';
 import { meetingRepository } from '../../repositories/getMeetingRepository';
+import { ScreenLoading, ScreenError } from '../../components/error/ScreenState';
+
 
 export const ConfirmPlanScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { meetingId } = useParams();
-  if (!meetingId) {
-    return <ScreenShell className="items-center justify-center p-5 text-center">모임 정보를 찾을 수 없어요.</ScreenShell>;
-  }
-  const resolvedMeetingId = meetingId;
+  const resolvedMeetingId = meetingId || '';
 
   const statePlan = (location.state as { selectedPlan?: MeetingRecommendedPlan } | null)
     ?.selectedPlan;
   
+  const [loading, setLoading] = useState(!statePlan);
+  const [error, setError] = useState<string | null>(null);
   const [fallbackPlan, setFallbackPlan] = useState<MeetingRecommendedPlan | null>(null);
 
   useEffect(() => {
-    if (statePlan) return;
+    if (statePlan) {
+      setLoading(false);
+      return;
+    }
+    if (!resolvedMeetingId) {
+      setError('모임 정보를 불러올 수 없습니다.');
+      setLoading(false);
+      return;
+    }
 
-    meetingRepository.getMeetingResponses(resolvedMeetingId).then((responses) => {
-      const aggregation = aggregateMeetingResponses(responses);
-      setFallbackPlan(aggregation.recommendedPlan);
-    });
+    let mounted = true;
+    const fetchPlan = async () => {
+      try {
+        setLoading(true);
+        const responses = await meetingRepository.getMeetingResponses(resolvedMeetingId);
+        const aggregation = aggregateMeetingResponses(responses);
+        if (mounted) {
+          setFallbackPlan(aggregation.recommendedPlan);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('[ConfirmPlanScreen] failed to loading fallback plan', err);
+        if (mounted) {
+          setError('추천안 정보를 불러오지 못했어요.');
+          setLoading(false);
+        }
+      }
+    };
+    fetchPlan();
+
+    return () => {
+      mounted = false;
+    };
   }, [statePlan, resolvedMeetingId]);
 
   const plan = statePlan || fallbackPlan;
 
   const handleConfirm = async () => {
     if (!plan) return;
-    await meetingRepository.confirmPlan({
-      meetingId: resolvedMeetingId,
-      selectedPlan: plan,
-      confirmSource: statePlan ? 'manual' : 'recommended',
-    });
-    navigate(`/app/meetings/${resolvedMeetingId}/confirmed-share`);
+    try {
+      await meetingRepository.confirmPlan({
+        meetingId: resolvedMeetingId,
+        selectedPlan: plan,
+        confirmSource: statePlan ? 'manual' : 'recommended',
+      });
+      navigate(`/app/meetings/${resolvedMeetingId}/confirmed-share`);
+    } catch (err) {
+      console.error('[ConfirmPlanScreen] confirm failed', err);
+      alert('모임 확정에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
-  if (!plan) {
-    return <ScreenShell className="items-center justify-center">확정할 응답 데이터가 아직 없어요.</ScreenShell>;
+  if (!meetingId) {
+    return (
+      <ScreenShell className="items-center justify-center p-5 text-center">
+        <ScreenError title="모임 정보를 찾을 수 없어요" />
+      </ScreenShell>
+    );
   }
+
+  if (loading) {
+    return (
+      <ScreenShell>
+        <ScreenLoading message="모임 확정 정보를 구성하고 있어요..." />
+      </ScreenShell>
+    );
+  }
+
+  if (error || !plan) {
+    return (
+      <ScreenShell>
+        <ScreenError 
+          title="확정할 계획이 없거나 불러오지 못했어요" 
+          message={error || "모임 후보지가 한 개도 등록되어 있지 않은 것 같아요."} 
+          onRetry={() => {
+            setError(null);
+            setLoading(true);
+            meetingRepository.getMeetingResponses(resolvedMeetingId)
+              .then((responses) => {
+                const aggregation = aggregateMeetingResponses(responses);
+                setFallbackPlan(aggregation.recommendedPlan);
+                setLoading(false);
+              })
+              .catch((err) => {
+                setError('오류 상황이 지속됩니다.');
+                setLoading(false);
+              });
+          }}
+        />
+      </ScreenShell>
+    );
+  }
+
 
   return (
     <ScreenShell bottomInset="cta" className="gap-6 bg-bg-app">

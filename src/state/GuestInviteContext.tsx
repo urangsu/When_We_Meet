@@ -37,32 +37,48 @@ export const GuestInviteProvider = ({ children }: { children: React.ReactNode })
     let mounted = true;
     setLoadState('loading');
 
-    meetingRepository.getMeetingByInvite(meetingId, token).then(async (result) => {
-      if (!mounted) return;
+    const loadInvite = async () => {
+      try {
+        const result = await meetingRepository.getMeetingByInvite(meetingId!, token!);
+        if (!mounted) return;
 
-      if (!result) {
-        setLoadState('invalid');
-        setMeeting(null);
-        setInviteLink(null);
-        return;
+        if (!result) {
+          setLoadState('invalid');
+          setMeeting(null);
+          setInviteLink(null);
+          return;
+        }
+
+        setMeeting(result.meeting);
+        setInviteLink(result.inviteLink);
+        setLoadState('ready');
+
+        try {
+          const { receivedInviteRegistry } = await import('../repositories/receivedInviteRegistry');
+          const existing = receivedInviteRegistry.list().find((e) => e.meetingId === meetingId);
+          receivedInviteRegistry.upsert({
+            meetingId: meetingId!,
+            token: token!,
+            title: result.meeting.title,
+            hostName: result.meeting.hostName || undefined,
+            message: result.meeting.hostMessage,
+            openedAt: existing?.openedAt ?? new Date().toISOString(),
+            lastViewedAt: new Date().toISOString(),
+          });
+        } catch (regErr) {
+          console.warn('[GuestInviteContext] failed to save to invite registry', regErr);
+        }
+      } catch (error) {
+        console.error('[GuestInviteContext] failed to load invite details', error);
+        if (mounted) {
+          setLoadState('invalid');
+          setMeeting(null);
+          setInviteLink(null);
+        }
       }
+    };
 
-      setMeeting(result.meeting);
-      setInviteLink(result.inviteLink);
-      setLoadState('ready');
-
-      const { receivedInviteRegistry } = await import('../repositories/receivedInviteRegistry');
-      const existing = receivedInviteRegistry.list().find((e) => e.meetingId === meetingId);
-      receivedInviteRegistry.upsert({
-        meetingId,
-        token: token,
-        title: result.meeting.title,
-        hostName: result.meeting.hostName || undefined,
-        message: result.meeting.hostMessage,
-        openedAt: existing?.openedAt ?? new Date().toISOString(),
-        lastViewedAt: new Date().toISOString(),
-      });
-    });
+    loadInvite();
 
     return () => {
       mounted = false;

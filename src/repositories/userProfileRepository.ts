@@ -1,4 +1,5 @@
 import type { UserProfile } from '../types/user';
+import { readJson, writeJson } from './localStorageAdapter';
 
 const USER_PROFILE_KEY = 'wwm:user-profile:v1';
 
@@ -35,27 +36,22 @@ const normalizeProfile = (rawProfile: Partial<UserProfile> & { appBackgroundId?:
   },
 });
 
-const canUseStorage = () =>
-  typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
-
 export const userProfileRepository = {
   getProfile(): UserProfile {
-    if (!canUseStorage()) return defaultUserProfile;
-
-    const raw = localStorage.getItem(USER_PROFILE_KEY);
-    if (!raw) return defaultUserProfile;
-
     try {
-      const parsed = JSON.parse(raw);
-      return normalizeProfile(parsed);
+      const parsed = readJson<Partial<UserProfile>>(USER_PROFILE_KEY, defaultUserProfile);
+      return normalizeProfile(parsed || {});
     } catch {
       return defaultUserProfile;
     }
   },
 
   saveProfile(profile: UserProfile) {
-    if (!canUseStorage()) return;
-    localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
+    try {
+      writeJson(USER_PROFILE_KEY, profile);
+    } catch (err) {
+      console.warn('[userProfileRepository] failed to save profile', err);
+    }
   },
 
   updateProfile(patch: Partial<UserProfile>) {
@@ -76,3 +72,4 @@ export const userProfileRepository = {
     return next;
   },
 };
+

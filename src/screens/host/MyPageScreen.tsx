@@ -22,6 +22,7 @@ export const MyPageScreen = () => {
   const navigate = useNavigate();
   const { user, signIn, signOut } = useAuth();
   const [profile, setProfile] = useState(() => userProfileRepository.getProfile());
+  const [imageError, setImageError] = useState(false);
   const [activePanel, setActivePanel] = useState<null | 'profile' | 'appearance' | 'account' | 'notifications' | 'calendar' | 'about'>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     message: string;
@@ -36,6 +37,7 @@ export const MyPageScreen = () => {
   // Sync state with repository updates
   const syncProfileState = () => {
     setProfile(userProfileRepository.getProfile());
+    setImageError(false);
   };
 
   const saveProfile = () => {
@@ -76,12 +78,13 @@ export const MyPageScreen = () => {
         {/* Profile Card */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-ink-line/50 flex flex-col gap-4">
           <div className="flex items-center gap-4 w-full">
-            {profile.photoURL ? (
+            {!imageError && profile.photoURL ? (
               <img 
                 src={profile.photoURL} 
                 alt={profile.displayName} 
                 className="w-14 h-14 rounded-full border border-ink-line object-cover" 
                 referrerPolicy="no-referrer"
+                onError={() => setImageError(true)}
               />
             ) : (
               <InitialAvatar name={profile.displayName} colorId={profile.colorId as ProfileColorId} size="lg" />

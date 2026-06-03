@@ -10,6 +10,8 @@ import { useCreateMeetingDraft } from '../../state/CreateMeetingDraftContext';
 import { getCalendarMemoRecommendations } from '../../utils/calendarMemoRecommendations';
 import { useTutorialMode } from '../../hooks/useTutorialMode';
 import { TutorialHint } from '../../components/onboarding/TutorialHint';
+import { NaverPlacePicker } from '../../components/place/NaverPlacePicker';
+import type { SelectedPlace } from '../../types/place';
 
 export const PlaceSetupScreen = () => {
   const { isTutorial, skip } = useTutorialMode();
@@ -17,6 +19,7 @@ export const PlaceSetupScreen = () => {
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selectedMode, setSelectedMode] = useState<LocationMode>(draft.locationMode);
   const [fixedPlace, setFixedPlace] = useState(draft.fixedPlaceName || '');
+  const [selectedPlace, setSelectedPlacePoint] = useState<SelectedPlace | undefined>(draft.selectedPlace);
 
   const recommendations = getCalendarMemoRecommendations({
     notes: draft.attachedCalendarMemoNotes,
@@ -34,8 +37,14 @@ export const PlaceSetupScreen = () => {
     updateDraft({
       locationMode: selectedMode,
       fixedPlaceName: selectedMode === 'fixed' ? fixedPlace : '',
+      selectedPlace: selectedMode === 'fixed' ? selectedPlace : undefined,
     });
     navigate('/app/create/dates');
+  };
+
+  const handleSelectPlace = (place: SelectedPlace) => {
+    setSelectedPlacePoint(place);
+    setFixedPlace(place.name);
   };
 
   return (
@@ -91,11 +100,10 @@ export const PlaceSetupScreen = () => {
         {selectedMode === 'fixed' && (
           <div className="flex flex-col gap-2 mt-4 animate-in fade-in slide-in-from-top-2">
             <label className="text-sm font-bold text-ink ml-1">만날 곳</label>
-            <input 
-              value={fixedPlace}
-              onChange={(e) => setFixedPlace(e.target.value)}
-              placeholder="예) 성수동 조용한 카페"
-              className="w-full p-4 rounded-2xl border border-ink-line focus:border-rose focus:outline-none focus:shadow-sm transition-all"
+            
+            <NaverPlacePicker 
+              initialPlace={selectedPlace}
+              onSelectPlace={handleSelectPlace}
             />
             
             {placeRecommendations.length > 0 && (

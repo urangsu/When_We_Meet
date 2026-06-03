@@ -7,7 +7,9 @@ import type {
   MeetingRecord,
   MeetingResponse,
   ResponseId,
+  OrderSelection,
 } from '../types/meeting';
+import type { SelectedPlace } from '../types/place';
 
 export interface SupabaseMeetingRow {
   id: string;
@@ -49,6 +51,8 @@ export interface SupabaseMeetingResponseRow {
   source: MeetingResponse['source'];
   created_at: string;
   updated_at: string;
+  order_payload?: unknown;
+  place_payload?: unknown;
 }
 
 export interface SupabaseConfirmedPlanRow {
@@ -85,23 +89,31 @@ export const toInviteLink = (row: SupabaseInviteLinkRow): InviteLink => ({
   updatedAt: row.updated_at,
 });
 
-export const toMeetingResponse = (row: SupabaseMeetingResponseRow): MeetingResponse => ({
-  id: row.id as ResponseId,
-  meetingId: row.meeting_id as MeetingId,
-  inviteToken: (row.invite_token_plain_for_local_mvp_only || '') as InviteToken,
-  nickname: row.guest_name || '',
-  attendance: row.attendance,
-  dateLabels: Array.isArray(row.date_votes) ? row.date_votes : [],
-  suggestedDateLabels: [],
-  timeLabels: [],
-  placeCandidate: Array.isArray(row.place_suggestions) ? row.place_suggestions[0] : undefined,
-  activityIds: Array.isArray(row.activity_preferences) ? row.activity_preferences : [],
-  attendanceMessage: row.message || undefined,
-  idempotencyKey: row.idempotency_key,
-  source: row.source,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
-});
+export const toMeetingResponse = (row: SupabaseMeetingResponseRow): MeetingResponse => {
+  const orderData = row.order_payload as { selections?: OrderSelection[]; note?: string } | undefined;
+  const placeData = row.place_payload as { selectedPlaceCandidate?: SelectedPlace } | undefined;
+
+  return {
+    id: row.id as ResponseId,
+    meetingId: row.meeting_id as MeetingId,
+    inviteToken: (row.invite_token_plain_for_local_mvp_only || '') as InviteToken,
+    nickname: row.guest_name || '',
+    attendance: row.attendance,
+    dateLabels: Array.isArray(row.date_votes) ? row.date_votes : [],
+    suggestedDateLabels: [],
+    timeLabels: [],
+    placeCandidate: Array.isArray(row.place_suggestions) ? row.place_suggestions[0] : undefined,
+    activityIds: Array.isArray(row.activity_preferences) ? row.activity_preferences : [],
+    attendanceMessage: row.message || undefined,
+    idempotencyKey: row.idempotency_key,
+    source: row.source,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    orderSelections: orderData?.selections || [],
+    orderNote: orderData?.note || '',
+    selectedPlaceCandidate: placeData?.selectedPlaceCandidate,
+  };
+};
 
 export const toConfirmedPlan = (row: SupabaseConfirmedPlanRow): ConfirmedPlan => ({
   id: row.id as ConfirmedPlanId,

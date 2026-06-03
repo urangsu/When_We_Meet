@@ -6,26 +6,68 @@ import { getRepositoryMode } from '../../repositories/repositoryMode';
 import { mockMeetings } from '../../data/mockMeetings';
 import { createdMeetingRegistry } from '../../repositories/createdMeetingRegistry';
 import { meetingRepository } from '../../repositories/getMeetingRepository';
-import type { MeetingRecord } from '../../types/meeting';
+import type { Meeting, MeetingStatus } from '../../types/meeting';
+import type { ProfileColorId } from '../../types';
 import { Plus } from 'lucide-react';
 
 type MeetingFilter = 'all' | 'ongoing' | 'waiting' | 'past';
 
 export const MeetingsScreen = () => {
   const [filter, setFilter] = useState<MeetingFilter>('all');
-  const [meetings, setMeetings] = useState<MeetingRecord[]>([]);
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const load = async () => {
       if (getRepositoryMode() !== 'backend') {
-        setMeetings(mockMeetings as unknown as MeetingRecord[]);
+        setMeetings(mockMeetings);
         return;
       }
 
       const ids = createdMeetingRegistry.list();
-      const records = await Promise.all(ids.map((id) => meetingRepository.getMeetingById(id)));
-      setMeetings(records.filter(Boolean) as MeetingRecord[]);
+      const records = await Promise.all(ids.map(async (id) => {
+        try {
+          const record = await meetingRepository.getMeetingById(id);
+          if (!record) return null;
+          
+          const [responses, confirmedPlan] = await Promise.all([
+            meetingRepository.getMeetingResponses(id).catch(() => []),
+            meetingRepository.getConfirmedPlan(id).catch(() => null),
+          ]);
+          
+          const participants = responses
+            .filter((r) => r.attendance === 'yes' || r.attendance === 'maybe')
+            .map((r, index) => ({
+              id: r.id,
+              name: r.nickname,
+              colorId: ['pink', 'skyblue', 'beige', 'gray', 'red', 'white'][index % 6] as ProfileColorId,
+            }));
+
+          const status: MeetingStatus = confirmedPlan
+            ? 'confirmed'
+            : record.status === 'closed'
+            ? 'past'
+            : responses.length === 0
+            ? 'waiting'
+            : 'ongoing';
+
+          const m: Meeting = {
+            id: record.id,
+            title: record.title || '새 모임',
+            date: confirmedPlan?.dateLabel || (record.dateLabels && record.dateLabels.length > 0 ? `${record.dateLabels.length}개의 후보일` : '날짜 미정'),
+            dateKey: confirmedPlan?.dateLabel,
+            timeLabel: confirmedPlan?.timeLabel,
+            status,
+            guests: responses.length,
+            participants,
+          };
+          return m;
+        } catch (err) {
+          console.error('Failed to load host meeting stats for', id, err);
+          return null;
+        }
+      }));
+      setMeetings(records.filter(Boolean) as Meeting[]);
     };
 
     load();
@@ -33,12 +75,12 @@ export const MeetingsScreen = () => {
 
   const filteredMeetings = meetings.filter((meeting) => {
     if (filter === 'all') return true;
-    if (filter === 'ongoing') return meeting.status === 'collecting';
-    // If waiting means response > 0
-    if (filter === 'waiting') return meeting.status === 'collecting' && meeting.responses && meeting.responses.length === 0; 
-    if (filter === 'past') return meeting.status === 'closed' || meeting.status === 'confirmed';
+    if (filter === 'ongoing') return meeting.status === 'ongoing';
+    if (filter === 'waiting') return meeting.status === 'waiting';
+    if (filter === 'past') return meeting.status === 'past' || meeting.status === 'confirmed';
     return true;
   });
+
 
   return (
     <ScreenShell bottomInset="nav" className="gap-0">

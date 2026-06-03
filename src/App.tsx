@@ -31,6 +31,7 @@ import { PlaceSetupScreen } from './screens/host/PlaceSetupScreen';
 import { ConfirmPlanScreen } from './screens/host/ConfirmPlanScreen';
 import { ConfirmedShareScreen } from './screens/host/ConfirmedShareScreen';
 import { ActivitySetupScreen } from './screens/host/ActivitySetupScreen';
+import { OrderMenuSetupScreen } from './screens/host/OrderMenuSetupScreen';
 
 // Guest Screens
 import { InviteLandingScreen } from './screens/guest/InviteLandingScreen';
@@ -39,6 +40,7 @@ import { GuestAttendanceScreen } from './screens/guest/GuestAttendanceScreen';
 import { GuestDateVoteScreen } from './screens/guest/GuestDateVoteScreen';
 import { GuestPreferenceScreen } from './screens/guest/GuestPreferenceScreen';
 import { GuestPlacePreferenceScreen } from './screens/guest/GuestPlacePreferenceScreen';
+import { GuestOrderSelectionScreen } from './screens/guest/GuestOrderSelectionScreen';
 import { GuestCompleteScreen } from './screens/guest/GuestCompleteScreen';
 
 export default function App() {
@@ -59,6 +61,7 @@ export default function App() {
                 <Route path="calendar" element={<CalendarTabScreen />} />
                 <Route path="me" element={<MyPageScreen />} />
                 <Route path="create/category" element={<CategoryScreen />} />
+                <Route path="create/order-menu" element={<OrderMenuSetupScreen />} />
                 <Route path="create/info" element={<MeetingInfoScreen />} />
                 <Route path="create/place" element={<PlaceSetupScreen />} />
                 <Route path="create/dates" element={<DatePickerScreen />} />
@@ -86,6 +89,7 @@ export default function App() {
                 <Route path="demo/dates" element={<GuestDateVoteScreen />} />
                 <Route path="demo/place" element={<GuestPlacePreferenceScreen />} />
                 <Route path="demo/preferences" element={<GuestPreferenceScreen />} />
+                <Route path="demo/order" element={<GuestOrderSelectionScreen />} />
                 <Route path="demo/complete" element={<GuestCompleteScreen />} />
 
                 <Route path=":meetingId/:token" element={<InviteLandingScreen />} />
@@ -94,6 +98,7 @@ export default function App() {
                 <Route path=":meetingId/:token/dates" element={<GuestDateVoteScreen />} />
                 <Route path=":meetingId/:token/place" element={<GuestPlacePreferenceScreen />} />
                 <Route path=":meetingId/:token/preferences" element={<GuestPreferenceScreen />} />
+                <Route path=":meetingId/:token/order" element={<GuestOrderSelectionScreen />} />
                 <Route path=":meetingId/:token/complete" element={<GuestCompleteScreen />} />
               </Route>
             </Routes>

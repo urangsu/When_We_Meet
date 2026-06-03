@@ -1,4 +1,23 @@
 import type { ProfileColorId, MeetingCategory, ThemeId } from '../types';
+import type { SelectedPlace } from './place';
+
+export type MeetingSpecialFlow = 'none' | 'order';
+
+export interface OrderMenuItem {
+  id: string;
+  name: string;
+  price?: number;
+  description?: string;
+  imageUrl?: string;
+  maxQuantity?: number;
+}
+
+export interface OrderSelection {
+  menuItemId: string;
+  quantity: number;
+  note?: string;
+}
+
 
 export type MeetingId = string;
 export type InviteToken = string;
@@ -143,6 +162,7 @@ export interface CreateMeetingDraft {
   timeLabels: string[];
   activityIds: ActivityOptionId[];
   customActivity: string;
+  activityMode?: 'undecided' | 'decided' | 'vote';
   themeId: ThemeId;
   hostName: string;
   hostColorId: ProfileColorId;
@@ -150,6 +170,10 @@ export interface CreateMeetingDraft {
   attachedCalendarMemoNotes: string[];
   attachedCalendarMemoTags: string[];
   attachedCalendarMemoDateKeys: string[];
+  specialFlow?: MeetingSpecialFlow;
+  orderMenuItems?: OrderMenuItem[];
+  selectedPlace?: SelectedPlace;
+  placeCandidates?: SelectedPlace[];
 }
 
 export interface GuestResponseDraft {
@@ -162,6 +186,9 @@ export interface GuestResponseDraft {
   activityIds: ActivityOptionId[];
   customActivity: string;
   requestNote: string;
+  orderSelections?: OrderSelection[];
+  orderNote?: string;
+  selectedPlaceCandidate?: SelectedPlace;
 }
 
 export interface MeetingResponse {
@@ -182,6 +209,10 @@ export interface MeetingResponse {
   customActivity?: string;
 
   requestNote?: string;
+
+  orderSelections?: OrderSelection[];
+  orderNote?: string;
+  selectedPlaceCandidate?: SelectedPlace;
 
   inviteToken?: InviteToken;
   idempotencyKey?: string;

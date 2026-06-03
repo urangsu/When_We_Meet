@@ -12,28 +12,75 @@ import { ConfirmedShareCard } from '../../components/meeting/ConfirmedShareCard'
 import type { ConfirmedPlan, MeetingResponse } from '../../types/meeting';
 import type { ProfileColorId } from '../../types';
 import { AnimatePresence, motion } from 'motion/react';
+import { ScreenLoading, ScreenError } from '../../components/error/ScreenState';
+
 
 export const ConfirmedShareScreen = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams();
+  const resolvedMeetingId = meetingId || '';
+
   const confirmedCardRef = useRef<HTMLDivElement>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const noticeTimerRef = useRef<number | null>(null);
 
-  const showNotice = (text: string) => {
-    setNotice(text);
-    setTimeout(() => setNotice(null), 3000);
-  };
-
-  if (!meetingId) {
-    return <ScreenShell className="items-center justify-center p-5 text-center">모임 정보를 찾을 수 없어요.</ScreenShell>;
-  }
-  const resolvedMeetingId = meetingId;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [confirmedPlan, setConfirmedPlan] = useState<ConfirmedPlan | null>(null);
   const [responses, setResponses] = useState<MeetingResponse[]>([]);
 
+  const showNotice = (text: string) => {
+    setNotice(text);
+    if (noticeTimerRef.current) {
+      window.clearTimeout(noticeTimerRef.current);
+    }
+    noticeTimerRef.current = window.setTimeout(() => {
+      setNotice(null);
+      noticeTimerRef.current = null;
+    }, 2400);
+  };
+
   useEffect(() => {
-    meetingRepository.getConfirmedPlan(resolvedMeetingId).then(setConfirmedPlan);
-    meetingRepository.getMeetingResponses(resolvedMeetingId).then(setResponses);
+    return () => {
+      if (noticeTimerRef.current) {
+        window.clearTimeout(noticeTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!resolvedMeetingId) {
+      setError('모임 정보를 찾을 수 없어요.');
+      setLoading(false);
+      return;
+    }
+
+    let mounted = true;
+    const fetchConfirmed = async () => {
+      try {
+        setLoading(true);
+        const [plan, nextResponses] = await Promise.all([
+          meetingRepository.getConfirmedPlan(resolvedMeetingId),
+          meetingRepository.getMeetingResponses(resolvedMeetingId),
+        ]);
+        if (mounted) {
+          setConfirmedPlan(plan || null);
+          setResponses(nextResponses || []);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('[ConfirmedShareScreen] loading failed', err);
+        if (mounted) {
+          setError('확정 정보를 불러오는 도중 에러가 발생했습니다.');
+          setLoading(false);
+        }
+      }
+    };
+    fetchConfirmed();
+
+    return () => {
+      mounted = false;
+    };
   }, [resolvedMeetingId]);
 
   const dateDisplay = confirmedPlan?.dateLabel || '날짜 미정';
@@ -58,14 +105,12 @@ export const ConfirmedShareScreen = () => {
 
   const handleCalendar = async () => {
     try {
-      // NOTE: We should parse dateKey, but this MVP relies on a naive mapped approach or empty date string.
-      // E.g. simple regex extraction for demonstration, or default to today if not parsed well.
       const match = dateDisplay.match(/(\d{4})-(\d{2})-(\d{2})/);
       const dateKey = match ? match[0] : new Date().toISOString().split('T')[0];
 
       await ourCalendarRepository.createCalendarEvent({
         type: 'confirmed_meeting',
-        title: '모임', // Optionally fetch meeting title
+        title: '모임',
         dateKey,
         meetingId: resolvedMeetingId,
         timeLabel: timeDisplay,
@@ -85,18 +130,67 @@ export const ConfirmedShareScreen = () => {
       colorId: ['pink', 'skyblue', 'beige', 'gray', 'red', 'white'][index % 6] as ProfileColorId,
     }));
 
+  if (!meetingId) {
+    return (
+      <ScreenShell className="items-center justify-center p-5 text-center">
+        <ScreenError title="모임 정보를 찾을 수 없어요" />
+      </ScreenShell>
+    );
+  }
+
+  if (loading) {
+    return (
+      <ScreenShell>
+        <ScreenLoading message="모임 확정 사항을 연동하고 있습니다..." />
+      </ScreenShell>
+    );
+  }
+
+  if (error) {
+    return (
+      <ScreenShell>
+        <ScreenError 
+          title="확정 정보를 로드하지 못했습니다" 
+          message={error} 
+          onRetry={() => {
+            setError(null);
+            setLoading(true);
+            meetingRepository.getConfirmedPlan(resolvedMeetingId)
+              .then((plan) => {
+                setConfirmedPlan(plan);
+                return meetingRepository.getMeetingResponses(resolvedMeetingId);
+              })
+              .then((nextResponses) => {
+                setResponses(nextResponses);
+                setLoading(false);
+              })
+              .catch(() => {
+                setError('확정 정보를 일시적으로 불러올 수 없습니다. 다시 시도해 주세요.');
+                setLoading(false);
+              });
+          }}
+        />
+      </ScreenShell>
+    );
+  }
+
+
   return (
     <ScreenShell bottomInset="cta" className="gap-6 bg-bg-app">
       <AnimatePresence>
         {notice && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 12 }}
-            className="fixed bottom-28 left-5 right-5 z-50 rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg"
-          >
-            {notice}
-          </motion.div>
+          <div className="fixed inset-x-0 bottom-28 z-50 flex justify-center pointer-events-none">
+            <div className="w-full max-w-[430px] px-5">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                className="pointer-events-auto rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg text-center"
+              >
+                {notice}
+              </motion.div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
       <header className="flex flex-col gap-2 pt-2 px-5">

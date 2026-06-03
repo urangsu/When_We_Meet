@@ -12,7 +12,7 @@ const getInviteBasePath = ({ meetingId, token }: InviteRouteInput) => {
 
 export const getInviteRoute = (
   input: InviteRouteInput,
-  step?: 'nickname' | 'attendance' | 'dates' | 'place' | 'preferences' | 'complete'
+  step?: 'nickname' | 'attendance' | 'dates' | 'place' | 'preferences' | 'order' | 'complete'
 ) => {
   const base = getInviteBasePath(input);
   return step ? `${base}/${step}` : base;

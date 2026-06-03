@@ -159,14 +159,18 @@ export const ShareScreen = () => {
     <ScreenShell bottomInset="cta" className="gap-6 items-center justify-center text-center p-5 pt-20 relative">
       <AnimatePresence>
       {notice && (
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 12 }}
-          className="fixed bottom-28 left-5 right-5 z-50 rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg"
-        >
-          {notice}
-        </motion.div>
+        <div className="fixed inset-x-0 bottom-28 z-50 flex justify-center pointer-events-none">
+          <div className="w-full max-w-[430px] px-5">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              className="pointer-events-auto rounded-2xl bg-ink text-white px-4 py-3 text-sm font-bold shadow-lg text-center"
+            >
+              {notice}
+            </motion.div>
+          </div>
+        </div>
       )}
       </AnimatePresence>
       <div className="fixed left-[-10000px] top-0 pointer-events-none">

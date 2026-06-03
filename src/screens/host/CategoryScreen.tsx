@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../../components/Button';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, ReceiptText } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { categoryOptions } from '../../config/categoryOptions';
 import { ScreenShell } from '../../components/layout/ScreenShell';
@@ -16,6 +16,7 @@ export const CategoryScreen = () => {
   const { draft, updateDraft } = useCreateMeetingDraft();
   const [selected, setSelected] = useState<MeetingCategory>(draft.category);
   const [isRecurring, setIsRecurring] = useState(draft.isRecurring);
+  const [specialFlow, setSpecialFlow] = useState(draft.specialFlow ?? 'none');
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -47,8 +48,18 @@ export const CategoryScreen = () => {
     updateDraft({
       category: selected,
       isRecurring,
+      specialFlow,
     });
+    
+    if (specialFlow === 'order') {
+      navigate('/app/create/order-menu');
+      return;
+    }
     navigate('/app/create/info');
+  };
+
+  const toggleOrderFlow = () => {
+    setSpecialFlow((prev) => (prev === 'order' ? 'none' : 'order'));
   };
 
   return (
@@ -88,12 +99,31 @@ export const CategoryScreen = () => {
           <span className="text-xs text-ink-hint">매주 또는 매달 반복되는 모임</span>
         </div>
         <button 
+          type="button"
           onClick={() => setIsRecurring(!isRecurring)}
           className={`w-12 h-6 rounded-full transition-all relative ${isRecurring ? 'bg-rose' : 'bg-ink-line'}`}
         >
           <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all ${isRecurring ? 'translate-x-6' : ''}`} />
         </button>
       </div>
+
+      <button 
+        type="button"
+        onClick={toggleOrderFlow}
+        className={`mt-2 flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all cursor-pointer ${
+          specialFlow === 'order' 
+            ? 'border-rose bg-rose-50/40 text-rose ring-2 ring-rose ring-inset' 
+            : 'border-dashed border-rose/30 bg-white hover:border-rose/50 text-ink'
+        }`}
+      >
+        <div>
+          <p className="text-sm font-black text-ink">주문받아요~ 🍖</p>
+          <p className="mt-0.5 text-xs text-ink-muted">
+            친구들이 메뉴를 고르면 주문서처럼 모아드려요.
+          </p>
+        </div>
+        <ReceiptText size={20} className={specialFlow === 'order' ? 'text-rose animate-bounce' : 'text-rose/50'} />
+      </button>
 
       <BottomCTA>
         <Button onClick={handleNext} size="full">시작하기</Button>

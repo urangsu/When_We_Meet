@@ -9,7 +9,7 @@ interface InitialAvatarGroupProps {
   onOpenList?: () => void;
 }
 
-export const InitialAvatarGroup = ({ participants, totalCount, maxVisible = 2, onOpenList }: InitialAvatarGroupProps) => {
+export const InitialAvatarGroup = ({ participants = [], totalCount, maxVisible = 2, onOpenList }: InitialAvatarGroupProps) => {
   const visibleParticipants = participants.slice(0, maxVisible);
   const remainingCount = totalCount - visibleParticipants.length;
 

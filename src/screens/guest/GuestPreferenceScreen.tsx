@@ -6,18 +6,25 @@ import { ScreenShell } from '../../components/layout/ScreenShell';
 import { BottomCTA } from '../../components/layout/BottomCTA';
 import { useGuestResponseDraft } from '../../state/GuestResponseDraftContext';
 import { getInviteRoute } from '../../utils/inviteRoutes';
+import { useGuestInvite } from '../../state/GuestInviteContext';
 
 export const GuestPreferenceScreen = () => {
   const navigate = useNavigate();
   const { meetingId, token } = useParams();
   const { draft, updateResponseDraft } = useGuestResponseDraft();
+  const { meeting } = useGuestInvite();
   const [requestNote, setRequestNote] = useState(draft?.requestNote || '');
 
   const handleNext = () => {
     updateResponseDraft({
       requestNote,
     });
-    navigate(getInviteRoute({ meetingId, token }, 'complete'));
+    
+    if (meeting?.specialFlow === 'order') {
+      navigate(getInviteRoute({ meetingId, token }, 'order'));
+    } else {
+      navigate(getInviteRoute({ meetingId, token }, 'complete'));
+    }
   };
 
   return (
